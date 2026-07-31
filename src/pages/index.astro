@@ -11,4 +11,37 @@ import Layout from "../layouts/Layout.astro";
     See <a class="underline" href="/projects">projects</a> or read the
     <a class="underline" href="/blog">blog</a>.
   </p>
+
+  <section class="mt-10">
+    <h2 class="text-xl font-semibold">Featured: ccgarden</h2>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">
+      A generative-art tree grown from Claude Code session history — trunk
+      width and rings track sessions, branches are repos, leaves are
+      individual sessions, clouds are models, bushes are tools, flowers are
+      cache efficiency. Zero dependencies, pure-stdlib Python rendering a
+      self-contained animated SVG. Below is my own real session history.
+    </p>
+    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+      Watch it grow, then hover any leaf, branch, cloud, or bush for its
+      numbers — or drag the time-travel slider to replay any day.
+    </p>
+    <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
+         SMIL growth animation, and time-travel scrubber script all work. -->
+    <div
+      class="relative left-1/2 mt-4 aspect-[800/848] w-screen max-w-3xl -translate-x-1/2 px-4"
+    >
+      <object
+        type="image/svg+xml"
+        data="/ccgarden-demo.svg"
+        class="h-full w-full"
+        aria-label="Sample ccgarden tree visualization grown from synthetic Claude Code session data"
+      >
+      </object>
+    </div>
+    <p class="mt-2 text-sm">
+      <a class="underline" href="https://github.com/dannybrown37/ccgarden">
+        View on GitHub
+      </a>
+    </p>
+  </section>
 </Layout>
