@@ -6,29 +6,113 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "Danny Brown — software engineer" } = Astro.props;
+const { title, description = "Danny Brown — senior software engineer" } =
+  Astro.props;
+
+const year = new Date().getUTCFullYear();
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-pt-20">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
     <title>{title} · dannybrown.dev</title>
+    <!-- Inline and render-blocking on purpose: applying the stored theme after
+         first paint would flash the wrong background. -->
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const dark =
+          stored === "dark" ||
+          (!stored && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", dark);
+      })();
+    </script>
   </head>
-  <body class="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
-    <header class="mx-auto max-w-2xl px-4 py-6">
-      <nav class="flex gap-6 text-sm font-medium">
-        <a href="/">Home</a>
-        <a href="/projects">Projects</a>
-        <a href="/blog">Blog</a>
-        <a href="/about">About</a>
-      </nav>
+  <body
+    class="bg-paper text-ink dark:bg-paper-dk dark:text-ink-dk min-h-screen font-sans antialiased"
+  >
+    <header
+      class="border-line dark:border-line-dk bg-paper/80 dark:bg-paper-dk/80 sticky top-0 z-10 border-b backdrop-blur"
+    >
+      <div class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+        <a
+          href="/"
+          class="hover:text-accent dark:hover:text-accent-dk text-sm font-semibold tracking-tight transition-colors"
+        >
+          Danny Brown
+        </a>
+        <nav class="flex items-center gap-6 text-sm">
+          <a
+            href="/blog"
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk transition-colors"
+          >
+            Blog
+          </a>
+          <button
+            id="theme-toggle"
+            type="button"
+            aria-label="Toggle dark mode"
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk -m-2 p-2 transition-colors"
+          >
+            <svg
+              class="h-4 w-4 dark:hidden"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4"></circle>
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              ></path>
+            </svg>
+            <svg
+              class="hidden h-4 w-4 dark:block"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
+            </svg>
+          </button>
+        </nav>
+      </div>
     </header>
-    <main class="mx-auto max-w-2xl px-4 pb-16">
+
+    <main class="mx-auto max-w-3xl px-6 pt-14 pb-24">
       <slot />
     </main>
+
+    <footer class="border-line dark:border-line-dk border-t">
+      <div
+        class="text-muted dark:text-muted-dk mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm"
+      >
+        <p>© {year} Danny Brown</p>
+        <a
+          class="hover:text-ink dark:hover:text-ink-dk transition-colors"
+          href="https://github.com/dannybrown37"
+        >
+          GitHub
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("theme-toggle")?.addEventListener("click", () => {
+        const dark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", dark ? "dark" : "light");
+      });
+    </script>
   </body>
 </html>

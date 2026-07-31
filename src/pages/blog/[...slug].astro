@@ -19,11 +19,38 @@ const readingTime = getReadingTime(post.body ?? "");
 
 <Layout title={post.data.title} description={post.data.description}>
   <article>
-    <h1 class="text-2xl font-bold">{post.data.title}</h1>
-    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-      {formatDate(post.data.pubDate)} · {readingTime} min read
+    <a
+      class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk text-sm transition-colors"
+      href="/blog"
+    >
+      ← Writing
+    </a>
+    <h1
+      class="mt-8 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+    >
+      {post.data.title}
+    </h1>
+    <p class="text-muted dark:text-muted-dk mt-4 font-mono text-xs">
+      {formatDate(post.data.pubDate)} · {readingTime} min read{
+        post.data.updatedDate && (
+          <> · updated {formatDate(post.data.updatedDate)}</>
+        )
+      }
     </p>
-    <div class="prose mt-6 dark:prose-invert">
+    {
+      post.data.tags.length > 0 && (
+        <ul class="text-muted dark:text-muted-dk mt-4 flex flex-wrap gap-2 font-mono text-xs">
+          {post.data.tags.map((tag) => (
+            <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
+              {tag}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <div
+      class="prose prose-neutral dark:prose-invert prose-headings:tracking-tight prose-a:underline-offset-4 border-line dark:border-line-dk mt-10 max-w-none border-t pt-10"
+    >
       <Content />
     </div>
   </article>

@@ -1,2 +1,43 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+/* Class-based dark mode so the header toggle can override the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, monospace;
+
+  --color-paper: oklch(0.99 0.002 260);
+  --color-paper-soft: oklch(0.965 0.004 260);
+  --color-ink: oklch(0.21 0.012 260);
+  --color-muted: oklch(0.52 0.014 260);
+  --color-line: oklch(0.9 0.006 260);
+  --color-accent: oklch(0.55 0.15 250);
+
+  --color-paper-dk: oklch(0.18 0.012 260);
+  --color-paper-soft-dk: oklch(0.22 0.014 260);
+  --color-ink-dk: oklch(0.93 0.008 260);
+  --color-muted-dk: oklch(0.68 0.014 260);
+  --color-line-dk: oklch(0.31 0.014 260);
+  --color-accent-dk: oklch(0.78 0.13 250);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+::selection {
+  background: var(--color-accent);
+  color: white;
+}

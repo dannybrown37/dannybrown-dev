@@ -1,19 +1,59 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
+import { formatDate } from "../lib/format-date";
+
+interface Project {
+  name: string;
+  description: string;
+  url: string;
+  tech: string[];
+}
+
+const projects: Project[] = [
+  {
+    name: "ccgarden",
+    description:
+      "Grows a tree from your Claude Code session history: trunk width tracks total sessions, branches are repos, leaves are sessions, flowers are cache-efficiency, clouds are models, bushes are tools. Zero dependencies, pure-stdlib Python generating a self-contained animated SVG.",
+    url: "https://github.com/dannybrown37/ccgarden",
+    tech: ["Python", "SVG", "SMIL"],
+  },
+  {
+    name: "dotfiles",
+    description: "Shell config, Claude Code skills/agents, and dev tooling.",
+    url: "https://github.com/dannybrown37/dotfiles",
+    tech: ["Bash", "Claude Code"],
+  },
+];
+
+const posts = (await getCollection("blog"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const linkClass =
+  "decoration-line dark:decoration-line-dk hover:text-accent dark:hover:text-accent-dk underline underline-offset-4 transition-colors";
+const sectionClass = "border-line dark:border-line-dk mt-24 border-t pt-12";
+const eyebrowClass =
+  "text-muted dark:text-muted-dk font-mono text-xs tracking-widest uppercase";
 ---
 
 <Layout title="Home">
-  <h1 class="text-3xl font-bold">Danny Brown</h1>
-  <p class="mt-4 text-lg">
-    Senior Software Engineer with an unyielding growth mindset.
-  </p>
+  <section aria-labelledby="garden-heading">
+    <h1
+      id="garden-heading"
+      class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+    >
+      A garden grown from my Claude Code history.
+    </h1>
+    <p class="text-muted dark:text-muted-dk mt-4 max-w-prose text-lg">
+      Every commit regrows this tree from my real session logs. Hover or tap
+      anything in it for the numbers behind it.
+    </p>
 
-  <section class="mt-10">
-    <h2 class="text-xl font-semibold">Latest Progress</h2>\
     <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
          SMIL growth animation, and time-travel scrubber script all work. -->
     <div
-      class="relative left-1/2 mt-4 aspect-[800/848] w-screen max-w-3xl -translate-x-1/2 px-4"
+      class="relative left-1/2 mt-10 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4"
     >
       <object
         type="image/svg+xml"
@@ -23,19 +63,97 @@ import Layout from "../layouts/Layout.astro";
       >
       </object>
     </div>
-    <p class="mt-2 text-gray-600 dark:text-gray-400">
-      <code>ccgarden</code> is a generative-art tree grown from Claude Code session
-      history. See the legend or hover/tap to see the stats.
-      {" "}<a class="underline" href="https://github.com/dannybrown37/ccgarden">
-        You can try it yourself!
-      </a>
-    </p>
-    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-      The dollar figures are based on listed API prices and just for "value" tracking.
-      I'm using a $20 Claude Pro subscription.
-    </p>
-    <p class="mt-2 text-sm">
 
+    <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-sm">
+      <code class="font-mono">ccgarden</code> is generative art built from Claude
+      Code session history — <a
+        class={linkClass}
+        href="https://github.com/dannybrown37/ccgarden">grow your own</a
+      >. Dollar figures come from listed API prices and are there for notional
+      value tracking only; I'm on a $20 Claude Pro subscription.
     </p>
   </section>
+
+  <section aria-labelledby="about-heading" class={sectionClass}>
+    <h2 id="about-heading" class={eyebrowClass}>About</h2>
+    <p class="mt-6 max-w-prose text-xl leading-relaxed text-pretty">
+      I'm Danny Brown, a senior software engineer with an unyielding growth
+      mindset.
+    </p>
+    <p class="text-muted dark:text-muted-dk mt-4 max-w-prose leading-relaxed">
+      I build developer tooling and spend a lot of time on how AI agents fit
+      into real engineering workflows. Most of what I make ends up open source.
+    </p>
+    <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+      <li>
+        <a class={linkClass} href="https://github.com/dannybrown37">GitHub</a>
+      </li>
+      <li><a class={linkClass} href="/blog">Blog</a></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="work-heading" class={sectionClass}>
+    <h2 id="work-heading" class={eyebrowClass}>Work</h2>
+    <ul class="mt-8 space-y-10">
+      {
+        projects.map((project) => (
+          <li>
+            <a
+              class="group hover:text-accent dark:hover:text-accent-dk inline-flex items-baseline gap-2 text-lg font-semibold tracking-tight transition-colors"
+              href={project.url}
+            >
+              {project.name}
+              <span
+                aria-hidden="true"
+                class="text-muted dark:text-muted-dk transition-transform group-hover:translate-x-0.5"
+              >
+                ↗
+              </span>
+            </a>
+            <p class="text-muted dark:text-muted-dk mt-2 max-w-prose leading-relaxed">
+              {project.description}
+            </p>
+            <ul class="text-muted dark:text-muted-dk mt-3 flex flex-wrap gap-2 font-mono text-xs">
+              {project.tech.map((tech) => (
+                <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
+                  {tech}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section aria-labelledby="writing-heading" class={sectionClass}>
+        <h2 id="writing-heading" class={eyebrowClass}>
+          Writing
+        </h2>
+        <ul class="mt-8 space-y-6">
+          {posts.map((post) => (
+            <li>
+              <a
+                class="hover:text-accent dark:hover:text-accent-dk font-medium tracking-tight transition-colors"
+                href={`/blog/${post.id}`}
+              >
+                {post.data.title}
+              </a>
+              <p class="text-muted dark:text-muted-dk mt-1 font-mono text-xs">
+                {formatDate(post.data.pubDate)}
+              </p>
+            </li>
+          ))}
+        </ul>
+        <a
+          class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors"
+          href="/blog"
+        >
+          All posts →
+        </a>
+      </section>
+    )
+  }
 </Layout>
