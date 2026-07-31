@@ -1,5 +1,9 @@
 # build output
 dist/
+
+# A global-gitignore rule (`lib/`, from a Python template) otherwise swallows
+# src/lib -- our source, not build output.
+!src/lib/
 # generated types
 .astro/
 
