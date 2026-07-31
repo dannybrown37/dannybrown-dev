@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { getReadingTime } from "../../lib/reading-time";
+import { formatDate } from "../../lib/format-date";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const readingTime = getReadingTime(post.body ?? "");
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <article>
+    <h1 class="text-2xl font-bold">{post.data.title}</h1>
+    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+      {formatDate(post.data.pubDate)} · {readingTime} min read
+    </p>
+    <div class="prose mt-6 dark:prose-invert">
+      <Content />
+    </div>
+  </article>
+</Layout>
