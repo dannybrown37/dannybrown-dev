@@ -23,7 +23,14 @@ import Layout from "../layouts/Layout.astro";
     </p>
     <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
       Watch it grow, then hover any leaf, branch, cloud, or bush for its
-      numbers — or drag the time-travel slider to replay any day.
+      numbers — or drag the time-travel slider to replay any day. This
+      regenerates from my actual session logs, so it changes as I work.
+    </p>
+    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+      The dollar figures are what the same usage <em>would</em> cost at
+      pay-as-you-go API rates — not what I pay. It's a Claude Pro
+      subscription at $20/month; treat the number as a measure of value
+      received rather than a bill.
     </p>
     <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
          SMIL growth animation, and time-travel scrubber script all work. -->
@@ -32,9 +39,9 @@ import Layout from "../layouts/Layout.astro";
     >
       <object
         type="image/svg+xml"
-        data="/ccgarden-demo.svg"
+        data="/ccgarden.svg"
         class="h-full w-full"
-        aria-label="Sample ccgarden tree visualization grown from synthetic Claude Code session data"
+        aria-label="A ccgarden tree visualization grown from my real Claude Code session history, regenerated on each commit"
       >
       </object>
     </div>

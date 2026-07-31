@@ -11,7 +11,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "vitest run"
+    "test": "vitest run",
+    "ccgarden:sync": "node scripts/sync-ccgarden.mjs --force"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

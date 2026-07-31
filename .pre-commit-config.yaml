@@ -1,0 +1,36 @@
+# public/ccgarden.svg is generated, ~900KB, and single-line -- no fixer,
+# linter, or size check should have an opinion about it.
+exclude: ^public/ccgarden\.svg$
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: ccgarden
+        name: Refresh ccgarden garden
+        entry: bash -c 'cd "$(git rev-parse --show-toplevel)" && node scripts/sync-ccgarden.mjs'
+        language: system
+        always_run: true
+        pass_filenames: false
+        require_serial: true
+
+      - id: vitest
+        name: vitest
+        entry: bash -c 'cd "$(git rev-parse --show-toplevel)" && npm test'
+        language: system
+        files: \.(ts|astro|md)$
+        pass_filenames: false
