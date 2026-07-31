@@ -1,7 +1,7 @@
 ---
-title: "Hello, world"
+title: "LLMs and Development: "
 description: "First post on dannybrown.dev."
-pubDate: 2026-07-30
+pubDate: 2026-07-31
 tags: ["meta"]
 ---
 

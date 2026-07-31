@@ -10,6 +10,7 @@ interface Project {
   tech: string[];
 }
 
+// These are the repos the ccgarden tree above is grown from.
 const projects: Project[] = [
   {
     name: "ccgarden",
@@ -19,10 +20,37 @@ const projects: Project[] = [
     tech: ["Python", "SVG", "SMIL"],
   },
   {
+    name: "skill-tree",
+    description:
+      "A shared home for reusable Claude Code skills — the tooling behind each skill, not just its playbook. Portable across repos and machines, packaged as a single installable plugin that is also its own marketplace.",
+    url: "https://github.com/dannybrown37/skill-tree",
+    tech: ["Claude Code", "Python", "Bash"],
+  },
+  {
+    name: "gtd",
+    description:
+      "A TUI, CLI, and API for personal productivity built around Getting Things Done. Capture to an inbox, triage into projects with contexts and next actions, auto-reschedule recurring items, and run reviews grouped by Area of Focus.",
+    url: "https://github.com/dannybrown37/gtd",
+    tech: ["Python", "TUI"],
+  },
+  {
+    name: "hamilhamilhamil",
+    description:
+      "CamelCamelCamel for Broadway: a daily scrape of the TKTS discount board into a price/discount history per show. Python scraper on a GitHub Actions cron, Next.js front end on Vercel, Postgres in between.",
+    url: "https://hamilhamilhamil.com",
+    tech: ["Next.js", "TypeScript", "Python", "Postgres"],
+  },
+  {
     name: "dotfiles",
     description: "Shell config, Claude Code skills/agents, and dev tooling.",
     url: "https://github.com/dannybrown37/dotfiles",
     tech: ["Bash", "Claude Code"],
+  },
+  {
+    name: "dannybrown-dev",
+    description: "This site.",
+    url: "https://github.com/dannybrown37/dannybrown-dev",
+    tech: ["Astro", "Tailwind", "TypeScript"],
   },
 ];
 
@@ -38,49 +66,15 @@ const eyebrowClass =
 ---
 
 <Layout title="Home">
-  <section aria-labelledby="garden-heading">
+  <section aria-labelledby="about-heading">
     <h1
-      id="garden-heading"
-      class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+      id="about-heading"
+      class="max-w-prose text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl"
     >
-      A garden grown from my Claude Code history.
-    </h1>
-    <p class="text-muted dark:text-muted-dk mt-4 max-w-prose text-lg">
-      Every commit regrows this tree from my real session logs. Hover or tap
-      anything in it for the numbers behind it.
-    </p>
-
-    <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
-         SMIL growth animation, and time-travel scrubber script all work. -->
-    <div
-      class="relative left-1/2 mt-10 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4"
-    >
-      <object
-        type="image/svg+xml"
-        data="/ccgarden.svg"
-        class="h-full w-full"
-        aria-label="A ccgarden tree visualization grown from my real Claude Code session history, regenerated on each commit"
-      >
-      </object>
-    </div>
-
-    <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-sm">
-      <code class="font-mono">ccgarden</code> is generative art built from Claude
-      Code session history — <a
-        class={linkClass}
-        href="https://github.com/dannybrown37/ccgarden">grow your own</a
-      >. Dollar figures come from listed API prices and are there for notional
-      value tracking only; I'm on a $20 Claude Pro subscription.
-    </p>
-  </section>
-
-  <section aria-labelledby="about-heading" class={sectionClass}>
-    <h2 id="about-heading" class={eyebrowClass}>About</h2>
-    <p class="mt-6 max-w-prose text-xl leading-relaxed text-pretty">
       I'm Danny Brown, a senior software engineer with an unyielding growth
       mindset.
-    </p>
-    <p class="text-muted dark:text-muted-dk mt-4 max-w-prose leading-relaxed">
+    </h1>
+    <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-lg leading-relaxed">
       I build developer tooling and spend a lot of time on how AI agents fit
       into real engineering workflows. Most of what I make ends up open source.
     </p>
@@ -91,6 +85,29 @@ const eyebrowClass =
       <li><a class={linkClass} href="/blog">Blog</a></li>
     </ul>
   </section>
+
+  <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
+       SMIL growth animation, and time-travel scrubber script all work. -->
+  <div
+    class="relative left-1/2 mt-20 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4"
+  >
+    <object
+      type="image/svg+xml"
+      data="/ccgarden.svg"
+      class="h-full w-full"
+      aria-label="A ccgarden tree visualization grown from my real Claude Code session history, regenerated on each commit"
+    >
+    </object>
+  </div>
+
+  <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-sm">
+    <code class="font-mono">ccgarden</code> is generative art built from Claude Code
+    session history, regrown on every commit — hover or tap anything for the numbers
+    behind it, or <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
+      >grow your own</a
+    >. Dollar figures come from listed API prices and are there for notional
+    value tracking only; I'm on a $20 Claude Pro subscription.
+  </p>
 
   <section aria-labelledby="work-heading" class={sectionClass}>
     <h2 id="work-heading" class={eyebrowClass}>Work</h2>
