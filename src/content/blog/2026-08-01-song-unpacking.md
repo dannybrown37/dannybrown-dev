@@ -63,7 +63,7 @@ Unsatisfied, I decided to take this further. Yesterday, in my first blog post on
 1. Go to Spotify
 2. Copy the link
 3. Consider my *extreme consideration*: posting a Spotify link leaves out people who use other services. What I *really* want is a service-agnostic link, so I run this through the Music Link service to provide that. If I'm doing manually every time, that means opening the browser, pasting the link, and copying the result.
-4. Then I need to come over to my post write the markdown to label the song and artist, check for typos, et al.
+4. Then I need to come over to my post, write the markdown to label the song and artist, check for typos, et al.
 
 I don't want to do all that! The best developers are lazy, after all.
 
