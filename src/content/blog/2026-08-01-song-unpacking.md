@@ -123,3 +123,7 @@ Now, here in my editor where I'm writing this blog post, I can just type `,,sorn
 It's not the most world-shaking tooling ever, but it makes me more excited to work on my computer, and that's how Happy Developers are made.
 
 > Song On Right Now: "[My Name Is Human](https://song.link/s/1euszbbvkUzQzIhZUWFmXG)" by Highly Suspect
+
+<video src="/sorn-song-demo.mp4" autoplay muted loop playsinline class="w-full rounded-lg">
+  Demo of the sorn and song scripts.
+</video>

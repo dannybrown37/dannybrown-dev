@@ -75,9 +75,11 @@ const year = new Date().getUTCFullYear();
         )
       }
       <div class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+        <!-- Negative margins pull the hit area out into the header's own
+             padding without moving the text or changing the row height. -->
         <a
           href="/"
-          class="hover:text-accent dark:hover:text-accent-dk text-sm font-semibold tracking-tight transition-colors"
+          class="hover:text-accent dark:hover:text-accent-dk -my-4 -ml-6 inline-block py-4 pr-4 pl-6 text-sm font-semibold tracking-tight transition-colors"
         >
           Danny Brown
         </a>
@@ -87,6 +89,14 @@ const year = new Date().getUTCFullYear();
             class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk transition-colors"
           >
             Blog
+          </a>
+          <a
+            href="https://github.com/dannybrown37"
+            target="_blank"
+            rel="noopener"
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk transition-colors"
+          >
+            GitHub
           </a>
           <button
             id="theme-toggle"
@@ -137,6 +147,8 @@ const year = new Date().getUTCFullYear();
         <a
           class="hover:text-ink dark:hover:text-ink-dk transition-colors"
           href="https://github.com/dannybrown37"
+          target="_blank"
+          rel="noopener"
         >
           GitHub
         </a>

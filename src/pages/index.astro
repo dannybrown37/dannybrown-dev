@@ -67,29 +67,28 @@ const eyebrowClass =
 
 <Layout title="Home">
   <section aria-labelledby="about-heading">
+    <div
+      class="bg-accent dark:bg-accent-dk mb-8 h-0.5 w-10 rounded-full"
+      aria-hidden="true"
+    >
+    </div>
     <h1
       id="about-heading"
-      class="font-display max-w-prose text-3xl leading-tight text-balance sm:text-4xl"
+      class="font-display max-w-prose text-4xl leading-[1.12] text-balance sm:text-5xl"
     >
-      I'm Danny Brown, a senior software engineer with an unyielding growth
-      mindset.
+      Senior software engineer building tooling I actually want to use.
     </h1>
     <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-lg leading-relaxed">
-      I build developer tooling and spend a lot of time on how AI agents fit
-      into real engineering workflows.
+      Lately that means fitting LLM agents into real engineering
+      workflows, accomplishing tasks with the fewest motions possible, and making
+      it fun to use the computer again.
     </p>
-    <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-      <li>
-        <a class={linkClass} href="https://github.com/dannybrown37">GitHub</a>
-      </li>
-      <li><a class={linkClass} href="/blog">Blog</a></li>
-    </ul>
   </section>
 
   <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
        SMIL growth animation, and time-travel scrubber script all work. -->
   <div
-    class="relative left-1/2 mt-20 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4"
+    class="relative left-1/2 mt-12 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4"
   >
     <object
       type="image/svg+xml"
