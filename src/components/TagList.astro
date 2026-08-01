@@ -1,0 +1,29 @@
+---
+import { slugifyTag } from "../lib/tag-slug";
+
+interface Props {
+  tags: string[];
+  class?: string;
+}
+
+const { tags, class: className = "" } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <ul
+      class={`text-muted dark:text-muted-dk flex flex-wrap gap-2 font-mono text-xs ${className}`}
+    >
+      {tags.map((tag) => (
+        <li>
+          <a
+            class="bg-paper-soft dark:bg-paper-soft-dk hover:text-accent dark:hover:text-accent-dk inline-block rounded-full px-2.5 py-1 transition-colors"
+            href={`/blog/tags/${slugifyTag(tag)}`}
+          >
+            {tag}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

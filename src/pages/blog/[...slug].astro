@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import TagList from "../../components/TagList.astro";
 import { getReadingTime } from "../../lib/reading-time";
 import { formatDate } from "../../lib/format-date";
 
@@ -37,17 +38,7 @@ const readingTime = getReadingTime(post.body ?? "");
         )
       }
     </p>
-    {
-      post.data.tags.length > 0 && (
-        <ul class="text-muted dark:text-muted-dk mt-4 flex flex-wrap gap-2 font-mono text-xs">
-          {post.data.tags.map((tag) => (
-            <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
-              {tag}
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    <TagList tags={post.data.tags} class="mt-4" />
     <div
       class="prose prose-neutral dark:prose-invert prose-a:underline-offset-4 border-line dark:border-line-dk mt-10 max-w-none border-t pt-10"
     >
