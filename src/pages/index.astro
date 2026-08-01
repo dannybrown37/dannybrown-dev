@@ -69,7 +69,7 @@ const eyebrowClass =
   <section aria-labelledby="about-heading">
     <h1
       id="about-heading"
-      class="max-w-prose text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl"
+      class="font-display max-w-prose text-3xl leading-tight text-balance sm:text-4xl"
     >
       I'm Danny Brown, a senior software engineer with an unyielding growth
       mindset.
@@ -116,7 +116,7 @@ const eyebrowClass =
         projects.map((project) => (
           <li>
             <a
-              class="group hover:text-accent dark:hover:text-accent-dk inline-flex items-baseline gap-2 text-lg font-semibold tracking-tight transition-colors"
+              class="group hover:text-accent dark:hover:text-accent-dk font-display inline-flex items-baseline gap-2 text-lg transition-colors"
               href={project.url}
             >
               {project.name}
@@ -153,7 +153,7 @@ const eyebrowClass =
           {posts.map((post) => (
             <li>
               <a
-                class="hover:text-accent dark:hover:text-accent-dk font-medium tracking-tight transition-colors"
+                class="hover:text-accent dark:hover:text-accent-dk font-display text-lg transition-colors"
                 href={`/blog/${post.id}`}
               >
                 {post.data.title}
