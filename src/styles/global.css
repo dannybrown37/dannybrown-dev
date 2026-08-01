@@ -142,6 +142,72 @@ html {
   }
 }
 
+/* Reading progress. Collapsed by default so browsers without scroll-driven
+   animations (and anyone with reduced motion) get no bar at all, rather than a
+   bar frozen at full width. Tracks the document, so the footer counts toward
+   "read" — close enough, and it costs no JS. */
+.reading-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* @supports is load-bearing, not belt-and-braces: without a usable timeline the
+   animation would run on the document timeline at zero duration and, with
+   `both`, settle on its end keyframe — a bar stuck permanently at full width. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll(root block)) {
+    .reading-progress {
+      animation: reading-progress linear both;
+    }
+
+    /* Deliberately a different selector, not merged into the rule above: put the
+       two together and the minifier folds them into `animation: ... scroll(root)`,
+       where animation-timeline is a reset-only sub-property — browsers drop the
+       whole declaration and the bar never animates. Verified in Chrome. */
+    html .reading-progress {
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes reading-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Scroll reveal. No collapsed default state on purpose: the hidden state exists
+   only as a keyframe, so anything that can't run the animation — reduced motion,
+   no view() support — renders these fully visible rather than blank. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+    }
+
+    /* Separate selector for the same shorthand-folding reason as
+       .reading-progress above. */
+    html .reveal {
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 ::selection {
   background: var(--color-accent);
   color: white;

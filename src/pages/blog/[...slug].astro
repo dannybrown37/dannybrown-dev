@@ -18,7 +18,7 @@ const { Content } = await render(post);
 const readingTime = getReadingTime(post.body ?? "");
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
+<Layout title={post.data.title} description={post.data.description} progress>
   <article>
     <a
       class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk text-sm transition-colors"
@@ -27,6 +27,7 @@ const readingTime = getReadingTime(post.body ?? "");
       ← Writing
     </a>
     <h1
+      transition:name={`post-title-${post.id}`}
       class="font-display mt-8 text-3xl leading-tight text-balance sm:text-4xl"
     >
       {post.data.title}

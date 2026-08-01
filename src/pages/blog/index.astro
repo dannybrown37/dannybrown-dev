@@ -23,6 +23,7 @@ const posts = (await getCollection("blog")).sort(
             {formatDate(post.data.pubDate)}
           </p>
           <a
+            transition:name={`post-title-${post.id}`}
             class="hover:text-accent dark:hover:text-accent-dk font-display mt-2 inline-block text-xl transition-colors"
             href={`/blog/${post.id}`}
           >

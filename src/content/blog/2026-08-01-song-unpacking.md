@@ -1,5 +1,5 @@
 ---
-title: "Useless-yet-absolutely-critical Spotify tooling"
+title: "Frivolous-yet-absolutely-critical Spotify tooling"
 description: "Combining my loves of automation and music into some silly yet indispensable tools"
 pubDate: 2026-08-01
 tags: ["music", "tooling", "autohotkey", "bash", "spotify_player", "spotify", "vscode", "tmux"]
@@ -9,7 +9,7 @@ I was pretty excited to discover the [Spotify Player TUI](https://github.com/aom
 
 I quickly realized the issue – to use this program I must:
 
-1. Have an open terminal window (easier said than done, I'm usually running *something*)
+1. Have an open terminal prompt (easier said than done, I'm usually running *something*)
 2. Type the command to open the player
 
 This doesn't seem like all that much overhead, but when I'm trying to quickly change tunes, I truly must insist on *immediate* access.
