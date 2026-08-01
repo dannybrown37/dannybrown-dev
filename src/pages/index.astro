@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-import { formatDate } from "../lib/format-date";
+import PostRow from "../components/PostRow.astro";
 
 interface Project {
   name: string;
@@ -148,19 +148,14 @@ const eyebrowClass =
         <h2 id="writing-heading" class={eyebrowClass}>
           Writing
         </h2>
-        <ul class="mt-8 space-y-6">
+        <ul class="mt-8 space-y-4">
           {posts.map((post) => (
-            <li>
-              <a
-                class="hover:text-accent dark:hover:text-accent-dk font-display text-lg transition-colors"
-                href={`/blog/${post.id}`}
-              >
-                {post.data.title}
-              </a>
-              <p class="text-muted dark:text-muted-dk mt-1 font-mono text-xs">
-                {formatDate(post.data.pubDate)}
-              </p>
-            </li>
+            <PostRow
+              id={post.id}
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              compact
+            />
           ))}
         </ul>
         <a

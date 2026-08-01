@@ -1,0 +1,51 @@
+---
+import TagList from "./TagList.astro";
+import { formatDate } from "../lib/format-date";
+
+interface Props {
+  id: string;
+  title: string;
+  pubDate: Date;
+  description?: string;
+  tags?: string[];
+  compact?: boolean;
+}
+
+const {
+  id,
+  title,
+  pubDate,
+  description,
+  tags = [],
+  compact = false,
+} = Astro.props;
+
+const dateClass = "text-muted dark:text-muted-dk font-mono text-xs";
+---
+
+<li
+  class="group border-line dark:border-line-dk hover:border-accent dark:hover:border-accent-dk hover:bg-accent/5 dark:hover:bg-accent-dk/10 relative rounded-r-md border-l py-3 pr-4 pl-5 transition-[background-color,border-color,transform] motion-safe:hover:translate-x-1"
+>
+  {!compact && <p class={dateClass}>{formatDate(pubDate)}</p>}
+  <a
+    transition:name={compact ? undefined : `post-title-${id}`}
+    class:list={[
+      "group-hover:text-accent dark:group-hover:text-accent-dk font-display inline-block transition-colors after:absolute after:inset-0",
+      compact ? "text-lg" : "mt-2 text-xl",
+    ]}
+    href={`/blog/${id}`}
+  >
+    {title}
+  </a>
+  {compact && <p class={`${dateClass} mt-1`}>{formatDate(pubDate)}</p>}
+  {
+    !compact && (
+      <>
+        <p class="text-muted dark:text-muted-dk mt-2 max-w-prose leading-relaxed">
+          {description}
+        </p>
+        <TagList tags={tags} class="relative z-10 mt-3" />
+      </>
+    )
+  }
+</li>

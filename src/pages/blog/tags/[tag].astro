@@ -1,8 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../../layouts/Layout.astro";
-import TagList from "../../../components/TagList.astro";
-import { formatDate } from "../../../lib/format-date";
+import PostRow from "../../../components/PostRow.astro";
 import { slugifyTag } from "../../../lib/tag-slug";
 
 export async function getStaticPaths() {
@@ -51,24 +50,16 @@ const { label, posts } = Astro.props;
     {posts.length === 1 ? "post" : "posts"}
   </p>
 
-  <ul class="mt-14 space-y-10">
+  <ul class="mt-14 space-y-6">
     {
       posts.map((post) => (
-        <li>
-          <p class="text-muted dark:text-muted-dk font-mono text-xs">
-            {formatDate(post.data.pubDate)}
-          </p>
-          <a
-            class="hover:text-accent dark:hover:text-accent-dk font-display mt-2 inline-block text-xl transition-colors"
-            href={`/blog/${post.id}`}
-          >
-            {post.data.title}
-          </a>
-          <p class="text-muted dark:text-muted-dk mt-2 max-w-prose leading-relaxed">
-            {post.data.description}
-          </p>
-          <TagList tags={post.data.tags} class="mt-3" />
-        </li>
+        <PostRow
+          id={post.id}
+          title={post.data.title}
+          pubDate={post.data.pubDate}
+          description={post.data.description}
+          tags={post.data.tags}
+        />
       ))
     }
   </ul>
