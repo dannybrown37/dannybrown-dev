@@ -58,7 +58,7 @@ return
 
 The hard part here (and the reason the VSCode keybinding was required) is getting the *focus* on the Spotify Player window after opening it. When I used `alt+s` from my browser, it worked as intended. But if I was typing in a VSCode text file, the terminal window would open, but the focus would stay on the cursor in the file, requiring another motion to switch focus. The keybinding above resolved this beautifully.
 
-Unsatisfied, I decided to take this further. Yesterday, in my first blog post on this site, I signaled by music nerdasity by including a "Song On Right Now" section at the bottom of the post. I'm the kind of guy who thinks it will be fun make a habit of this, but think of the *process*:
+Unsatisfied, I decided to take this further. Yesterday, in my first blog post on this site, I signaled my music nerdasity by including a "Song On Right Now" section at the bottom of the post. I'm the kind of guy who thinks it will be fun make a habit of this, but think of the *process*:
 
 1. Go to Spotify
 2. Copy the link
