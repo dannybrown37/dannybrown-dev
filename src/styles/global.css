@@ -26,6 +26,85 @@
   --color-accent-dk: oklch(0.78 0.13 250);
 }
 
+/* Blockquotes are used as asides/notes, not quotations — drop the typography
+   plugin's decorative quote marks and italics. */
+.prose blockquote {
+  font-style: normal;
+  font-weight: inherit;
+  border-inline-start-width: 2px;
+  border-color: var(--color-line);
+  background: var(--color-paper-soft);
+  border-radius: 0.25rem;
+  padding: 0.75rem 1.125rem;
+  color: var(--color-muted);
+  font-size: 0.9375em;
+}
+
+.dark .prose blockquote {
+  border-color: var(--color-line-dk);
+  background: var(--color-paper-soft-dk);
+  color: var(--color-muted-dk);
+}
+
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none;
+}
+
+/* The typography plugin brackets inline code in literal backticks. */
+.prose :is(code, pre code)::before,
+.prose :is(code, pre code)::after {
+  content: none;
+}
+
+.prose :not(pre) > code {
+  background: var(--color-paper-soft);
+  border: 1px solid var(--color-line);
+  border-radius: 0.25rem;
+  padding: 0.125em 0.375em;
+  font-weight: 500;
+  font-size: 0.875em;
+  white-space: nowrap;
+}
+
+.dark .prose :not(pre) > code {
+  background: var(--color-paper-soft-dk);
+  border-color: var(--color-line-dk);
+}
+
+.prose pre {
+  border: 1px solid var(--color-line);
+  border-radius: 0.5rem;
+  padding: 1rem 1.125rem;
+  font-size: 0.875em;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.dark .prose pre {
+  border-color: var(--color-line-dk);
+}
+
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-weight: inherit;
+  font-size: inherit;
+  white-space: pre;
+}
+
+/* Shiki's dark theme ships as custom properties; class-based dark mode has to
+   apply them explicitly (the built-in switch keys off prefers-color-scheme). */
+.dark .prose .astro-code,
+.dark .prose .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;

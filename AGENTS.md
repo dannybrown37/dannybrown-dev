@@ -27,13 +27,28 @@ wouldn't want indexed.
 
 ## Development
 
-When starting the dev server, use background mode:
+**Never touch a dev server the user is running.** Don't stop, restart, or kill a process on
+port 4321 — it's theirs, and it may be mid-use. Check first: `astro dev status`, or
+`ss -ltnp | grep 4321`.
 
-```
-astro dev --background
-```
+Starting your own to check work is fine, with both conditions met:
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+1. **Nothing is already running.** If there is, use it read-only (`curl localhost:4321/...`)
+   or just build instead. Never clear the port.
+2. **You shut it down in the same turn**, once you've got what you needed — `astro dev stop`.
+   Never leave one running for the user to trip over; they'll go to start their own and hit a
+   port conflict. Shut it down even if the task failed or you got interrupted.
+
+Start it with `astro dev --background`; also `astro dev status`, `astro dev logs`. If the
+user explicitly asks for a server, leave it up — that one's for them, not for verification.
+
+Prefer `npm run build` + `npm test` when they'd answer the question; reading compiled CSS or
+HTML out of `dist/` beats booting a server. But a server is the honest check for anything
+that only exists at render time, and "looks right" always needs the user's eyes regardless.
+
+Note: the dev server caches the content-collection glob. Adding or deleting a file in
+`src/content/blog/` may not show up until it restarts — worth mentioning to the user if a
+new post seems missing, rather than restarting it yourself.
 
 ## Documentation
 

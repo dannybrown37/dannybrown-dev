@@ -13,25 +13,18 @@ interface Project {
 // These are the repos the ccgarden tree above is grown from.
 const projects: Project[] = [
   {
-    name: "ccgarden",
-    description:
-      "Grows a tree from your Claude Code session history: trunk width tracks total sessions, branches are repos, leaves are sessions, flowers are cache-efficiency, clouds are models, bushes are tools. Zero dependencies, pure-stdlib Python generating a self-contained animated SVG.",
-    url: "https://github.com/dannybrown37/ccgarden",
-    tech: ["Python", "SVG", "SMIL"],
-  },
-  {
-    name: "skill-tree",
-    description:
-      "A shared home for reusable Claude Code skills — the tooling behind each skill, not just its playbook. Portable across repos and machines, packaged as a single installable plugin that is also its own marketplace.",
-    url: "https://github.com/dannybrown37/skill-tree",
-    tech: ["Claude Code", "Python", "Bash"],
-  },
-  {
     name: "gtd",
     description:
       "A TUI, CLI, and API for personal productivity built around Getting Things Done. Capture to an inbox, triage into projects with contexts and next actions, auto-reschedule recurring items, and run reviews grouped by Area of Focus.",
     url: "https://github.com/dannybrown37/gtd",
     tech: ["Python", "TUI"],
+  },
+  {
+    name: "ccgarden",
+    description:
+      "Grows a tree from your Claude Code session history: trunk width tracks total sessions, branches are repos, leaves are sessions, flowers are cache-efficiency, clouds are models, bushes are tools. Zero dependencies, pure-stdlib Python generating a self-contained animated SVG.",
+    url: "https://github.com/dannybrown37/ccgarden",
+    tech: ["Python", "SVG", "SMIL"],
   },
   {
     name: "hamilhamilhamil",
@@ -41,8 +34,15 @@ const projects: Project[] = [
     tech: ["Next.js", "TypeScript", "Python", "Postgres"],
   },
   {
+    name: "skill-tree",
+    description:
+      "A shared home for reusable Claude Code skills — the tooling behind each skill, not just its playbook. Portable across repos and machines, packaged as a single installable plugin that is also its own marketplace.",
+    url: "https://github.com/dannybrown37/skill-tree",
+    tech: ["Claude Code", "Python", "Bash"],
+  },
+  {
     name: "dotfiles",
-    description: "Shell config, Claude Code skills/agents, and dev tooling.",
+    description: "Shell config, Claude Code skills/agents, and global dev tooling. But also the sandbox where most of my projects start.",
     url: "https://github.com/dannybrown37/dotfiles",
     tech: ["Bash", "Claude Code"],
   },
@@ -76,7 +76,7 @@ const eyebrowClass =
     </h1>
     <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-lg leading-relaxed">
       I build developer tooling and spend a lot of time on how AI agents fit
-      into real engineering workflows. Most of what I make ends up open source.
+      into real engineering workflows.
     </p>
     <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
       <li>
@@ -100,7 +100,7 @@ const eyebrowClass =
     </object>
   </div>
 
-  <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-sm">
+  <p class="text-muted dark:text-muted-dk mt-8 max-w-2xl text-sm">
     <code class="font-mono">ccgarden</code> is generative art built from Claude Code
     session history, regrown on every commit — hover or tap anything for the numbers
     behind it, or <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
