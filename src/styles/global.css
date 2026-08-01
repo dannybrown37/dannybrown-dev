@@ -52,6 +52,42 @@
   letter-spacing: normal;
 }
 
+/* Headings already get text-balance from the utility on each element; body copy
+   gets `pretty` instead, which only reflows the last few lines and so avoids
+   the whole-paragraph rewrap cost on long prose. Both are no-ops where
+   unsupported. `hanging-punctuation` is Safari-only today — purely additive. */
+.prose {
+  hanging-punctuation: first last;
+}
+
+.prose :is(p, li, blockquote, dd, figcaption) {
+  text-wrap: pretty;
+}
+
+/* Opening treatment. `> p:first-child` on purpose rather than `:first-of-type`:
+   a post that opens with a list, image, or heading gets no drop cap at all,
+   which is the correct outcome — there is no paragraph there to lead with. */
+.prose > p:first-child {
+  font-size: 1.15em;
+  line-height: 1.65;
+}
+
+/* Floated rather than `initial-letter`, which Firefox still doesn't support and
+   would silently leave the cap inline at 1em. Instrument Serif is 400-only, so
+   the weight here must stay normal or the browser synthesizes a fake bold. */
+.prose > p:first-child::first-letter {
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* Spans two lines rather than the classic three — deliberate, it reads as a
+     lighter treatment against this measure. */
+  font-size: 3.1em;
+  line-height: 0.82;
+  float: left;
+  padding-top: 0.06em;
+  /* Relative to the cap's own 3.1em, so this is ~0.6em of body text. */
+  margin-inline-end: 0.2em;
+}
+
 /* Blockquotes are used as asides/notes, not quotations — drop the typography
    plugin's decorative quote marks and italics. */
 .prose blockquote {

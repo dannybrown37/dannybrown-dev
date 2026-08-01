@@ -5,7 +5,7 @@ pubDate: 2026-08-01
 tags: ["music", "tooling", "autohotkey", "bash", "spotify_player", "spotify", "vscode", "tmux"]
 ---
 
-I was pretty excited to discover the [Spotify Player TUI](https://github.com/aome510/spotify-player) yesterday. I'm always working to spend more time in the terminal and less time with a mouse, so I quickly installed it and started playing around.
+My excitement was high when I discovered the [Spotify Player TUI](https://github.com/aome510/spotify-player) yesterday. I'm always working to spend more time in the terminal and less time with a mouse, so I quickly installed it and started playing around.
 
 I quickly realized the issue – to use this program I must:
 
