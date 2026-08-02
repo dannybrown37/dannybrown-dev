@@ -8,6 +8,8 @@ interface Project {
   description: string;
   url: string;
   tech: string[];
+  /** Links to a running site rather than to source. */
+  live?: boolean;
 }
 
 // These are the repos the ccgarden tree above is grown from.
@@ -25,6 +27,7 @@ const projects: Project[] = [
       "CamelCamelCamel for Broadway: a daily scrape of the TKTS discount board into a price/discount history per show. Python scraper on a GitHub Actions cron, Next.js frontend on Vercel, Postgres in between.",
     url: "https://hamilhamilhamil.com",
     tech: ["Next.js", "TypeScript", "Python", "Postgres"],
+    live: true,
   },
   {
     name: "skill-tree",
@@ -55,8 +58,9 @@ const projects: Project[] = [
   {
     name: "dannybrown.dev",
     description: "This site.",
-    url: "https://github.com/dannybrown37/dannybrown-dev",
+    url: "https://www.dannybrown.dev",
     tech: ["Astro", "Tailwind", "TypeScript"],
+    live: true,
   },
 ];
 
@@ -93,15 +97,24 @@ const eyebrowClass =
 
   <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
        SMIL growth animation, and time-travel scrubber script all work. -->
+  <!-- contain:paint keeps the tree's continuous repaints inside this box; without
+       it the whole page re-composites on every scroll frame while it's visible. -->
   <div
-    class="relative left-1/2 mt-12 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4"
+    class="relative left-1/2 mt-12 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4 [contain:paint]"
   >
     <object
+      id="ccgarden"
       type="image/svg+xml"
       data="/ccgarden.svg"
       class="h-full w-full"
       aria-label="A ccgarden tree visualization grown from my real Claude Code session history, regenerated on each commit"
     >
+      <p class="text-muted dark:text-muted-dk max-w-prose text-sm">
+        A tree grown from my Claude Code session history — it needs SVG support to
+        render. <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
+          >ccgarden</a
+        > builds it.
+      </p>
     </object>
   </div>
 
@@ -110,8 +123,7 @@ const eyebrowClass =
     session history, regrown on every commit — hover or tap anything for the numbers
     behind it, or <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
       >grow your own</a
-    >. Dollar figures come from listed API prices and are there for notional
-    value tracking only; I'm on a $20 Claude Pro subscription.
+    >. Dollar figures are notional, priced at listed API rates.
   </p>
 
   <section aria-labelledby="work-heading" class={sectionClass}>
@@ -134,6 +146,15 @@ const eyebrowClass =
                 ↗
               </span>
             </a>
+            {project.live && (
+              <span class="text-accent dark:text-accent-dk ml-2 inline-flex items-center gap-1.5 align-middle font-mono text-xs">
+                <span
+                  class="bg-accent dark:bg-accent-dk h-1.5 w-1.5 rounded-full"
+                  aria-hidden="true"
+                />
+                live
+              </span>
+            )}
             <p class="text-muted dark:text-muted-dk mt-2 max-w-prose leading-relaxed">
               {project.description}
             </p>
@@ -175,4 +196,45 @@ const eyebrowClass =
       </section>
     )
   }
+
+  <!-- Six of the tree's animations are repeatCount="indefinite", so it never
+       settles on its own — left alone it repaints for as long as the page is
+       open, including while it's scrolled out of view. SMIL exposes its own
+       timeline controls, so pause it whenever it isn't actually on screen. -->
+  <script>
+    function controlGarden() {
+      const object = document.getElementById("ccgarden");
+      if (!(object instanceof HTMLObjectElement)) return;
+
+      const attach = () => {
+        const svg = object.contentDocument?.documentElement;
+        if (!(svg instanceof SVGSVGElement)) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          svg.pauseAnimations();
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) svg.unpauseAnimations();
+            else svg.pauseAnimations();
+          },
+          { rootMargin: "100px" },
+        );
+        observer.observe(object);
+
+        document.addEventListener("astro:before-swap", () => observer.disconnect(), {
+          once: true,
+        });
+      };
+
+      // contentDocument is null until the SVG's own document finishes parsing,
+      // and a bfcache restore replays neither event — so try both paths.
+      if (object.contentDocument?.readyState === "complete") attach();
+      object.addEventListener("load", attach);
+    }
+
+    document.addEventListener("astro:page-load", controlGarden);
+  </script>
 </Layout>
