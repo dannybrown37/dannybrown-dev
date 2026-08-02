@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import TagList from "../../components/TagList.astro";
 import { getReadingTime } from "../../lib/reading-time";
 import { formatDate } from "../../lib/format-date";
+import { blogOgImagePath } from "../../lib/og-image";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -18,7 +19,12 @@ const { Content } = await render(post);
 const readingTime = getReadingTime(post.body ?? "");
 ---
 
-<Layout title={post.data.title} description={post.data.description} progress>
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  image={blogOgImagePath(post.id)}
+  progress
+>
   <article>
     <a
       class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk text-sm transition-colors"

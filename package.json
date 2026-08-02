@@ -23,6 +23,8 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.20",
+    "astro-og-canvas": "^0.13.0",
+    "canvaskit-wasm": "^0.41.1",
     "vitest": "^4.1.10"
   }
 }
