@@ -1,0 +1,21 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const linkClass =
+  "decoration-line dark:decoration-line-dk hover:text-accent dark:hover:text-accent-dk underline underline-offset-4 transition-colors";
+---
+
+<Layout title="Not Found" description="That page doesn't exist on dannybrown.dev.">
+  <p class="text-muted dark:text-muted-dk font-mono text-xs tracking-widest uppercase">
+    404
+  </p>
+  <h1 class="font-display mt-6 max-w-prose text-3xl text-balance sm:text-4xl">
+    Nothing at this address.
+  </h1>
+  <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-lg leading-relaxed">
+    The page you're after either moved or never existed. Try the <a
+      class={linkClass}
+      href="/">home page</a
+    > or the <a class={linkClass} href="/blog">writing</a>.
+  </p>
+</Layout>

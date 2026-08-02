@@ -110,6 +110,15 @@ const imageUrl = new URL(image, Astro.site);
   <body
     class="bg-paper text-ink dark:bg-paper-dk dark:text-ink-dk min-h-screen font-sans antialiased"
   >
+    <!-- z-20 clears the sticky header's z-10; without it the link renders
+         underneath the thing it exists to skip past. -->
+    <a
+      href="#main"
+      class="bg-paper text-ink dark:bg-paper-dk dark:text-ink-dk border-line dark:border-line-dk sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-20 focus:rounded-md focus:border focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+    >
+      Skip to content
+    </a>
+
     <header
       class="border-line dark:border-line-dk bg-paper/80 dark:bg-paper-dk/80 sticky top-0 z-10 border-b backdrop-blur"
     >
@@ -195,7 +204,10 @@ const imageUrl = new URL(image, Astro.site);
       </div>
     </header>
 
-    <main class="mx-auto max-w-3xl px-6 pt-14 pb-24">
+    <!-- tabindex="-1" so the skip link moves focus here, not just the scroll
+         position — <main> isn't focusable on its own. Programmatic focus
+         doesn't match :focus-visible, so this stays unringed. -->
+    <main id="main" tabindex="-1" class="mx-auto max-w-3xl px-6 pt-14 pb-24">
       <slot />
     </main>
 
