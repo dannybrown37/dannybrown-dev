@@ -110,13 +110,15 @@ const eyebrowClass =
 
   <section aria-labelledby="work-heading" class={sectionClass}>
     <h2 id="work-heading" class={eyebrowClass}>Work</h2>
-    <ul class="mt-8 space-y-10">
+    <ul class="mt-8 space-y-6">
       {
         projects.map((project) => (
-          <li>
+          <li class="group border-line dark:border-line-dk hover:border-accent dark:hover:border-accent-dk hover:bg-accent/5 dark:hover:bg-accent-dk/10 relative rounded-r-md border-l py-3 pr-4 pl-5 transition-[background-color,border-color,transform] motion-safe:hover:translate-x-1">
             <a
-              class="group hover:text-accent dark:hover:text-accent-dk font-display inline-flex items-baseline gap-2 text-lg transition-colors"
+              class="group-hover:text-accent dark:group-hover:text-accent-dk font-display inline-flex items-baseline gap-2 text-lg transition-colors after:absolute after:inset-0"
               href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {project.name}
               <span

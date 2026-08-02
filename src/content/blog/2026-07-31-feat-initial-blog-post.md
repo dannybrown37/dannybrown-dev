@@ -1,6 +1,6 @@
 ---
 title: "feat: Initial Blog Post"
-description: "First post on dannybrown.dev."
+description: "First post on dannybrown.dev"
 pubDate: 2026-07-31
 tags: ["meta", "ai"]
 ---
