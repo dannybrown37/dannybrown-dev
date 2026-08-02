@@ -54,7 +54,7 @@ const projects: Project[] = [
     name: "dotfiles",
     description: "Shell config and global dev tooling. And the sandbox where most of my projects start.",
     url: "https://github.com/dannybrown37/dotfiles",
-    tech: ["Bash", "Python", "TMUX", "Neovim", "WSL", "AutoHotKey"],
+    tech: ["Bash", "Python", "TMUX", "Neovim", "WSL", "AutoHotKey", "Pre-Commit"],
   },
   {
     name: "ccgarden",
@@ -72,6 +72,17 @@ const projects: Project[] = [
     tech: ["Astro", "Tailwind", "TypeScript"],
     live: true,
   },
+];
+
+const stack = [
+  "AWS Lambda",
+  "DynamoDB",
+  "API Gateway",
+  "IoT Core",
+  "Node.js",
+  "TypeScript",
+  "Python",
+  "IaC",
 ];
 
 const posts = (await getCollection("blog"))
@@ -136,8 +147,42 @@ const eyebrowClass =
     >. Dollar figures are notional, priced at listed API rates.
   </p>
 
-  <section aria-labelledby="work-heading" class={sectionClass}>
-    <h2 id="work-heading" class={eyebrowClass}>Work</h2>
+  <section aria-labelledby="experience-heading" class={sectionClass}>
+    <h2 id="experience-heading" class={eyebrowClass}>Experience</h2>
+    <div class="text-muted dark:text-muted-dk mt-8 max-w-prose space-y-4 leading-relaxed">
+      <p>
+        I've been building backends for connected vehicles since 2021, handling billions of
+        messages from thousands of vehicles, across two companies in the space.
+      </p>
+      <p>
+        The firehose of data arrives via MQTT topics on AWS IoT Core,
+        hydrating downstream services using Lambda, API Gateway, S3, and the rest
+        of the AWS Serverless toolkit.
+      </p>
+      <p>
+        DynamoDB is my deep end; I've waded into Postgres, SQL Server, Timestream,
+        and more. I'm from the Alex DeBrie school: single-table when
+        accessing items together and query shapes driving the schema design rather than
+        the other way around.
+      </p>
+      <p>
+        Infrastructure as Code always, across CloudFormation, Terraform, OpenTofu, and
+        Serverless Framework. Firmly a backend engineer, shifted left.
+      </p>
+    </div>
+    <ul class="text-muted dark:text-muted-dk mt-6 flex flex-wrap gap-2 font-mono text-xs">
+      {
+        stack.map((tech) => (
+          <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
+            {tech}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section aria-labelledby="projects-heading" class={sectionClass}>
+    <h2 id="projects-heading" class={eyebrowClass}>Projects</h2>
     <ul class="mt-8 space-y-6">
       {
         projects.map((project) => (
