@@ -39,24 +39,51 @@ const year = new Date().getUTCFullYear();
       crossorigin
     />
     <meta name="description" content={description} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Danny Brown"
+      href={new URL("rss.xml", Astro.site)}
+    />
     <meta name="color-scheme" content="light dark" />
     <title>{title} · dannybrown.dev</title>
     <ClientRouter />
     <!-- Inline and render-blocking on purpose: applying the stored theme after
-         first paint would flash the wrong background. The after-swap listener
-         is not redundant: ClientRouter replaces <html>'s attributes with the
-         incoming document's, dropping the .dark class on every navigation. -->
+         first paint would flash the wrong background. That rules out importing
+         from src/lib/theme.ts here — Astro would bundle this as a deferred
+         module — so the parse/resolve rules are restated by hand; the toggle's
+         cycle order, the part that actually changes, stays in the lib.
+
+         The after-swap listener is not redundant: ClientRouter replaces
+         <html>'s attributes with the incoming document's, dropping both the
+         .dark class and data-theme on every navigation. -->
     <script is:inline>
       (() => {
+        const media = matchMedia("(prefers-color-scheme: dark)");
         const apply = () => {
           const stored = localStorage.getItem("theme");
-          const dark =
-            stored === "dark" ||
-            (!stored && matchMedia("(prefers-color-scheme: dark)").matches);
-          document.documentElement.classList.toggle("dark", dark);
+          const theme =
+            stored === "light" || stored === "dark" || stored === "system"
+              ? stored
+              : "system";
+          const root = document.documentElement;
+          root.dataset.theme = theme;
+          root.classList.toggle(
+            "dark",
+            theme === "system" ? media.matches : theme === "dark",
+          );
+          document
+            .getElementById("theme-toggle")
+            ?.setAttribute("aria-label", `Color theme: ${theme}`);
         };
         apply();
+        // The button doesn't exist yet on this first pass, so its label gets
+        // set on the second — everything else above has already landed.
+        document.addEventListener("DOMContentLoaded", apply);
         document.addEventListener("astro:after-swap", apply);
+        document.addEventListener("theme:change", apply);
+        // Only bites while the setting is "system", where apply() re-resolves.
+        media.addEventListener("change", apply);
       })();
     </script>
   </head>
@@ -101,11 +128,11 @@ const year = new Date().getUTCFullYear();
           <button
             id="theme-toggle"
             type="button"
-            aria-label="Toggle dark mode"
+            aria-label="Color theme"
             class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk -m-2 p-2 transition-colors"
           >
             <svg
-              class="h-4 w-4 dark:hidden"
+              class="theme-icon theme-icon-light h-4 w-4"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -119,7 +146,7 @@ const year = new Date().getUTCFullYear();
               ></path>
             </svg>
             <svg
-              class="hidden h-4 w-4 dark:block"
+              class="theme-icon theme-icon-dark h-4 w-4"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -129,6 +156,19 @@ const year = new Date().getUTCFullYear();
               aria-hidden="true"
             >
               <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
+            </svg>
+            <svg
+              class="theme-icon theme-icon-system h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="2.5" y="4" width="19" height="12.5" rx="1.5"></rect>
+              <path d="M8.5 20.5h7M12 16.5v4"></path>
             </svg>
           </button>
         </nav>
@@ -144,25 +184,38 @@ const year = new Date().getUTCFullYear();
         class="text-muted dark:text-muted-dk mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm"
       >
         <p>© {year} Danny Brown</p>
-        <a
-          class="hover:text-ink dark:hover:text-ink-dk transition-colors"
-          href="https://github.com/dannybrown37"
-          target="_blank"
-          rel="noopener"
-        >
-          GitHub
-        </a>
+        <div class="flex items-center gap-6">
+          <a
+            class="hover:text-ink dark:hover:text-ink-dk transition-colors"
+            href="/rss.xml"
+          >
+            RSS
+          </a>
+          <a
+            class="hover:text-ink dark:hover:text-ink-dk transition-colors"
+            href="https://github.com/dannybrown37"
+            target="_blank"
+            rel="noopener"
+          >
+            GitHub
+          </a>
+        </div>
       </div>
     </footer>
 
     <!-- Delegated from document, which ClientRouter never replaces — binding to
-         the button itself would go dead after the first navigation. -->
+         the button itself would go dead after the first navigation. This only
+         advances the stored setting; the head script owns applying it, and
+         picks the change up via the event below. -->
     <script>
+      import { nextTheme, parseTheme } from "../lib/theme";
+
       document.addEventListener("click", (event) => {
         const target = event.target as HTMLElement | null;
         if (!target?.closest("#theme-toggle")) return;
-        const dark = document.documentElement.classList.toggle("dark");
-        localStorage.setItem("theme", dark ? "dark" : "light");
+        const theme = nextTheme(parseTheme(localStorage.getItem("theme")));
+        localStorage.setItem("theme", theme);
+        document.dispatchEvent(new Event("theme:change"));
       });
     </script>
   </body>

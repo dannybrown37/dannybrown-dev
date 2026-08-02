@@ -46,6 +46,35 @@
   --color-accent-dk: oklch(0.78 0.13 250);
 }
 
+/* Keyboard focus only — :focus-visible leaves mouse clicks on buttons and the
+   theme toggle unringed. The offset keeps the ring off glyph edges, and
+   outlines follow the element's own border-radius, so nothing needs per-element
+   tuning. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline-color: var(--color-accent-dk);
+}
+
+/* The toggle has three settings but .dark only tracks two, so icon choice keys
+   off data-theme (the setting) rather than the dark: variant (the result).
+   Nothing shows until the head script stamps the attribute — a hair before
+   first paint, and the button is below it in the document. */
+.theme-icon {
+  display: none;
+}
+
+[data-theme="light"] .theme-icon-light,
+[data-theme="dark"] .theme-icon-dark,
+[data-theme="system"] .theme-icon-system,
+/* Scripting off: the attribute never lands, and an empty button looks broken. */
+html:not([data-theme]) .theme-icon-system {
+  display: block;
+}
+
 .prose :is(h1, h2, h3, h4) {
   font-family: var(--font-display);
   font-weight: 400;
