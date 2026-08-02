@@ -10,6 +10,10 @@ interface Project {
   tech: string[];
   /** Links to a running site rather than to source. */
   live?: boolean;
+  /** Only for projects installable from a public index — not `git+https://…` fallbacks. */
+  install?: string;
+  /** SPDX id of the repo's LICENSE file. Omit when the repo has none. */
+  license?: string;
 }
 
 // These are the repos the ccgarden tree above is grown from.
@@ -19,7 +23,9 @@ const projects: Project[] = [
     description:
       "A TUI, CLI, and API for personal productivity built around Getting Things Done. Capture to an inbox, triage into projects with contexts and next actions, auto-reschedule recurring items, and run reviews grouped by Area of Focus.",
     url: "https://github.com/dannybrown37/gtd",
-    tech: ["Python", "TUI"],
+    tech: ["Python", "TUI", "Flask"],
+    install: "uv tool install gtd-tui",
+    license: "MIT",
   },
   {
     name: "hamilhamilhamil",
@@ -35,6 +41,7 @@ const projects: Project[] = [
       "A shared home for reusable Claude Code skills: the tooling behind each skill, not just its playbook. Portable across repos and machines, packaged as a single installable plugin that is also its own marketplace.",
     url: "https://github.com/dannybrown37/skill-tree",
     tech: ["Claude Code", "Python", "Bash"],
+    install: `/plugin marketplace add dannybrown37/skill-tree\n/plugin install skill-tree@skill-tree`,
   },
   {
     name: "git-a-grip",
@@ -155,9 +162,26 @@ const eyebrowClass =
                 live
               </span>
             )}
+            {project.license && (
+              /* Muted, not accent: `live` stays the one loud badge in the row.
+                 U+FE0E forces text presentation — bare U+2696 renders as a color
+                 emoji on Android and Windows, which breaks the mono badge line. */
+              <span
+                class="text-muted dark:text-muted-dk ml-2 inline-flex items-center gap-1.5 align-middle font-mono text-xs"
+                title={`Released under the ${project.license} license`}
+              >
+                <span aria-hidden="true">{"⚖︎"}</span>
+                {project.license}
+              </span>
+            )}
             <p class="text-muted dark:text-muted-dk mt-2 max-w-prose leading-relaxed">
               {project.description}
             </p>
+            {project.install && (
+              /* relative: lifts the snippet above the card-wide ::after overlay on the
+                 title link, so it can actually be selected and copied. */
+              <pre class="border-accent/40 dark:border-accent-dk/40 text-muted dark:text-muted-dk relative mt-3 max-w-prose overflow-x-auto border-l-2 py-0.5 pl-3 font-mono text-xs leading-relaxed"><code>{project.install}</code></pre>
+            )}
             <ul class="text-muted dark:text-muted-dk mt-3 flex flex-wrap gap-2 font-mono text-xs">
               {project.tech.map((tech) => (
                 <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
