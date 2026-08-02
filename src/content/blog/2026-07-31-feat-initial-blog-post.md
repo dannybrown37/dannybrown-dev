@@ -2,7 +2,7 @@
 title: "feat: Initial Blog Post"
 description: "First post on dannybrown.dev."
 pubDate: 2026-07-31
-tags: ["meta", "llm", "ai"]
+tags: ["meta", "ai"]
 ---
 
 Blogs are pretty 2010s, I question whether it's worth even having a blog section on this site. In the age of LLMs, will you even trust that I, a human developer, wrote this? Regardless of what you do or don't believe, I pledge here and now that posts in this section of the site will be written by me: Danny Brown, a human.

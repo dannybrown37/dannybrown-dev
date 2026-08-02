@@ -2,7 +2,7 @@
 title: "Frivolous-yet-absolutely-critical Spotify tooling"
 description: "Combining my loves of automation and music into some silly yet indispensable tools"
 pubDate: 2026-08-01
-tags: ["music", "tooling", "autohotkey", "bash", "spotify_player", "spotify", "vscode", "tmux"]
+tags: ["music", "tooling", "bash", "autohotkey", "vscode", "tmux"]
 ---
 
 My excitement was high when I discovered the [Spotify Player TUI](https://github.com/aome510/spotify-player) yesterday. I'm always working to spend more time in the terminal and less time with a mouse, so I quickly installed it and started playing around.

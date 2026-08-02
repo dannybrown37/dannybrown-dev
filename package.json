@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
+    "blog": "node scripts/new-post.mjs",
     "ccgarden:sync": "node scripts/sync-ccgarden.mjs --force"
   },
   "dependencies": {
