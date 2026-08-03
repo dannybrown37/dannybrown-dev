@@ -23,6 +23,9 @@ const fullTitle = `${title} · dannybrown.dev`;
 // Scrapers won't resolve relative URLs, so both of these have to be absolute.
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
+// count.js already refuses to count localhost, but this keeps dev builds from
+// making the third-party request at all.
+const analytics = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -104,6 +107,54 @@ const imageUrl = new URL(image, Astro.site);
         document.addEventListener("theme:change", apply);
         // Only bites while the setting is "system", where apply() re-resolves.
         media.addEventListener("change", apply);
+      })();
+    </script>
+    <!-- no_onload turns off count.js's own one-shot pageview: it fires on real
+         document loads, and ClientRouter means every navigation after the first
+         is a swap, so all of them would go uncounted. astro:page-load fires on
+         both the initial load and each swap, which is exactly one hit per page.
+
+         The script is async, so an early navigation can beat it; a hit that
+         arrives before count() exists is held and replayed on load. -->
+    {
+      analytics && (
+        <script
+          is:inline
+          id="goatcounter"
+          async
+          src="//gc.zgo.at/count.js"
+          data-goatcounter="https://dannybrown.goatcounter.com/count"
+          data-goatcounter-settings='{"no_onload": true}'
+        />
+      )
+    }
+    <script is:inline>
+      (() => {
+        const script = document.getElementById("goatcounter");
+        // Absent in dev, where the loader above isn't rendered at all.
+        if (!script || window.__gcBound) return;
+        window.__gcBound = true;
+
+        let pending = false;
+        const count = () =>
+          window.goatcounter.count({
+            path: location.pathname + location.search,
+          });
+
+        document.addEventListener("astro:page-load", () => {
+          if (window.goatcounter && window.goatcounter.count) count();
+          else pending = true;
+        });
+
+        script.addEventListener(
+          "load",
+          () => {
+            if (!pending) return;
+            pending = false;
+            count();
+          },
+          { once: true },
+        );
       })();
     </script>
   </head>
