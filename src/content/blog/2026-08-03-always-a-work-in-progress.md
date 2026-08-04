@@ -13,4 +13,4 @@ Now, being a dev, it's like, a double-edged sword. On one hand, I'm a dev! `dann
 
 But then, I realized: *I* am always in development. I'm most productive when I'm learning new things, figuring out more efficient ways to do repeat things, and just generally leveling up. If I ever call *myself* done and shipped to prod, that's kind of the day I've given up – something I don't intend to do. With that in mind, the double-edged sword morphs into a dual positive meaning that makes me pretty darn stoked with my new domain.
 
-Song On Right Now: "[Joga](https://song.link/s/20ZvzoDSefcZo6bj10jgGC)" by Björk
+> Song On Right Now: "[Joga](https://song.link/s/20ZvzoDSefcZo6bj10jgGC)" by Björk
