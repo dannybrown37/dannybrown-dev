@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import { OGImageRoute } from "astro-og-canvas";
+import { ogTitleSize } from "../../lib/og-image";
 
 interface Card {
   title: string;
@@ -10,8 +11,11 @@ const posts = await getCollection("blog");
 
 const pages: Record<string, Card> = {
   site: {
-    title: "Danny Brown",
-    description: "Senior software engineer",
+    // Mirrors the <h1> on the homepage — the card is the first impression, so
+    // it makes the same one the page does.
+    title:
+      "High throughput, low ceremony. I build the tooling that keeps it that way.",
+    description: "Danny Brown · dannybrown.dev",
   },
   ...Object.fromEntries(
     posts.map((post) => [
@@ -37,7 +41,7 @@ export const { getStaticPaths, GET } = await OGImageRoute({
       title: {
         families: ["Instrument Serif"],
         color: [236, 238, 243],
-        size: 76,
+        size: ogTitleSize(page.title),
         lineHeight: 1.15,
         weight: "Normal",
       },
