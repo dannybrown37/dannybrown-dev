@@ -46,15 +46,15 @@ const projects: Project[] = [
   },
   {
     name: "git-a-grip",
-    description: "Control your git history with this curated collection of neato pre-commit hooks and installable utilities.",
+    description: "Take control of your Git history with this curated list of hooks plus a CLI for local pre-commit management",
     url: "https://github.com/dannybrown37/git-a-grip",
-    tech: ["Pre-Commit", "Python", "Commitizen"],
+    tech: ["Pre-Commit", "Python", "Node.js", "Bash", "Commitizen"],
     install: "# .pre-commit-config.yaml:\nrepos:\n  - repo: https://github.com/dannybrown37/git-a-grip\n    rev: v0.y.z\n    hooks:\n      - id: choose-your-hooks\n\n# For pre-commit tooling:\nuv tool install git-a-grip",
     license: "MIT",
   },
   {
     name: "dotfiles",
-    description: "Shell config and global dev tooling. And the sandbox where most of my projects start.",
+    description: "Shell config and global dev tooling. And also the sandbox where most of my projects start.",
     url: "https://github.com/dannybrown37/dotfiles",
     tech: ["Bash", "Python", "TMUX", "Neovim", "WSL", "AutoHotKey", "Pre-Commit"],
   },
