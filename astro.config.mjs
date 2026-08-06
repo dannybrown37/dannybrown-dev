@@ -2,10 +2,21 @@
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://dannybrown.dev',
+  integrations: [
+    sitemap({
+      // The og/ routes are 1200x630 card images, not pages, and the two
+      // redirects below resolve to anchors on the home page.
+      filter: (page) =>
+        !page.includes('/og/') &&
+        !page.endsWith('/about/') &&
+        !page.endsWith('/projects/'),
+    }),
+  ],
   // About and Projects folded into the home page; keep the old URLs alive.
   redirects: {
     '/about': '/#about-heading',
