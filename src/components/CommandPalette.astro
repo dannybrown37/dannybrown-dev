@@ -40,13 +40,6 @@ const commands: PaletteCommand[] = [
     action: { type: "theme" },
   },
   {
-    id: "rss",
-    title: "RSS feed",
-    keywords: ["subscribe", "atom", "feed"],
-    kind: "navigate",
-    action: { type: "href", href: "/rss.xml" },
-  },
-  {
     id: "github",
     title: "GitHub",
     keywords: ["source", "code", "dannybrown37"],
@@ -54,19 +47,18 @@ const commands: PaletteCommand[] = [
     action: { type: "href", href: "https://github.com/dannybrown37", external: true },
   },
   {
+    id: "linkedin",
+    title: "LinkedIn",
+    keywords: ["linkedin", "hire", "recruit", "dannybrown37"],
+    kind: "external",
+    action: { type: "href", href: "https://linkedin.com/in/dannybrown37", external: true },
+  },
+  {
     id: "email",
     title: "Email me",
     keywords: ["contact", "hire", "reach", "mail"],
     kind: "external",
-    action: { type: "href", href: "mailto:tinker@dannybrown.dev", external: true },
-  },
-  {
-    id: "grow",
-    title: "Regrow the tree",
-    keywords: ["ccgarden", "garden", "replay", "animate", "grow"],
-    kind: "action",
-    action: { type: "grow" },
-    secret: true,
+    action: { type: "say", lines: "tinker@dannybrown.dev"},
   },
   {
     id: "hire",
@@ -75,7 +67,7 @@ const commands: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["Permission granted.", "tinker@dannybrown.dev"],
+      lines: ["Let's chat.", "tinker@dannybrown.dev"],
     },
     secret: true,
   },
@@ -86,7 +78,7 @@ const commands: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["danny", "backend engineer, shifted left"],
+      lines: ["danny", "backend engineer, shifted left", "automation enthusiast", ""],
     },
     secret: true,
   },
@@ -95,7 +87,11 @@ const commands: PaletteCommand[] = [
     title: "uptime",
     keywords: ["years", "experience", "how long"],
     kind: "action",
-    action: { type: "say", lines: ["up since 2021 · connected vehicles · load average: high"] },
+    action: { type: "say", lines: [
+        "up since 2021 · connected vehicles · load average: high",
+        "2019 - 2021 · fundraising space · dollars raised: many",
+      ]
+    },
     secret: true,
   },
 ];
