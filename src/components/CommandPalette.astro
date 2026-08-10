@@ -1,0 +1,336 @@
+---
+import type { PaletteCommand } from "../lib/palette";
+
+// Serialized into the island below rather than rendered as markup: the list is
+// rebuilt on every keystroke, so the client owns the DOM for it either way.
+const commands: PaletteCommand[] = [
+  {
+    id: "home",
+    title: "Home",
+    keywords: ["about", "index", "start"],
+    kind: "navigate",
+    action: { type: "href", href: "/" },
+  },
+  {
+    id: "writing",
+    title: "Writing",
+    keywords: ["blog", "posts", "articles"],
+    kind: "navigate",
+    action: { type: "href", href: "/blog" },
+  },
+  {
+    id: "projects",
+    title: "Projects",
+    keywords: ["work", "code", "repos", "gtd", "ccgarden", "skill-tree"],
+    kind: "navigate",
+    action: { type: "href", href: "/#projects-heading" },
+  },
+  {
+    id: "experience",
+    title: "Experience",
+    keywords: ["resume", "cv", "work", "aws", "backend"],
+    kind: "navigate",
+    action: { type: "href", href: "/#experience-heading" },
+  },
+  {
+    id: "theme",
+    title: "Cycle theme",
+    keywords: ["dark", "light", "system", "mode", "color"],
+    kind: "action",
+    action: { type: "theme" },
+  },
+  {
+    id: "rss",
+    title: "RSS feed",
+    keywords: ["subscribe", "atom", "feed"],
+    kind: "navigate",
+    action: { type: "href", href: "/rss.xml" },
+  },
+  {
+    id: "github",
+    title: "GitHub",
+    keywords: ["source", "code", "dannybrown37"],
+    kind: "external",
+    action: { type: "href", href: "https://github.com/dannybrown37", external: true },
+  },
+  {
+    id: "email",
+    title: "Email me",
+    keywords: ["contact", "hire", "reach", "mail"],
+    kind: "external",
+    action: { type: "href", href: "mailto:dannybrown37@gmail.com", external: true },
+  },
+  {
+    id: "grow",
+    title: "Regrow the tree",
+    keywords: ["ccgarden", "garden", "replay", "animate", "grow"],
+    kind: "action",
+    action: { type: "grow" },
+    secret: true,
+  },
+  {
+    id: "hire",
+    title: "sudo hire me",
+    keywords: ["job", "work", "recruit"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["Permission granted.", "dannybrown37@gmail.com"],
+    },
+    secret: true,
+  },
+  {
+    id: "whoami",
+    title: "whoami",
+    keywords: ["who", "identity"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["danny", "backend engineer, shifted left"],
+    },
+    secret: true,
+  },
+  {
+    id: "uptime",
+    title: "uptime",
+    keywords: ["years", "experience", "how long"],
+    kind: "action",
+    action: { type: "say", lines: ["up since 2021 · connected vehicles · load average: high"] },
+    secret: true,
+  },
+];
+---
+
+<!-- hidden until the script promotes it: without JS the palette can't work at
+     all, and an inert empty dialog in the tab order is worse than no dialog. -->
+<dialog
+  id="palette"
+  aria-label="Command palette"
+  class="bg-paper dark:bg-paper-dk text-ink dark:text-ink-dk border-line dark:border-line-dk m-0 hidden w-[min(32rem,calc(100vw-2rem))] rounded-xl border p-0 shadow-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm open:block"
+  data-commands={JSON.stringify(commands)}
+>
+  <form method="dialog" class="contents">
+    <div class="border-line dark:border-line-dk flex items-center gap-3 border-b px-4">
+      <span class="text-muted dark:text-muted-dk font-mono text-sm" aria-hidden="true">
+        &gt;
+      </span>
+      <input
+        id="palette-input"
+        type="text"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        placeholder="Jump to&hellip;"
+        aria-controls="palette-list"
+        aria-expanded="true"
+        aria-autocomplete="list"
+        role="combobox"
+        class="placeholder:text-muted dark:placeholder:text-muted-dk w-full bg-transparent py-3.5 font-sans text-base outline-none"
+      />
+    </div>
+
+    <ul id="palette-list" role="listbox" aria-label="Commands" class="max-h-80 overflow-y-auto p-2">
+    </ul>
+
+    <p
+      id="palette-say"
+      hidden
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk border-t px-4 py-3 font-mono text-xs leading-relaxed whitespace-pre-line"
+      role="status"
+    >
+    </p>
+
+    <div
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk hidden items-center gap-4 border-t px-4 py-2.5 font-mono text-[0.7rem] sm:flex"
+    >
+      <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate</span>
+      <span><kbd>&crarr;</kbd> open</span>
+      <span><kbd>esc</kbd> close</span>
+    </div>
+  </form>
+</dialog>
+
+<style>
+  /* Scoped here rather than in global.css: kbd only appears in this footer. */
+  kbd {
+    font: inherit;
+  }
+</style>
+
+<script>
+  import { filterCommands, nextIndex, type PaletteCommand } from "../lib/palette";
+
+  function setupPalette() {
+    const dialog = document.getElementById("palette");
+    const input = document.getElementById("palette-input");
+    const list = document.getElementById("palette-list");
+    const say = document.getElementById("palette-say");
+    const trigger = document.getElementById("palette-trigger");
+    if (
+      !(dialog instanceof HTMLDialogElement) ||
+      !(input instanceof HTMLInputElement) ||
+      !(list instanceof HTMLUListElement) ||
+      !(say instanceof HTMLParagraphElement)
+    ) {
+      return;
+    }
+
+    const commands: PaletteCommand[] = JSON.parse(dialog.dataset.commands ?? "[]");
+    let shown: PaletteCommand[] = [];
+    let active = 0;
+
+    // The markup ships hidden so a no-JS visitor gets no dead affordance; this
+    // is the point where the palette is known to work.
+    dialog.classList.remove("hidden");
+    if (trigger) trigger.dataset.ready = "";
+
+    const render = () => {
+      shown = filterCommands(commands, input.value);
+      if (active >= shown.length) active = 0;
+
+      list.replaceChildren(
+        ...shown.map((command, index) => {
+          const item = document.createElement("li");
+          item.id = `palette-item-${command.id}`;
+          item.role = "option";
+          item.ariaSelected = String(index === active);
+          item.dataset.index = String(index);
+          item.className =
+            "flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm aria-selected:bg-accent/10 dark:aria-selected:bg-accent-dk/15 aria-selected:text-accent dark:aria-selected:text-accent-dk";
+
+          const icon = document.createElement("span");
+          icon.className = "text-muted dark:text-muted-dk w-3 font-mono text-xs";
+          icon.ariaHidden = "true";
+          icon.textContent =
+            command.kind === "external" ? "↗" : command.kind === "action" ? "⌥" : "→";
+
+          const label = document.createElement("span");
+          label.textContent = command.title;
+          if (command.secret) label.className = "font-mono";
+
+          item.append(icon, label);
+          return item;
+        }),
+      );
+
+      if (!shown.length) {
+        const empty = document.createElement("li");
+        empty.className = "text-muted dark:text-muted-dk px-3 py-2 text-sm";
+        empty.textContent = "No matches.";
+        list.append(empty);
+      }
+
+      syncActive();
+    };
+
+    const syncActive = () => {
+      const items = [...list.querySelectorAll<HTMLLIElement>("[data-index]")];
+      items.forEach((item, index) => {
+        item.ariaSelected = String(index === active);
+      });
+      const current = items[active];
+      input.setAttribute("aria-activedescendant", current?.id ?? "");
+      current?.scrollIntoView({ block: "nearest" });
+    };
+
+    const open = () => {
+      if (dialog.open) return;
+      input.value = "";
+      active = 0;
+      say.hidden = true;
+      render();
+      dialog.showModal();
+    };
+
+    const run = (command: PaletteCommand | undefined) => {
+      if (!command) return;
+      const action = command.action;
+
+      if (action.type === "say") {
+        // Stays open: the output is the whole point of these.
+        say.textContent = action.lines.join("\n");
+        say.hidden = false;
+        return;
+      }
+
+      dialog.close();
+
+      if (action.type === "theme") {
+        document.getElementById("theme-toggle")?.click();
+      } else if (action.type === "grow") {
+        document.dispatchEvent(new CustomEvent("garden:grow"));
+      } else if (action.external) {
+        window.open(action.href, "_blank", "noopener");
+      } else {
+        // Astro's router picks this up and swaps, same as a nav click.
+        window.location.href = action.href;
+      }
+    };
+
+    input.addEventListener("input", () => {
+      say.hidden = true;
+      active = 0;
+      render();
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        active = nextIndex(active, shown.length, event.key === "ArrowDown" ? 1 : -1);
+        syncActive();
+      } else if (event.key === "Enter") {
+        // The dialog's form would close on Enter before the handler runs.
+        event.preventDefault();
+        run(shown[active]);
+      }
+    });
+
+    list.addEventListener("click", (event) => {
+      const item = (event.target as Element).closest<HTMLLIElement>("[data-index]");
+      if (item) run(shown[Number(item.dataset.index)]);
+    });
+
+    list.addEventListener("pointermove", (event) => {
+      const item = (event.target as Element).closest<HTMLLIElement>("[data-index]");
+      const index = Number(item?.dataset.index);
+      if (item && index !== active) {
+        active = index;
+        syncActive();
+      }
+    });
+
+    // Clicking the backdrop lands on the dialog itself, never on its children.
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    trigger?.addEventListener("click", open);
+
+    const onKeydown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const typing =
+        target?.isContentEditable ||
+        ["INPUT", "TEXTAREA", "SELECT"].includes(target?.tagName ?? "");
+
+      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        dialog.open ? dialog.close() : open();
+      } else if (event.key === "/" && !typing && !dialog.open) {
+        // Otherwise the "/" that opened it becomes the first character typed.
+        event.preventDefault();
+        open();
+      }
+    };
+
+    document.addEventListener("keydown", onKeydown);
+    // ClientRouter keeps the document across navigations, so without this the
+    // listeners stack up one set per page visited.
+    document.addEventListener(
+      "astro:before-swap",
+      () => document.removeEventListener("keydown", onKeydown),
+      { once: true },
+    );
+  }
+
+  document.addEventListener("astro:page-load", setupPalette);
+</script>

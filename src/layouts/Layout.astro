@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
+import CommandPalette from "../components/CommandPalette.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -219,6 +220,20 @@ const analytics = import.meta.env.PROD;
           >
             GitHub
           </a>
+          <!-- Shown only once the palette script sets data-ready, so a no-JS
+               visitor never sees a dead affordance — and only where a keyboard
+               is implied, since on touch the ⌘K label would be a lie. The gate
+               is a data attribute rather than the hidden attribute: hidden's
+               UA display:none loses to a Tailwind display utility. -->
+          <button
+            id="palette-trigger"
+            type="button"
+            aria-label="Open command palette"
+            aria-keyshortcuts="Meta+K Control+K"
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk border-line dark:border-line-dk -my-2 hidden rounded-md border px-2 py-1 font-mono text-xs transition-colors data-ready:[@media(hover:hover)]:inline-block"
+          >
+            <kbd class="font-mono">⌘K</kbd>
+          </button>
           <button
             id="theme-toggle"
             type="button"
@@ -272,6 +287,8 @@ const analytics = import.meta.env.PROD;
     <!-- tabindex="-1" so the skip link moves focus here, not just the scroll
          position — <main> isn't focusable on its own. Programmatic focus
          doesn't match :focus-visible, so this stays unringed. -->
+    <CommandPalette />
+
     <main id="main" tabindex="-1" class="mx-auto max-w-3xl px-6 pt-14 pb-24">
       <slot />
     </main>
