@@ -12,11 +12,11 @@ const commands: PaletteCommand[] = [
     action: { type: "href", href: "/" },
   },
   {
-    id: "writing",
-    title: "Writing",
-    keywords: ["blog", "posts", "articles"],
+    id: "experience",
+    title: "Experience",
+    keywords: ["resume", "cv", "work", "aws", "backend"],
     kind: "navigate",
-    action: { type: "href", href: "/blog" },
+    action: { type: "href", href: "/#experience-heading" },
   },
   {
     id: "projects",
@@ -26,18 +26,11 @@ const commands: PaletteCommand[] = [
     action: { type: "href", href: "/#projects-heading" },
   },
   {
-    id: "experience",
-    title: "Experience",
-    keywords: ["resume", "cv", "work", "aws", "backend"],
+    id: "writing",
+    title: "Writing",
+    keywords: ["blog", "posts", "articles"],
     kind: "navigate",
-    action: { type: "href", href: "/#experience-heading" },
-  },
-  {
-    id: "theme",
-    title: "Cycle theme",
-    keywords: ["dark", "light", "system", "mode", "color"],
-    kind: "action",
-    action: { type: "theme" },
+    action: { type: "href", href: "/blog" },
   },
   {
     id: "github",
@@ -60,6 +53,7 @@ const commands: PaletteCommand[] = [
     kind: "external",
     action: { type: "href", href: "mailto:tinker@dannybrown.dev", external: true },
   },
+  // Hidden section
   {
     id: "hire",
     title: "sudo hire me",
@@ -67,7 +61,43 @@ const commands: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["Let's chat.", "tinker@dannybrown.dev"],
+      lines: ["Access granted: Let's chat about opportunities.", "tinker@dannybrown.dev"],
+    },
+    secret: true,
+  },
+  {
+    id: "ls",
+    title: "ls",
+    keywords: ["list-directories", "what", "ls"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["hire", "pwd", "uptime", "whoami"],
+    },
+    secret: true,
+  },
+  {
+    id: "pwd",
+    title: "pwd",
+    keywords: ["where", "pwd", "here"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["dannybrown.dev"],
+    },
+    secret: true,
+  },
+  {
+    id: "uptime",
+    title: "uptime",
+    keywords: ["years", "experience", "how long"],
+    kind: "action",
+    action: { type: "say", lines: [
+        "Since 2021 · connected vehicles · messages handled: billions",
+        "2019 - 2021 · fundraising tech · dollars processed: millions",
+        "2013 - 2021 · freelance content · articles written/edited: thousands",
+        "2014 - 2019 · public service · cases investigated: hundreds",
+      ]
     },
     secret: true,
   },
@@ -78,19 +108,7 @@ const commands: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["danny", "backend engineer, shifted left", "automation enthusiast", ""],
-    },
-    secret: true,
-  },
-  {
-    id: "uptime",
-    title: "uptime",
-    keywords: ["years", "experience", "how long"],
-    kind: "action",
-    action: { type: "say", lines: [
-        "up since 2021 · connected vehicles · load average: high",
-        "2019 - 2021 · fundraising space · dollars raised: many",
-      ]
+      lines: ["danny", "backend engineer, shifted left", "automater of things", "spicy food enthusiast"],
     },
     secret: true,
   },
