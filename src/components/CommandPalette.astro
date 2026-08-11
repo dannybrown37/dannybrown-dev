@@ -33,6 +33,16 @@ const commands: PaletteCommand[] = [
     action: { type: "href", href: "/blog" },
   },
   {
+    id: "email",
+    title: "Email Me",
+    keywords: ["contact", "email", "reach out"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["Contact me:", "tinker@dannybrown.dev"],
+    },
+  },
+  {
     id: "github",
     title: "GitHub",
     keywords: ["source", "code", "dannybrown37"],
@@ -45,16 +55,6 @@ const commands: PaletteCommand[] = [
     keywords: ["linkedin", "hire", "recruit", "dannybrown37"],
     kind: "external",
     action: { type: "href", href: "https://linkedin.com/in/dannybrown37", external: true },
-  },
-  {
-    id: "email",
-    title: "Email",
-    keywords: ["contact", "email", "reach out"],
-    kind: "action",
-    action: {
-      type: "say",
-      lines: ["Contact me:", "  tinker@dannybrown.dev"],
-    },
   },
   // Hidden section
   {
