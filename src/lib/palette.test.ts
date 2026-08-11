@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterCommands, nextIndex, type PaletteCommand } from "./palette";
+import { filterCommands, nextIndex, secretTitles, type PaletteCommand } from "./palette";
 
 const command = (id: string, title: string, keywords: string[] = []): PaletteCommand => ({
   id,
@@ -65,6 +65,31 @@ describe("filterCommands", () => {
     const a = command("a", "Deploy");
     const b = command("b", "Deploy");
     expect(ids(filterCommands([a, b], "deploy"))).toEqual(["a", "b"]);
+  });
+});
+
+describe("secretTitles", () => {
+  const secret = (id: string, title: string): PaletteCommand => ({
+    ...command(id, title),
+    secret: true,
+  });
+
+  it("lists secret titles and skips the visible ones", () => {
+    expect(secretTitles([home, secret("pwd", "pwd"), writing, secret("who", "whoami")])).toEqual([
+      "pwd",
+      "whoami",
+    ]);
+  });
+
+  it("sorts alphabetically regardless of declaration order", () => {
+    expect(secretTitles([secret("w", "whoami"), secret("p", "pwd")])).toEqual([
+      "pwd",
+      "whoami",
+    ]);
+  });
+
+  it("returns an empty list when nothing is secret", () => {
+    expect(secretTitles(all)).toEqual([]);
   });
 });
 

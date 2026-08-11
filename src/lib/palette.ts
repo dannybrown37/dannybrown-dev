@@ -1,7 +1,5 @@
 export type PaletteAction =
   | { type: "href"; href: string; external?: boolean }
-  | { type: "theme" }
-  | { type: "grow" }
   | { type: "say"; lines: string[] };
 
 export interface PaletteCommand {
@@ -71,6 +69,14 @@ export function filterCommands(
     // is stable in practice, but the ranking above is too coarse to rely on it.
     .sort((a, b) => a.score! - b.score! || a.order - b.order)
     .map((entry) => entry.command);
+}
+
+/** The `ls` output, so adding a secret command lists itself without a second edit. */
+export function secretTitles(commands: PaletteCommand[]): string[] {
+  return commands
+    .filter((command) => command.secret)
+    .map((command) => command.title)
+    .sort();
 }
 
 /**

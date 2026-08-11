@@ -1,9 +1,7 @@
 ---
-import type { PaletteCommand } from "../lib/palette";
+import { secretTitles, type PaletteCommand } from "../lib/palette";
 
-// Serialized into the island below rather than rendered as markup: the list is
-// rebuilt on every keystroke, so the client owns the DOM for it either way.
-const commands: PaletteCommand[] = [
+const visible: PaletteCommand[] = [
   {
     id: "home",
     title: "Home",
@@ -56,26 +54,44 @@ const commands: PaletteCommand[] = [
     kind: "external",
     action: { type: "href", href: "https://linkedin.com/in/dannybrown37", external: true },
   },
-  // Hidden section
+];
+
+// `ls` is assembled from these below, so it can't be one of them.
+const secrets: PaletteCommand[] = [
   {
-    id: "hire",
-    title: "sudo hire me",
-    keywords: ["job", "work", "recruit"],
+    id: "git blame",
+    title: "git blame",
+    keywords: ["git", "blame", "who"],
     kind: "action",
     action: {
       type: "say",
-      lines: ["Access granted: Let's chat about opportunities.", "tinker@dannybrown.dev"],
+      lines: ["f86753o9", "(Danny Brown 2026-08-11)", "it was me"],
     },
     secret: true,
   },
   {
-    id: "ls",
-    title: "ls",
-    keywords: ["list-directories", "what", "ls"],
+    id: "git status",
+    title: "git status",
+    keywords: ["git", "status"],
     kind: "action",
     action: {
       type: "say",
-      lines: ["hire", "pwd", "uptime", "whoami"],
+      lines: ["On branch dannybrown.dev", "Your branch is up to date with 'origin/main'", "", "nothing to commit, working tree clean"],
+    },
+    secret: true,
+  },
+  {
+    id: "man danny",
+    title: "man danny",
+    keywords: ["man", "danny", "manual", "help"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: [
+        "NAME danny - senior software engineer",
+        "SYNOPSIS danny [--python] [--node] [--aws] [--terraform]",
+        "SEE ALSO uptime(1), whoami(1)",
+      ],
     },
     secret: true,
   },
@@ -87,6 +103,17 @@ const commands: PaletteCommand[] = [
     action: {
       type: "say",
       lines: ["dannybrown.dev"],
+    },
+    secret: true,
+  },
+  {
+    id: "rm -rf /",
+    title: "rm -rf /",
+    keywords: ["remove", "nuke", "bad"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["Permission denied. Nice try"],
     },
     secret: true,
   },
@@ -111,10 +138,31 @@ const commands: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["danny", "backend engineer, shifted left", "automater of things", "spicy food enthusiast"],
+      lines: [
+        "danny",
+        "really loves the *craft* of software development",
+        "always looking to automate the next thing",
+        "supporter of fine arts",
+        "spicy food enthusiast",
+      ],
     },
     secret: true,
   },
+];
+
+// Serialized into the island below rather than rendered as markup: the list is
+// rebuilt on every keystroke, so the client owns the DOM for it either way.
+const commands: PaletteCommand[] = [
+  ...visible,
+  {
+    id: "ls",
+    title: "ls",
+    keywords: ["list-directories", "what", "ls"],
+    kind: "action",
+    action: { type: "say", lines: secretTitles(secrets) },
+    secret: true,
+  },
+  ...secrets,
 ];
 ---
 
@@ -146,16 +194,16 @@ const commands: PaletteCommand[] = [
       />
     </div>
 
-    <ul id="palette-list" role="listbox" aria-label="Commands" class="max-h-80 overflow-y-auto p-2">
-    </ul>
-
     <p
       id="palette-say"
       hidden
-      class="border-line dark:border-line-dk text-muted dark:text-muted-dk border-t px-4 py-3 font-mono text-xs leading-relaxed whitespace-pre-line"
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk border-b px-4 py-3 font-mono text-xs leading-relaxed whitespace-pre-line"
       role="status"
     >
     </p>
+
+    <ul id="palette-list" role="listbox" aria-label="Commands" class="max-h-80 overflow-y-auto p-2">
+    </ul>
 
     <div
       class="border-line dark:border-line-dk text-muted dark:text-muted-dk hidden items-center gap-4 border-t px-4 py-2.5 font-mono text-[0.7rem] sm:flex"
@@ -264,19 +312,21 @@ const commands: PaletteCommand[] = [
       const action = command.action;
 
       if (action.type === "say") {
-        // Stays open: the output is the whole point of these.
+        // Stays open: the output is the whole point of these. Clearing the
+        // query the way a shell clears its line leaves the output up while the
+        // list resets, so the next command is a fresh prompt rather than an
+        // edit of the last one.
         say.textContent = action.lines.join("\n");
         say.hidden = false;
+        input.value = "";
+        active = 0;
+        render();
         return;
       }
 
       dialog.close();
 
-      if (action.type === "theme") {
-        document.getElementById("theme-toggle")?.click();
-      } else if (action.type === "grow") {
-        document.dispatchEvent(new CustomEvent("garden:grow"));
-      } else if (action.external) {
+      if (action.external) {
         window.open(action.href, "_blank", "noopener");
       } else {
         // Astro's router picks this up and swaps, same as a nav click.
