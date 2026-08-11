@@ -48,10 +48,13 @@ const commands: PaletteCommand[] = [
   },
   {
     id: "email",
-    title: "Email me",
-    keywords: ["contact", "hire", "reach", "mail"],
-    kind: "external",
-    action: { type: "href", href: "mailto:tinker@dannybrown.dev", external: true },
+    title: "Email",
+    keywords: ["contact", "email", "reach out"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["Contact me:", "  tinker@dannybrown.dev"],
+    },
   },
   // Hidden section
   {
