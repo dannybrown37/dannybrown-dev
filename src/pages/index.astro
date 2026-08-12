@@ -292,18 +292,56 @@ const eyebrowClass =
           return;
         }
 
+        let onScreen = false;
+        // The palette opens on top of the tree, so intersection alone still
+        // leaves it repainting while someone is typing into it — and the
+        // keystrokes lose the main thread to it.
+        let paletteOpen = false;
+
+        // pauseAnimations() only reaches SMIL. The idle motion — wind, the
+        // star twinkle, the rain — is CSS keyframes, which needs its own
+        // switch or it keeps running through both pauses below.
+        // Namespaced: the SVG is a real XML document, and a null-namespace
+        // <style> from createElement would parse but never apply.
+        const halt = svg.ownerDocument.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "style",
+        );
+        halt.textContent = "*{animation-play-state:paused !important}";
+
+        const sync = () => {
+          if (onScreen && !paletteOpen) {
+            svg.unpauseAnimations();
+            halt.remove();
+          } else {
+            svg.pauseAnimations();
+            svg.append(halt);
+          }
+        };
+
         const observer = new IntersectionObserver(
           ([entry]) => {
-            if (entry.isIntersecting) svg.unpauseAnimations();
-            else svg.pauseAnimations();
+            onScreen = entry.isIntersecting;
+            sync();
           },
           { rootMargin: "100px" },
         );
         observer.observe(object);
 
-        document.addEventListener("astro:before-swap", () => observer.disconnect(), {
-          once: true,
-        });
+        const onPalette = (event: Event) => {
+          paletteOpen = (event as CustomEvent<{ open: boolean }>).detail.open;
+          sync();
+        };
+        document.addEventListener("palette:toggle", onPalette);
+
+        document.addEventListener(
+          "astro:before-swap",
+          () => {
+            observer.disconnect();
+            document.removeEventListener("palette:toggle", onPalette);
+          },
+          { once: true },
+        );
       };
 
       // contentDocument is null until the SVG's own document finishes parsing,

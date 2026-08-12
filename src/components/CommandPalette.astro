@@ -249,54 +249,66 @@ const commands: PaletteCommand[] = [
     dialog.classList.remove("hidden");
     if (trigger) trigger.dataset.ready = "";
 
+    // Built once and reordered on each filter. Recreating them per keystroke
+    // meant re-parsing these class strings on every character typed.
+    const nodes = new Map<string, HTMLLIElement>(
+      commands.map((command) => {
+        const item = document.createElement("li");
+        item.id = `palette-item-${command.id}`;
+        item.role = "option";
+        item.className =
+          "flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm aria-selected:bg-accent/10 dark:aria-selected:bg-accent-dk/15 aria-selected:text-accent dark:aria-selected:text-accent-dk";
+
+        const icon = document.createElement("span");
+        icon.className = "text-muted dark:text-muted-dk w-3 font-mono text-xs";
+        icon.ariaHidden = "true";
+        icon.textContent =
+          command.kind === "external" ? "↗" : command.kind === "action" ? "⌥" : "→";
+
+        const label = document.createElement("span");
+        label.textContent = command.title;
+        if (command.secret) label.className = "font-mono";
+
+        item.append(icon, label);
+        return [command.id, item];
+      }),
+    );
+
+    const empty = document.createElement("li");
+    empty.className = "text-muted dark:text-muted-dk px-3 py-2 text-sm";
+    empty.textContent = "No matches.";
+
+    let items: HTMLLIElement[] = [];
+
     const render = () => {
       shown = filterCommands(commands, input.value);
       if (active >= shown.length) active = 0;
 
-      list.replaceChildren(
-        ...shown.map((command, index) => {
-          const item = document.createElement("li");
-          item.id = `palette-item-${command.id}`;
-          item.role = "option";
-          item.ariaSelected = String(index === active);
-          item.dataset.index = String(index);
-          item.className =
-            "flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm aria-selected:bg-accent/10 dark:aria-selected:bg-accent-dk/15 aria-selected:text-accent dark:aria-selected:text-accent-dk";
+      items = shown.map((command, index) => {
+        const item = nodes.get(command.id)!;
+        item.dataset.index = String(index);
+        return item;
+      });
 
-          const icon = document.createElement("span");
-          icon.className = "text-muted dark:text-muted-dk w-3 font-mono text-xs";
-          icon.ariaHidden = "true";
-          icon.textContent =
-            command.kind === "external" ? "↗" : command.kind === "action" ? "⌥" : "→";
-
-          const label = document.createElement("span");
-          label.textContent = command.title;
-          if (command.secret) label.className = "font-mono";
-
-          item.append(icon, label);
-          return item;
-        }),
-      );
-
-      if (!shown.length) {
-        const empty = document.createElement("li");
-        empty.className = "text-muted dark:text-muted-dk px-3 py-2 text-sm";
-        empty.textContent = "No matches.";
-        list.append(empty);
-      }
-
+      list.replaceChildren(...(items.length ? items : [empty]));
       syncActive();
     };
 
     const syncActive = () => {
-      const items = [...list.querySelectorAll<HTMLLIElement>("[data-index]")];
       items.forEach((item, index) => {
         item.ariaSelected = String(index === active);
       });
       const current = items[active];
       input.setAttribute("aria-activedescendant", current?.id ?? "");
-      current?.scrollIntoView({ block: "nearest" });
+      // `scroll-behavior: smooth` on <html> is inherited here, and an animated
+      // scroll per keystroke is what made typing feel laggy.
+      current?.scrollIntoView({ block: "nearest", behavior: "instant" });
     };
+
+    // Anything expensive on the page behind the palette (the ccgarden SMIL
+    // animation) pauses on this rather than the palette reaching for it.
+    const announce = (open: boolean) =>
+      document.dispatchEvent(new CustomEvent("palette:toggle", { detail: { open } }));
 
     const open = () => {
       if (dialog.open) return;
@@ -305,7 +317,10 @@ const commands: PaletteCommand[] = [
       say.hidden = true;
       render();
       dialog.showModal();
+      announce(true);
     };
+
+    dialog.addEventListener("close", () => announce(false));
 
     const run = (command: PaletteCommand | undefined) => {
       if (!command) return;
