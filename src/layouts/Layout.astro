@@ -33,7 +33,10 @@ const analytics = import.meta.env.PROD;
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-pt-20">
+<!-- snap-proximity, never mandatory: the only snap target is the garden band on
+     the home page, and mandatory snapping would wrestle anyone scrolling past
+     it (or reading a long post) for the scroll position. -->
+<html lang="en" class="scroll-pt-20 snap-y snap-proximity">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

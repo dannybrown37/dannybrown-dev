@@ -1,7 +1,9 @@
 ---
+import { readFileSync } from "node:fs";
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import PostRow from "../components/PostRow.astro";
+import { svgAspect } from "../lib/svg-aspect";
 
 interface Project {
   name: string;
@@ -87,6 +89,20 @@ const stack = [
   "IaC",
 ];
 
+// Read at build time, never hardcoded: the tree grows a little taller with
+// every regeneration, and a stale ratio crops the canopy.
+const garden = svgAspect(readFileSync("public/ccgarden.svg", "utf8")) ?? {
+  css: "800 / 966",
+  ratio: 800 / 966,
+};
+
+// Sized off the viewport's *height* first: the tree is taller than it is wide,
+// so width-first sizing (the old `max-w-4xl`) makes something no screen can
+// show at once. Full-bleed out of the prose column, capped by the height budget
+// — the band minus the sticky header, heading, and caption — and by the
+// viewport width so a phone gets the whole tree rather than a cropped one.
+const gardenWidth = `min(56rem, 100vw - 2rem, calc((100svh - 15rem) * ${garden.ratio.toFixed(4)}))`;
+
 const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
@@ -117,37 +133,6 @@ const eyebrowClass =
       motions possible, and making it fun to use the computer again.
     </p>
   </section>
-
-  <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
-       SMIL growth animation, and time-travel scrubber script all work. -->
-  <!-- contain:paint keeps the tree's continuous repaints inside this box; without
-       it the whole page re-composites on every scroll frame while it's visible. -->
-  <div
-    class="relative left-1/2 mt-12 aspect-[800/848] w-screen max-w-4xl -translate-x-1/2 px-4 [contain:paint]"
-  >
-    <object
-      id="ccgarden"
-      type="image/svg+xml"
-      data="/ccgarden.svg"
-      class="h-full w-full"
-      aria-label="A ccgarden tree visualization grown from my real Claude Code session history, regenerated on each commit"
-    >
-      <p class="text-muted dark:text-muted-dk max-w-prose text-sm">
-        A tree grown from my Claude Code session history — it needs SVG support to
-        render. <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
-          >ccgarden</a
-        > builds it.
-      </p>
-    </object>
-  </div>
-
-  <p class="text-muted dark:text-muted-dk mt-8 max-w-2xl text-sm">
-    <code class="font-mono">ccgarden</code> is generative art built from Claude Code
-    session history, regrown on every commit — hover or tap anything for the numbers
-    behind it, or <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
-      >grow your own</a
-    >. Dollar figures are notional, priced at listed API rates.
-  </p>
 
   <section aria-labelledby="experience-heading" class={sectionClass}>
     <h2 id="experience-heading" class={eyebrowClass}>Experience</h2>
@@ -184,6 +169,62 @@ const eyebrowClass =
         ))
       }
     </ul>
+  </section>
+
+  <!-- A full-viewport band, and the only snapping target on the site.
+       `scroll-snap-stop: always` is the lock: a fling that would carry past the
+       garden has to stop here first, so you land on it square instead of
+       catching a sliver of it on the way to Projects. Only this one section
+       gets that treatment — page-wide mandatory snapping breaks keyboard
+       paging and find-in-page on the prose above and below. -->
+  <section
+    id="garden"
+    aria-labelledby="garden-heading"
+    class="border-line dark:border-line-dk mt-24 flex min-h-svh snap-center flex-col justify-center border-t py-12 [scroll-snap-stop:always]"
+  >
+    <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
+
+    <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
+         SMIL growth animation, and time-travel scrubber script all work.
+         `data` is set by the script below instead of here — it's a 3MB document
+         with thousands of animation elements, and parsing it during initial
+         load is what made the rest of the page (the command palette especially)
+         feel sticky before you had even scrolled to the tree. -->
+    <!-- contain:paint keeps the tree's continuous repaints inside this box; without
+         it the whole page re-composites on every scroll frame while it's visible. -->
+    <div
+      class="relative left-1/2 mt-6 -translate-x-1/2 [contain:paint]"
+      style={`width: ${gardenWidth}; aspect-ratio: ${garden.css}`}
+    >
+      <!-- Starts transparent in the markup, not from the script: the SVG paints
+           the moment its document parses, which is before `load` fires, so a
+           script-applied fade leaves a flash of night sky every time. -->
+      <object
+        id="ccgarden"
+        type="image/svg+xml"
+        data-src="/ccgarden.svg"
+        class="h-full w-full opacity-0 transition-opacity duration-700"
+        aria-label="A ccgarden tree visualization grown from my real Claude Code session history, regenerated on each commit"
+      >
+        <p class="text-muted dark:text-muted-dk max-w-prose text-sm">
+          A tree grown from my Claude Code session history — it needs SVG support to
+          render. <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
+            >ccgarden</a
+          > builds it.
+        </p>
+      </object>
+      <!-- The id outranks the utility class, so the fallback above is visible
+           to anyone whose browser will never run the script that reveals it. -->
+      <noscript><style>#ccgarden { opacity: 1 }</style></noscript>
+    </div>
+
+    <p class="text-muted dark:text-muted-dk mt-6 max-w-2xl text-sm">
+      <code class="font-mono">ccgarden</code> is generative art built from Claude Code
+      session history, regrown on every commit — hover or tap anything for the numbers
+      behind it, or <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
+        >grow your own</a
+      >. Dollar figures are notional, priced at listed API rates.
+    </p>
   </section>
 
   <section aria-labelledby="projects-heading" class={sectionClass}>
@@ -274,20 +315,30 @@ const eyebrowClass =
     )
   }
 
-  <!-- Six of the tree's animations are repeatCount="indefinite", so it never
-       settles on its own — left alone it repaints for as long as the page is
-       open, including while it's scrolled out of view. SMIL exposes its own
-       timeline controls, so pause it whenever it isn't actually on screen. -->
+  <!-- The tree's idle motion — wind, twinkle, rain — is CSS keyframe animation
+       set to `infinite`, so it never settles on its own: left alone it repaints
+       for as long as the page is open, including while scrolled out of view.
+       SMIL exposes its own timeline controls, so pause it whenever it isn't
+       actually on screen, and don't even fetch it until it's close. -->
   <script>
+    const GROWN = 60; // seconds; comfortably past the longest growth animation.
+
     function controlGarden() {
       const object = document.getElementById("ccgarden");
       if (!(object instanceof HTMLObjectElement)) return;
 
       const attach = () => {
-        const svg = object.contentDocument?.documentElement;
-        if (!(svg instanceof SVGSVGElement)) return;
+        // Duck-typed, and it has to be. `instanceof SVGSVGElement` is false
+        // here: <object> is its own browsing context with its own realm, so
+        // the root element is an instance of the *inner* window's constructor,
+        // never this one's. That guard silently disabled everything below it.
+        const svg = object.contentDocument?.documentElement as SVGSVGElement | undefined;
+        if (typeof svg?.pauseAnimations !== "function") return;
 
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          // Jump to the end before pausing. Pausing at t=0 freezes the growth
+          // animations before anything has grown — a blank patch of dirt.
+          svg.setCurrentTime(GROWN);
           svg.pauseAnimations();
           return;
         }
@@ -309,22 +360,53 @@ const eyebrowClass =
         );
         halt.textContent = "*{animation-play-state:paused !important}";
 
+        // Held at t=0 until it's actually in front of someone: the growth is an
+        // 18-second one-shot, and starting it on load meant it was always over
+        // by the time you scrolled down to it. Hidden as well as paused —
+        // frame zero is an empty night sky, which just reads as a big blank
+        // box sitting there rather than as something about to happen.
+        let growing = false;
+        svg.pauseAnimations();
+        svg.append(halt);
+
         const sync = () => {
           if (onScreen && !paletteOpen) {
+            if (!growing) {
+              growing = true;
+              svg.setCurrentTime(0);
+              object.style.opacity = "1";
+            }
             svg.unpauseAnimations();
             halt.remove();
           } else {
             svg.pauseAnimations();
             svg.append(halt);
+            // Only when a replay is armed — a palette pause happens right on
+            // top of the tree, and blanking it there would be jarring.
+            if (!growing) object.style.opacity = "0";
           }
         };
 
         const observer = new IntersectionObserver(
           ([entry]) => {
-            onScreen = entry.isIntersecting;
+            // Not intersectionRatio: the tree is often taller than the viewport,
+            // where the ratio tops out well below 1 and a plain threshold would
+            // never fire. Measure against how much of it *can* be shown.
+            const showable = Math.min(
+              entry.boundingClientRect.height,
+              entry.rootBounds?.height ?? window.innerHeight,
+            );
+            const covered = showable > 0 ? entry.intersectionRect.height / showable : 0;
+            // Asymmetric on purpose: it takes a near-full reveal to start, but
+            // only leaving the viewport entirely to stop — otherwise it freezes
+            // mid-sway the moment you scroll down to read the caption.
+            onScreen = onScreen ? entry.isIntersecting : covered >= 0.9;
+            // Leaving entirely arms a replay: scrolling back to the garden is a
+            // deliberate trip, and the growth is the reason to make it.
+            if (!entry.isIntersecting) growing = false;
             sync();
           },
-          { rootMargin: "100px" },
+          { threshold: Array.from({ length: 21 }, (_, step) => step / 20) },
         );
         observer.observe(object);
 
@@ -348,6 +430,35 @@ const eyebrowClass =
       // and a bfcache restore replays neither event — so try both paths.
       if (object.contentDocument?.readyState === "complete") attach();
       object.addEventListener("load", attach);
+
+      // Fetch and parse only once it's genuinely being approached. Loading it
+      // up front costs 3MB and several thousand animation elements' worth of
+      // main thread during the page's first seconds, which everything else —
+      // the command palette most visibly — has to queue behind. A margin of a
+      // whole viewport meant "immediately" on a tall screen, since the band
+      // begins just below the fold.
+      const src = object.dataset.src;
+      if (!src) return;
+
+      const loader = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          loader.disconnect();
+          // Idle, because on a tall screen the band's top edge is already in
+          // view at scroll 0 — the observer fires during load, and parsing
+          // 3MB right then is the thing that made the palette feel sticky.
+          // It stays invisible and paused until the reveal either way.
+          const parse = () => (object.data = src);
+          "requestIdleCallback" in window
+            ? requestIdleCallback(parse, { timeout: 2000 })
+            : setTimeout(parse, 200);
+        },
+        { rootMargin: "25% 0px" },
+      );
+      loader.observe(object);
+      document.addEventListener("astro:before-swap", () => loader.disconnect(), {
+        once: true,
+      });
     }
 
     document.addEventListener("astro:page-load", controlGarden);
