@@ -201,6 +201,65 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Paged pages: one section per screen, nothing from the next one peeking in
+   below the fold. Opt-in via Layout's `paged` prop, because mandatory snapping
+   is only coherent when every child of <main> is a .panel — on a prose page it
+   would take the scroll position away from the reader on every gesture. */
+.paged {
+  scroll-snap-type: y mandatory;
+  /* Overrides scroll-pt-20. That padding exists so an anchor jump clears the
+     sticky header, but it also parks a snapped panel 80px down the screen,
+     leaving an 80px sliver of the previous panel on top — measured, and exactly
+     the peeking this layout exists to prevent. Panels clear the header with
+     their own top padding instead. */
+  scroll-padding-top: 0;
+}
+
+/* Fixed rather than sticky, on paged pages only. A sticky header still occupies
+   flow space, which pushes every panel down by its height — so the first snap
+   position sits 57px into the document and the page visibly lurches down on
+   load. Taking it out of flow makes each snap position an exact multiple of the
+   viewport. Panels clear it with their own top padding. */
+.paged header {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+}
+
+.panel {
+  min-height: 100svh;
+  /* Top clears the sticky header, since content is centred in what's left. */
+  padding-block: 5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
+}
+
+/* Phone screens can't afford 7rem of chrome around a screenful of prose. */
+@media (max-width: 40rem) {
+  .panel {
+    padding-block: 4rem 1rem;
+  }
+}
+
+/* The footer is not a panel, and under mandatory snapping anything that isn't a
+   snap position is somewhere the scroll refuses to rest — without this the page
+   springs back to the last panel and the footer can never be read. Aligned to
+   the end so it sits against the bottom of the screen rather than stranding a
+   screenful of blank space below itself. */
+.paged footer {
+  scroll-snap-align: end;
+}
+
+/* Mandatory snapping and motion sensitivity are a bad pair — every scroll ends
+   in an animated correction the reader didn't ask for. */
+@media (prefers-reduced-motion: reduce) {
+  .paged {
+    scroll-snap-type: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

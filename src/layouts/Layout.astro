@@ -12,6 +12,10 @@ interface Props {
   image?: string;
   /** Reports the analytics hit as a 404 against the requested URL. */
   notFound?: boolean;
+  /** Pages built entirely out of `.panel` sections — see global.css. Opt-in
+      because mandatory snapping is only coherent when every child is a panel;
+      applied to a prose page it would fight the reader on every scroll. */
+  paged?: boolean;
 }
 
 const {
@@ -20,6 +24,7 @@ const {
   progress = false,
   image = "/og/site.png",
   notFound = false,
+  paged = false,
 } = Astro.props;
 
 const year = new Date().getUTCFullYear();
@@ -33,10 +38,7 @@ const analytics = import.meta.env.PROD;
 ---
 
 <!doctype html>
-<!-- snap-proximity, never mandatory: the only snap target is the garden band on
-     the home page, and mandatory snapping would wrestle anyone scrolling past
-     it (or reading a long post) for the scroll position. -->
-<html lang="en" class="scroll-pt-20 snap-y snap-proximity">
+<html lang="en" class:list={["scroll-pt-20", paged && "paged"]}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -308,7 +310,14 @@ const analytics = import.meta.env.PROD;
          doesn't match :focus-visible, so this stays unringed. -->
     <CommandPalette />
 
-    <main id="main" tabindex="-1" class="mx-auto max-w-3xl px-6 pt-14 pb-24">
+    <!-- No vertical padding when paged: the panels carry their own, and a
+         trailing pb-24 is dead space past the last snap point that the scroll
+         can never rest in. -->
+    <main
+      id="main"
+      tabindex="-1"
+      class:list={["mx-auto max-w-3xl px-6", paged ? "py-0" : "pt-14 pb-24"]}
+    >
       <slot />
     </main>
 

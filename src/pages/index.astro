@@ -109,13 +109,16 @@ const posts = (await getCollection("blog"))
 
 const linkClass =
   "decoration-line dark:decoration-line-dk hover:text-accent dark:hover:text-accent-dk underline underline-offset-4 transition-colors";
-const sectionClass = "border-line dark:border-line-dk mt-24 border-t pt-12";
+// One screen each. The rule that used to separate sections is gone: with a
+// panel per section the whitespace does that job, and a divider line halfway up
+// an otherwise empty screen just looks like a mistake.
+const sectionClass = "panel";
 const eyebrowClass =
   "reveal text-muted dark:text-muted-dk font-mono text-xs tracking-widest uppercase";
 ---
 
-<Layout title="Home">
-  <section aria-labelledby="about-heading">
+<Layout title="Home" paged>
+  <section aria-labelledby="about-heading" class={sectionClass}>
     <div
       class="bg-accent dark:bg-accent-dk mb-8 h-0.5 w-10 rounded-full"
       aria-hidden="true"
@@ -180,7 +183,7 @@ const eyebrowClass =
   <section
     id="garden"
     aria-labelledby="garden-heading"
-    class="border-line dark:border-line-dk mt-24 flex min-h-svh snap-center flex-col justify-center border-t py-12 [scroll-snap-stop:always]"
+    class="panel [scroll-snap-stop:always]"
   >
     <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
 
