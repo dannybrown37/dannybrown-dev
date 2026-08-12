@@ -221,18 +221,34 @@ const analytics = import.meta.env.PROD;
             GitHub
           </a>
           <!-- Shown only once the palette script sets data-ready, so a no-JS
-               visitor never sees a dead affordance — and only where a keyboard
-               is implied, since on touch the ⌘K label would be a lie. The gate
-               is a data attribute rather than the hidden attribute: hidden's
-               UA display:none loses to a Tailwind display utility. -->
+               visitor never sees a dead affordance. The gate is a data
+               attribute rather than the hidden attribute: hidden's UA
+               display:none loses to a Tailwind display utility.
+
+               The label is the shortcut where there's a keyboard to press it
+               with, and a search glyph where there isn't — on touch a key
+               label would be a lie, but the palette itself works fine by tap. -->
           <button
             id="palette-trigger"
             type="button"
             aria-label="Open command palette"
-            aria-keyshortcuts="Meta+K Control+K"
-            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk border-line dark:border-line-dk -my-2 hidden rounded-md border px-2 py-1 font-mono text-xs transition-colors data-ready:[@media(hover:hover)]:inline-block"
+            aria-keyshortcuts="/ Meta+K Control+K"
+            title="Press / to jump anywhere"
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk border-line dark:border-line-dk -my-2 hidden items-center rounded-md border px-2.5 py-1.5 font-mono text-xs transition-colors data-ready:inline-flex"
           >
-            <kbd class="font-mono">⌘K</kbd>
+            <kbd class="hidden font-mono [@media(hover:hover)]:inline">/</kbd>
+            <svg
+              class="h-3.5 w-3.5 [@media(hover:hover)]:hidden"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m16.5 16.5 4 4"></path>
+            </svg>
           </button>
           <button
             id="theme-toggle"

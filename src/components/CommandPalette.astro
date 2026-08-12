@@ -212,6 +212,15 @@ const commands: PaletteCommand[] = [
       <span><kbd>&crarr;</kbd> open</span>
       <span><kbd>esc</kbd> close</span>
     </div>
+
+    <!-- Same row for the keyboard-less: the hidden commands are the reason to
+         open this at all, and `ls` is the only way to find them by tapping. -->
+    <div
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk flex items-center gap-4 border-t px-4 py-2.5 font-mono text-[0.7rem] sm:hidden"
+    >
+      <span>tap to run</span>
+      <span>type <span class="text-accent dark:text-accent-dk">ls</span> for more</span>
+    </div>
   </form>
 </dialog>
 
@@ -317,6 +326,10 @@ const commands: PaletteCommand[] = [
       say.hidden = true;
       render();
       dialog.showModal();
+      // showModal() focuses the input, which on touch raises the virtual
+      // keyboard over the list you opened this to browse. Tapping the input
+      // still brings it up when you actually want to type.
+      if (!matchMedia("(hover: hover)").matches) input.blur();
       announce(true);
     };
 
