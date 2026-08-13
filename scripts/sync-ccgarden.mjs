@@ -9,10 +9,13 @@ import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
+import { ccgardenPoster } from "../src/lib/ccgarden-poster.ts";
 import { roundSvgPrecision } from "../src/lib/round-svg-precision.ts";
 
 const SOURCE = join(homedir(), ".claude", "ccgarden.svg");
 const TARGET = join(import.meta.dirname, "..", "public", "ccgarden.svg");
+// The still frame the homepage actually ships; see src/lib/ccgarden-poster.ts.
+const POSTER = join(import.meta.dirname, "..", "public", "ccgarden-poster.svg");
 
 const force = process.argv.includes("--force");
 
@@ -42,11 +45,17 @@ function run() {
   }
 
   const rounded = roundSvgPrecision(readFileSync(SOURCE, "utf8"));
+  // Newline-terminated, or end-of-file-fixer rewrites it on every commit.
+  const poster = `${ccgardenPoster(rounded).trimEnd()}\n`;
   writeFileSync(TARGET, rounded);
-  execFileSync("git", ["add", TARGET]);
+  writeFileSync(POSTER, poster);
+  execFileSync("git", ["add", TARGET, POSTER]);
 
-  const kb = (Buffer.byteLength(rounded) / 1024).toFixed(0);
-  console.log(`ccgarden: refreshed public/ccgarden.svg (${kb}KB) and staged it`);
+  const kb = (bytes) => (Buffer.byteLength(bytes) / 1024).toFixed(0);
+  console.log(
+    `ccgarden: refreshed public/ccgarden.svg (${kb(rounded)}KB) and ` +
+      `public/ccgarden-poster.svg (${kb(poster)}KB), and staged them`,
+  );
 }
 
 run();

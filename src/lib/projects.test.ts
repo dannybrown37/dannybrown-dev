@@ -23,8 +23,8 @@ describe("featuredProjects", () => {
 describe("projects data", () => {
   // The home page shows the featured set and links out to the rest, so a
   // fourth flag silently makes that section taller than a phone screen again.
-  it("features exactly three", () => {
-    expect(featuredProjects()).toHaveLength(3);
+  it("features exactly four", () => {
+    expect(featuredProjects()).toHaveLength(4);
   });
 
   it.each(projects)("$name has a unique name and an https url", ({ name, url }) => {

@@ -206,6 +206,13 @@ html {
    is only coherent when every child of <main> is a .panel — on a prose page it
    would take the scroll position away from the reader on every gesture. */
 .paged {
+  /* Mandatory on every screen, phones included. It used to drop to `proximity`
+     under 40rem — which on a phone reads as no snapping at all, and phones are
+     where the effect is worth having. The fear it was hedging against (a panel
+     taller than the screen becoming unreadable, since the scroll would refuse
+     to rest inside it) isn't real: the spec relaxes snapping wherever the snap
+     area is larger than the snapport, and Chrome does. Measured at 375x667,
+     where Experience still overflows: the scroll rests mid-panel and stays. */
   scroll-snap-type: y mandatory;
   /* Overrides scroll-pt-20. That padding exists so an anchor jump clears the
      sticky header, but it also parks a snapped panel 80px down the screen,
@@ -232,7 +239,12 @@ html {
   padding-block: 5rem 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* `safe`, and it is not optional. Plain `center` on a flex column whose
+     content outgrows it overflows in *both* directions — so on a short phone
+     the hero's first line ended up above the top of the document, where
+     nothing can scroll to it. It reads as the page having loaded already
+     scrolled down. `safe` falls back to flex-start exactly then. */
+  justify-content: safe center;
   scroll-snap-align: start;
 }
 
@@ -240,15 +252,6 @@ html {
 @media (max-width: 40rem) {
   .panel {
     padding-block: 4rem 1rem;
-  }
-
-  /* And a phone screen is short enough that a section can still outgrow it even
-     trimmed — Experience does. Under `mandatory` the scroll refuses to rest
-     anywhere but a panel's top edge, so the overflow is unreadable: it scrolls
-     past and springs back. `proximity` keeps the one-section-per-screen feel
-     where a section fits and gets out of the way where it doesn't. */
-  .paged {
-    scroll-snap-type: y proximity;
   }
 }
 

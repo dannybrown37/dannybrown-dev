@@ -13,12 +13,11 @@ import { svgAspect } from "../lib/svg-aspect";
 // here repeats a tool the paragraphs already argue for — these are the edges a
 // reader can't predict from "connected-vehicle backends on AWS".
 const breadth: [label: string, items: string[]][] = [
-  ["Languages", ["Python", "TypeScript", "JavaScript", "Node.js", "Bash"]],
-  [
-    "Infrastructure",
-    ["AWS", "Terraform", "OpenTofu", "CloudFormation", "Serverless Framework", "GitHub Actions", "Jenkins"],
-  ],
-  ["Data", ["DynamoDB", "Postgres", "Athena", "Timestream", "SQLite"]],
+  ["Languages", ["Python", "TypeScript", "JavaScript", "Bash", "Lua"]],
+  ["Infrastructure", ["AWS", "Terraform", "OpenTofu", "CloudFormation", "Serverless Framework"]],
+  ["Data", ["DynamoDB", "Postgres", "SQLite", "Athena", "Timestream", "SQL Server", "Firestore"]],
+  ["Daily Drivers", ["tmux", "uv", "pre-commit", "pytest", "ruff", "fzf", "GitHub Actions"]]
+
 ];
 
 const featured = featuredProjects();
@@ -35,7 +34,7 @@ const garden = svgAspect(readFileSync("public/ccgarden.svg", "utf8")) ?? {
 // show at once. Full-bleed out of the prose column, capped by the height budget
 // — the band minus the sticky header, heading, and caption — and by the
 // viewport width so a phone gets the whole tree rather than a cropped one.
-const gardenWidth = `min(56rem, 100vw - 2rem, calc((100svh - 15rem) * ${garden.ratio.toFixed(4)}))`;
+const gardenWidth = `min(56rem, 100vw - 2rem, calc((100svh - 16rem) * ${garden.ratio.toFixed(4)}))`;
 
 const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -71,33 +70,53 @@ const eyebrowClass =
     <SignalField />
   </section>
 
+  <!-- Prose and diagram used to share one panel, which made it the one section
+       taller than the screen it was supposed to fit — so the snap lock had a
+       hole in it exactly where the resume was. Nothing is cut: the resume is
+       split at the seam it already had. The scale of the work reads with the
+       diagram that shows it, and the taste reads with the inventory. -->
   <section aria-labelledby="experience-heading" class={sectionClass}>
     <h2 id="experience-heading" class={eyebrowClass}>Experience</h2>
-    <div class="text-muted dark:text-muted-dk mt-8 max-w-prose space-y-4 leading-relaxed">
+    <div class="text-muted dark:text-muted-dk mt-8 space-y-4 leading-relaxed">
       <p>
-        Billions of messages handled from thousands of vehicles, across two companies since 2021.
+        Billions of messages from thousands of vehicles, across two companies since 2021. See
+        more details on <a class={linkClass} href="https://www.linkedin.com/in/dannybrown37">LinkedIn</a>.
       </p>
       <p>
-        Infrastructure as Code always: nothing I run was clicked into existence.
+        Every end user drives the downnstream web application differently, which means the
+        product needs flexibility alongside reliability.
       </p>
       <p>
-        DynamoDB is my store of choice, provided I know my access patterns upfront.
-        I'm from the Alex DeBrie school: letting usage define the schema definitions
-        and storing simultaneously retrieved items in the same table.
-      </p>
-      <p>
-        I end up the Automation Guy in every role. I notice the manual steps everyone's
-        been wading through, and I truly enjoy lowering the water level.
+        Infrastructure as Code? Nothing I run was clicked into existence. If it's not repeatable, it's not done.
       </p>
     </div>
 
     <PipelineDiagram />
+  </section>
+
+  <section aria-labelledby="toolbelt-heading" class={sectionClass}>
+    <h2 id="toolbelt-heading" class={eyebrowClass}>Toolbelt</h2>
+    <div class="text-muted dark:text-muted-dk mt-8 space-y-4 leading-relaxed">
+      <p>
+        DynamoDB is my store of choice when I know the access patterns upfront: single-table,
+        usage driving the schema design, the Alex DeBrie school.
+      </p>
+      <p>
+        I end up the Automation Guy on every team I join. I can't help but notice the manual steps everyone's
+        been wading through, and I find joy in lowering the water level.
+      </p>
+      <p>
+        More than that, I build installable, self-documenting, auditable <em>systems</em>. "It works on my machine"
+        is just not an acceptable phrase in my world. If I step away from a project, I must be able to step
+        back in months or years later without breaking stride.
+      </p>
+    </div>
 
     <!-- Deliberately quieter than the Projects pills: there a chip means "this
          repo uses this", and reusing that treatment here would both change what
          the chip claims and put thirty of them on one page. -->
     <dl
-      class="border-line dark:border-line-dk text-muted dark:text-muted-dk mt-10 max-w-prose space-y-3 border-t pt-6 font-mono text-xs"
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk mt-10 space-y-3 border-t pt-6 font-mono text-xs"
     >
       {
         breadth.map(([label, items]) => (
@@ -123,45 +142,61 @@ const eyebrowClass =
   >
     <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
 
-    <!-- <object>, not <img>: the SVG needs its own document so its tooltips,
-         SMIL growth animation, and time-travel scrubber script all work.
-         `data` is set by the script below instead of here — it's a 3MB document
-         with thousands of animation elements, and parsing it during initial
-         load is what made the rest of the page (the command palette especially)
-         feel sticky before you had even scrolled to the tree. -->
-    <!-- contain:paint keeps the tree's continuous repaints inside this box; without
-         it the whole page re-composites on every scroll frame while it's visible. -->
+    <!-- The default render is a *still* — see src/lib/ccgarden-poster.ts. The
+         live document is 3MB of SMIL across five thousand animation elements
+         plus two scripts of its own, and paying for that on every visit is
+         what made the whole page feel like wading: the palette went sticky,
+         scrolling dropped frames, and the snap never settled. An <img> of the
+         frozen end state costs one rasterization and no main thread at all.
+
+         contain:paint keeps the live version's repaints inside this box once
+         it is running; without it the whole page re-composites every frame. -->
     <div
+      id="garden-frame"
       class="relative left-1/2 mt-6 -translate-x-1/2 [contain:paint]"
       style={`width: ${gardenWidth}; aspect-ratio: ${garden.css}`}
     >
-      <!-- Starts transparent in the markup, not from the script: the SVG paints
-           the moment its document parses, which is before `load` fires, so a
-           script-applied fade leaves a flash of night sky every time. -->
+      <img
+        id="ccgarden-poster"
+        src="/ccgarden-poster.svg"
+        width="800"
+        height="966"
+        decoding="async"
+        class="h-full w-full transition-opacity duration-500"
+        alt="A tree grown from my real Claude Code session history: trunk width from total sessions, one branch per repo, leaves for each session, under a sky that darkens with late-night prompts."
+      />
+
+      <!-- Empty until asked for. `data` is set by the script, never here: the
+           attribute alone starts the 3MB fetch and parse. -->
       <object
         id="ccgarden"
         type="image/svg+xml"
         data-src="/ccgarden.svg"
-        class="h-full w-full opacity-0 transition-opacity duration-700"
-        aria-label="A ccgarden tree visualization grown from my real Claude Code session history, regenerated on each commit"
+        aria-label="The same garden, growing from bare ground to today"
+        class="pointer-events-none absolute inset-0 h-full w-full opacity-0 transition-opacity duration-500"
       >
-        <p class="text-muted dark:text-muted-dk max-w-prose text-sm">
-          A tree grown from my Claude Code session history — it needs SVG support to
-          render. <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
-            >ccgarden</a
-          > builds it.
-        </p>
       </object>
-      <!-- The id outranks the utility class, so the fallback above is visible
-           to anyone whose browser will never run the script that reveals it. -->
-      <noscript><style>#ccgarden { opacity: 1 }</style></noscript>
+
+      <!-- Gated on data-ready so a no-JS visitor is left with the poster
+           rather than a button that does nothing. -->
+      <button
+        id="garden-play"
+        type="button"
+        class="bg-paper/85 dark:bg-paper-dk/85 border-line dark:border-line-dk text-ink dark:text-ink-dk hover:border-accent dark:hover:border-accent-dk absolute top-3 left-3 hidden items-center gap-2 rounded-full border px-3.5 py-2 font-mono text-xs backdrop-blur transition-colors data-ready:inline-flex"
+      >
+        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+        <span id="garden-play-label">Watch it grow</span>
+      </button>
     </div>
 
     <p class="text-muted dark:text-muted-dk mt-6 max-w-2xl text-sm">
       <code class="font-mono">ccgarden</code> is generative art built from Claude Code
-      session history, regrown on every commit — hover or tap anything for the numbers
-      behind it, or <a class={linkClass} href="https://github.com/dannybrown37/ccgarden"
-        >grow your own</a
+      session history, regrown on every commit. Play it to watch this tree grow from
+      bare ground and to hover or tap anything for the numbers behind it — or <a
+        class={linkClass}
+        href="https://github.com/dannybrown37/ccgarden">grow your own</a
       >. Dollar figures are notional, priced at listed API rates.
     </p>
   </section>
@@ -205,17 +240,34 @@ const eyebrowClass =
     )
   }
 
-  <!-- The tree's idle motion — wind, twinkle, rain — is CSS keyframe animation
-       set to `infinite`, so it never settles on its own: left alone it repaints
-       for as long as the page is open, including while scrolled out of view.
-       SMIL exposes its own timeline controls, so pause it whenever it isn't
-       actually on screen, and don't even fetch it until it's close. -->
+  <!-- The garden ships as a still image; this is the machinery behind the play
+       button. Everything it touches — a 3MB fetch, several thousand SMIL
+       elements, and the CSS keyframe motion that never settles on its own —
+       happens only once someone has actually asked to see the tree grow. -->
   <script>
     const GROWN = 60; // seconds; comfortably past the longest growth animation.
 
     function controlGarden() {
       const object = document.getElementById("ccgarden");
-      if (!(object instanceof HTMLObjectElement)) return;
+      const poster = document.getElementById("ccgarden-poster");
+      const play = document.getElementById("garden-play");
+      const label = document.getElementById("garden-play-label");
+      if (!(object instanceof HTMLObjectElement) || !(play instanceof HTMLButtonElement))
+        return;
+
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      play.dataset.ready = "";
+      if (label) label.textContent = reduced ? "Explore it" : "Watch it grow";
+
+      // Owned by attach(), called by the click handler once the document is up.
+      let replay: (() => void) | null = null;
+
+      const reveal = () => {
+        object.style.opacity = "1";
+        object.classList.remove("pointer-events-none");
+        if (poster) poster.style.opacity = "0";
+        if (label) label.textContent = reduced ? "Explore it" : "Replay";
+      };
 
       const attach = () => {
         // Duck-typed, and it has to be. `instanceof SVGSVGElement` is false
@@ -225,15 +277,17 @@ const eyebrowClass =
         const svg = object.contentDocument?.documentElement as SVGSVGElement | undefined;
         if (typeof svg?.pauseAnimations !== "function") return;
 
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        if (reduced) {
           // Jump to the end before pausing. Pausing at t=0 freezes the growth
-          // animations before anything has grown — a blank patch of dirt.
+          // animations before anything has grown — a blank patch of dirt. The
+          // tooltips are the point of loading it at all in this mode.
           svg.setCurrentTime(GROWN);
           svg.pauseAnimations();
+          reveal();
           return;
         }
 
-        let onScreen = false;
+        let onScreen = true;
         // The palette opens on top of the tree, so intersection alone still
         // leaves it repainting while someone is typing into it — and the
         // keystrokes lose the main thread to it.
@@ -250,53 +304,28 @@ const eyebrowClass =
         );
         halt.textContent = "*{animation-play-state:paused !important}";
 
-        // Held at t=0 until it's actually in front of someone: the growth is an
-        // 18-second one-shot, and starting it on load meant it was always over
-        // by the time you scrolled down to it. Hidden as well as paused —
-        // frame zero is an empty night sky, which just reads as a big blank
-        // box sitting there rather than as something about to happen.
-        let growing = false;
-        svg.pauseAnimations();
-        svg.append(halt);
-
         const sync = () => {
           if (onScreen && !paletteOpen) {
-            if (!growing) {
-              growing = true;
-              svg.setCurrentTime(0);
-              object.style.opacity = "1";
-            }
             svg.unpauseAnimations();
             halt.remove();
           } else {
             svg.pauseAnimations();
             svg.append(halt);
-            // Only when a replay is armed — a palette pause happens right on
-            // top of the tree, and blanking it there would be jarring.
-            if (!growing) object.style.opacity = "0";
           }
+        };
+
+        replay = () => {
+          svg.setCurrentTime(0);
+          onScreen = true;
+          sync();
         };
 
         const observer = new IntersectionObserver(
           ([entry]) => {
-            // Not intersectionRatio: the tree is often taller than the viewport,
-            // where the ratio tops out well below 1 and a plain threshold would
-            // never fire. Measure against how much of it *can* be shown.
-            const showable = Math.min(
-              entry.boundingClientRect.height,
-              entry.rootBounds?.height ?? window.innerHeight,
-            );
-            const covered = showable > 0 ? entry.intersectionRect.height / showable : 0;
-            // Asymmetric on purpose: it takes a near-full reveal to start, but
-            // only leaving the viewport entirely to stop — otherwise it freezes
-            // mid-sway the moment you scroll down to read the caption.
-            onScreen = onScreen ? entry.isIntersecting : covered >= 0.9;
-            // Leaving entirely arms a replay: scrolling back to the garden is a
-            // deliberate trip, and the growth is the reason to make it.
-            if (!entry.isIntersecting) growing = false;
+            onScreen = entry.isIntersecting;
             sync();
           },
-          { threshold: Array.from({ length: 21 }, (_, step) => step / 20) },
+          { threshold: 0 },
         );
         observer.observe(object);
 
@@ -314,40 +343,26 @@ const eyebrowClass =
           },
           { once: true },
         );
+
+        svg.setCurrentTime(0);
+        svg.unpauseAnimations();
+        reveal();
       };
 
-      // contentDocument is null until the SVG's own document finishes parsing,
-      // and a bfcache restore replays neither event — so try both paths.
-      if (object.contentDocument?.readyState === "complete") attach();
-      object.addEventListener("load", attach);
+      play.addEventListener("click", () => {
+        if (replay) {
+          replay();
+          return;
+        }
+        // Second click before it lands would start the fetch twice.
+        if (object.data) return;
 
-      // Fetch and parse only once it's genuinely being approached. Loading it
-      // up front costs 3MB and several thousand animation elements' worth of
-      // main thread during the page's first seconds, which everything else —
-      // the command palette most visibly — has to queue behind. A margin of a
-      // whole viewport meant "immediately" on a tall screen, since the band
-      // begins just below the fold.
-      const src = object.dataset.src;
-      if (!src) return;
-
-      const loader = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry.isIntersecting) return;
-          loader.disconnect();
-          // Idle, because on a tall screen the band's top edge is already in
-          // view at scroll 0 — the observer fires during load, and parsing
-          // 3MB right then is the thing that made the palette feel sticky.
-          // It stays invisible and paused until the reveal either way.
-          const parse = () => (object.data = src);
-          "requestIdleCallback" in window
-            ? requestIdleCallback(parse, { timeout: 2000 })
-            : setTimeout(parse, 200);
-        },
-        { rootMargin: "25% 0px" },
-      );
-      loader.observe(object);
-      document.addEventListener("astro:before-swap", () => loader.disconnect(), {
-        once: true,
+        if (label) label.textContent = "Loading…";
+        object.addEventListener("load", attach, { once: true });
+        // contentDocument is null until the SVG's own document finishes
+        // parsing, and a bfcache restore replays no event — so try both paths.
+        object.data = object.dataset.src ?? "";
+        if (object.contentDocument?.readyState === "complete") attach();
       });
     }
 

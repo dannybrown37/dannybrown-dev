@@ -109,13 +109,13 @@ const description =
   "Vehicles exchange MQTT with AWS IoT Core, and people reach the system through API Gateway. Both sides meet at Lambda, the only compute in the drawing, which reads and writes the DynamoDB and S3 layer beside it. Everything but the vehicles and the people is defined as infrastructure as code, and every link carries traffic in both directions — commands go back down to the fleet the same way telemetry comes up.";
 ---
 
-{/* `max-w-prose` and a viewBox whose ink runs edge to edge with no internal
-    margin: that pair is what locks the wide drawing to the same measure as the
-    paragraphs above, rather than approximating it. Nothing here may set a
-    max-height — a height cap makes `meet` letterbox, which silently shrinks the
-    width back off the text's edges. */}
+{/* Full column width, matching the uncapped prose above it, and a viewBox whose
+    ink runs edge to edge with no internal margin — that pair is what puts the
+    drawing's edges on the paragraphs' edges rather than near them. Nothing here
+    may set a max-height: a height cap makes `meet` letterbox, which silently
+    shrinks the width back off the text's edges. */}
 <svg
-  class="diagram mt-6 w-full max-w-prose"
+  class="diagram mt-8 w-full"
   viewBox="0 0 657 190"
   fill="none"
   role="img"
@@ -275,9 +275,13 @@ const description =
 
 {/* Capped rather than stretched to the measure: the narrow view only ever
     shows under 40rem, where the prose can still be 600px wide, and scaling a
-    340-wide viewBox up to that renders the node labels at 23px. */}
+    340-wide viewBox up to that renders the node labels at 23px.
+
+    Height-capped too. At 22rem wide this is 435px tall, which on a short phone
+    is most of the panel before anything else is drawn; `meet` letterboxes it
+    into whichever of the two budgets binds. */}
 <svg
-  class="diagram-narrow mt-6 w-full max-w-[22rem]"
+  class="diagram-narrow mt-6 max-h-[52svh] w-full max-w-[22rem]"
   viewBox="0 0 340 420"
   fill="none"
   role="img"
