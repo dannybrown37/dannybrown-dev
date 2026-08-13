@@ -1,0 +1,75 @@
+---
+import type { Project } from "../lib/projects";
+
+interface Props {
+  project: Project;
+  /** Home page: one screen has to hold three of these. */
+  compact?: boolean;
+}
+
+const { project, compact = false } = Astro.props;
+const description = (compact && project.blurb) || project.description;
+---
+
+<li
+  class="group border-line dark:border-line-dk hover:border-accent dark:hover:border-accent-dk hover:bg-accent/5 dark:hover:bg-accent-dk/10 relative rounded-r-md border-l py-3 pr-4 pl-5 transition-[background-color,border-color,transform] motion-safe:hover:translate-x-1"
+>
+  <a
+    class="group-hover:text-accent dark:group-hover:text-accent-dk font-display inline-flex items-baseline gap-2 text-lg transition-colors after:absolute after:inset-0"
+    href={project.url}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {project.name}
+    <span
+      aria-hidden="true"
+      class="text-muted dark:text-muted-dk transition-transform group-hover:translate-x-0.5"
+    >
+      ↗
+    </span>
+  </a>
+  {
+    project.live && (
+      <span class="text-accent dark:text-accent-dk ml-2 inline-flex items-center gap-1.5 align-middle font-mono text-xs">
+        <span
+          class="bg-accent dark:bg-accent-dk h-1.5 w-1.5 rounded-full"
+          aria-hidden="true"
+        />
+        live
+      </span>
+    )
+  }
+  {
+    project.license && (
+      /* Muted, not accent: `live` stays the one loud badge in the row.
+         U+FE0E forces text presentation — bare U+2696 renders as a color
+         emoji on Android and Windows, which breaks the mono badge line. */
+      <span
+        class="text-muted dark:text-muted-dk ml-2 inline-flex items-center gap-1.5 align-middle font-mono text-xs"
+        title={`Released under the ${project.license} license`}
+      >
+        <span aria-hidden="true">{"⚖︎"}</span>
+        {project.license}
+      </span>
+    )
+  }
+  <p class="text-muted dark:text-muted-dk mt-2 max-w-prose leading-relaxed">
+    {description}
+  </p>
+  {
+    !compact && project.install && (
+      /* relative: lifts the snippet above the card-wide ::after overlay on the
+         title link, so it can actually be selected and copied. */
+      <pre class="border-accent/40 dark:border-accent-dk/40 text-muted dark:text-muted-dk relative mt-3 max-w-prose overflow-x-auto border-l-2 py-0.5 pl-3 font-mono text-xs leading-relaxed"><code>{project.install}</code></pre>
+    )
+  }
+  <ul class="text-muted dark:text-muted-dk mt-3 flex flex-wrap gap-2 font-mono text-xs">
+    {
+      project.tech.map((tech) => (
+        <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
+          {tech}
+        </li>
+      ))
+    }
+  </ul>
+</li>

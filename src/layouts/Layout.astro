@@ -210,18 +210,26 @@ const analytics = import.meta.env.PROD;
         >
           Danny Brown
         </a>
-        <nav class="flex items-center gap-6 text-sm">
+        <nav class="flex items-center gap-4 text-sm sm:gap-6">
+          <a
+            href="/projects"
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
+          >
+            Projects
+          </a>
           <a
             href="/blog"
             class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
           >
             Writing
           </a>
+          <!-- Four nav items plus the name overflow a 320px screen; GitHub is
+               the one that's also in the footer and in the palette. -->
           <a
             href="https://github.com/dannybrown37"
             target="_blank"
             rel="noopener"
-            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 hidden px-3 py-4 transition-colors sm:inline"
           >
             GitHub
           </a>

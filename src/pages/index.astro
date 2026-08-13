@@ -5,20 +5,9 @@ import Layout from "../layouts/Layout.astro";
 import PostRow from "../components/PostRow.astro";
 import SignalField from "../components/SignalField.astro";
 import PipelineDiagram from "../components/PipelineDiagram.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { featuredProjects } from "../lib/projects";
 import { svgAspect } from "../lib/svg-aspect";
-
-interface Project {
-  name: string;
-  description: string;
-  url: string;
-  tech: string[];
-  /** Links to a running site rather than to source. */
-  live?: boolean;
-  /** Only for projects installable from a public index — not `git+https://…` fallbacks. */
-  install?: string;
-  /** SPDX id of the repo's LICENSE file. Omit when the repo has none. */
-  license?: string;
-}
 
 // The breadth half of the T. The prose above it is the depth half, so nothing
 // here repeats a tool the paragraphs already argue for — these are the edges a
@@ -32,65 +21,7 @@ const breadth: [label: string, items: string[]][] = [
   ["Data", ["DynamoDB", "Postgres", "Athena", "Timestream", "SQLite"]],
 ];
 
-// These are the repos the ccgarden tree above is grown from.
-const projects: Project[] = [
-  {
-    name: "gtd",
-    description:
-      "A TUI, CLI, and API for personal productivity built around Getting Things Done. Capture to an inbox, triage into projects with contexts and next actions, auto-reschedule recurring items, and run reviews grouped by Area of Focus.",
-    url: "https://github.com/dannybrown37/gtd",
-    tech: ["Python", "TUI", "Flask"],
-    install: "uv tool install gtd-tui",
-    license: "MIT",
-  },
-  {
-    name: "hamilhamilhamil",
-    description:
-      "CamelCamelCamel for Broadway: a daily scrape of the TKTS discount board into a price/discount history per show. Python scraper on a GitHub Actions cron, Next.js frontend on Vercel, Postgres in between.",
-    url: "https://hamilhamilhamil.com",
-    tech: ["Next.js", "TypeScript", "Python", "Postgres"],
-    live: true,
-  },
-  {
-    name: "skill-tree",
-    description:
-      "A shared home for reusable Claude Code skills: the tooling behind each skill, not just its playbook. Portable across repos and machines, packaged as a single installable plugin that is also its own marketplace.",
-    url: "https://github.com/dannybrown37/skill-tree",
-    tech: ["Claude Code", "Python", "Bash"],
-    install: `/plugin marketplace add dannybrown37/skill-tree\n/plugin install skill-tree@skill-tree`,
-    license: "MIT",
-  },
-  {
-    name: "git-a-grip",
-    description: "Take control of your Git history with this curated list of hooks plus a CLI for local pre-commit management",
-    url: "https://github.com/dannybrown37/git-a-grip",
-    tech: ["Pre-Commit", "Python", "Node.js", "Bash", "Commitizen"],
-    install: "# .pre-commit-config.yaml:\nrepos:\n  - repo: https://github.com/dannybrown37/git-a-grip\n    rev: v0.y.z\n    hooks:\n      - id: choose-your-hooks\n\n# For pre-commit tooling:\nuv tool install git-a-grip",
-    license: "MIT",
-  },
-  {
-    name: "dotfiles",
-    description: "Shell config and global dev tooling. And also the sandbox where most of my projects start.",
-    url: "https://github.com/dannybrown37/dotfiles",
-    tech: ["Bash", "Python", "TMUX", "Neovim", "WSL", "AutoHotKey", "Pre-Commit"],
-  },
-  {
-    name: "ccgarden",
-    description:
-      "Grows a tree from your Claude Code session history: each item represents a statistic. Check it out above!",
-    url: "https://github.com/dannybrown37/ccgarden",
-    tech: ["Python", "SVG", "SMIL", "SQLite", "Claude Code"],
-    install: "uv tool install ccgarden",
-    license: "MIT",
-  },
-  {
-    name: "dannybrown.dev",
-    description: "This site.",
-    url: "https://www.dannybrown.dev",
-    tech: ["Astro", "Tailwind", "TypeScript"],
-    live: true,
-  },
-];
+const featured = featuredProjects();
 
 // Read at build time, never hardcoded: the tree grows a little taller with
 // every regeneration, and a stale ratio crops the canopy.
@@ -238,63 +169,14 @@ const eyebrowClass =
   <section aria-labelledby="projects-heading" class={sectionClass}>
     <h2 id="projects-heading" class={eyebrowClass}>Projects</h2>
     <ul class="mt-8 space-y-6">
-      {
-        projects.map((project) => (
-          <li class="group border-line dark:border-line-dk hover:border-accent dark:hover:border-accent-dk hover:bg-accent/5 dark:hover:bg-accent-dk/10 relative rounded-r-md border-l py-3 pr-4 pl-5 transition-[background-color,border-color,transform] motion-safe:hover:translate-x-1">
-            <a
-              class="group-hover:text-accent dark:group-hover:text-accent-dk font-display inline-flex items-baseline gap-2 text-lg transition-colors after:absolute after:inset-0"
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {project.name}
-              <span
-                aria-hidden="true"
-                class="text-muted dark:text-muted-dk transition-transform group-hover:translate-x-0.5"
-              >
-                ↗
-              </span>
-            </a>
-            {project.live && (
-              <span class="text-accent dark:text-accent-dk ml-2 inline-flex items-center gap-1.5 align-middle font-mono text-xs">
-                <span
-                  class="bg-accent dark:bg-accent-dk h-1.5 w-1.5 rounded-full"
-                  aria-hidden="true"
-                />
-                live
-              </span>
-            )}
-            {project.license && (
-              /* Muted, not accent: `live` stays the one loud badge in the row.
-                 U+FE0E forces text presentation — bare U+2696 renders as a color
-                 emoji on Android and Windows, which breaks the mono badge line. */
-              <span
-                class="text-muted dark:text-muted-dk ml-2 inline-flex items-center gap-1.5 align-middle font-mono text-xs"
-                title={`Released under the ${project.license} license`}
-              >
-                <span aria-hidden="true">{"⚖︎"}</span>
-                {project.license}
-              </span>
-            )}
-            <p class="text-muted dark:text-muted-dk mt-2 max-w-prose leading-relaxed">
-              {project.description}
-            </p>
-            {project.install && (
-              /* relative: lifts the snippet above the card-wide ::after overlay on the
-                 title link, so it can actually be selected and copied. */
-              <pre class="border-accent/40 dark:border-accent-dk/40 text-muted dark:text-muted-dk relative mt-3 max-w-prose overflow-x-auto border-l-2 py-0.5 pl-3 font-mono text-xs leading-relaxed"><code>{project.install}</code></pre>
-            )}
-            <ul class="text-muted dark:text-muted-dk mt-3 flex flex-wrap gap-2 font-mono text-xs">
-              {project.tech.map((tech) => (
-                <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
-                  {tech}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))
-      }
+      {featured.map((project) => <ProjectCard project={project} compact />)}
     </ul>
+    <a
+      class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors"
+      href="/projects"
+    >
+      All projects →
+    </a>
   </section>
 
   {

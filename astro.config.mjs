@@ -9,18 +9,14 @@ export default defineConfig({
   site: 'https://dannybrown.dev',
   integrations: [
     sitemap({
-      // The og/ routes are 1200x630 card images, not pages, and the two
-      // redirects below resolve to anchors on the home page.
-      filter: (page) =>
-        !page.includes('/og/') &&
-        !page.endsWith('/about/') &&
-        !page.endsWith('/projects/'),
+      // The og/ routes are 1200x630 card images, not pages, and /about is a
+      // redirect that resolves to an anchor on the home page.
+      filter: (page) => !page.includes('/og/') && !page.endsWith('/about/'),
     }),
   ],
-  // About and Projects folded into the home page; keep the old URLs alive.
+  // About is folded into the home page; keep the old URL alive.
   redirects: {
     '/about': '/#about-heading',
-    '/projects': '/#work-heading',
   },
   markdown: {
     shikiConfig: {

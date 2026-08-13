@@ -241,6 +241,15 @@ html {
   .panel {
     padding-block: 4rem 1rem;
   }
+
+  /* And a phone screen is short enough that a section can still outgrow it even
+     trimmed — Experience does. Under `mandatory` the scroll refuses to rest
+     anywhere but a panel's top edge, so the overflow is unreadable: it scrolls
+     past and springs back. `proximity` keeps the one-section-per-screen feel
+     where a section fits and gets out of the way where it doesn't. */
+  .paged {
+    scroll-snap-type: y proximity;
+  }
 }
 
 /* The footer is not a panel, and under mandatory snapping anything that isn't a
