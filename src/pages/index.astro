@@ -20,6 +20,19 @@ interface Project {
   license?: string;
 }
 
+// The breadth half of the T. The prose above it is the depth half, so nothing
+// here repeats a tool the paragraphs already argue for — these are the edges a
+// reader can't predict from "connected-vehicle backends on AWS".
+const breadth: [label: string, items: string[]][] = [
+  ["Languages", ["Python", "TypeScript", "Bash", "Node.js"]],
+  [
+    "Infrastructure",
+    ["Terraform", "OpenTofu", "CloudFormation", "Serverless Framework", "GitHub Actions"],
+  ],
+  ["Data", ["DynamoDB", "Postgres", "Athena", "Timestream", "SQLite"]],
+  ["Interfaces", ["Next.js", "Astro", "Textual", "Flask", "Neovim", "Pre-Commit"]],
+];
+
 // These are the repos the ccgarden tree above is grown from.
 const projects: Project[] = [
   {
@@ -80,17 +93,6 @@ const projects: Project[] = [
   },
 ];
 
-const stack = [
-  "AWS Lambda",
-  "DynamoDB",
-  "API Gateway",
-  "IoT Core",
-  "Node.js",
-  "TypeScript",
-  "Python",
-  "IaC",
-];
-
 // Read at build time, never hardcoded: the tree grows a little taller with
 // every regeneration, and a stale ratio crops the canopy.
 const garden = svgAspect(readFileSync("public/ccgarden.svg", "utf8")) ?? {
@@ -134,8 +136,7 @@ const eyebrowClass =
     </h1>
     <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-lg leading-relaxed">
       Senior software engineer building connected-vehicle backends on AWS, fitting LLM
-      agents into real engineering workflows, accomplishing tasks with the fewest
-      motions possible, and making it fun to use the computer again.
+      agents into engineering workflows, and making it fun to use the computer again.
     </p>
     <SignalField />
   </section>
@@ -144,30 +145,39 @@ const eyebrowClass =
     <h2 id="experience-heading" class={eyebrowClass}>Experience</h2>
     <div class="text-muted dark:text-muted-dk mt-8 max-w-prose space-y-4 leading-relaxed">
       <p>
-        I've been building backends for connected vehicles since 2021, handling billions of
-        messages from thousands of vehicles across two companies in the space.
+        Billions of messages handled from thousands of vehicles, across two companies since 2021.
       </p>
       <p>
-        Most of that load has arrived via MQTT topics on AWS IoT Core,
-        seeding downstream services on Lambda, API Gateway, S3, and the rest
-        of the AWS Serverless toolkit. Infrastructure as Code always, across CloudFormation,
-        Terraform, OpenTofu, and Serverless Framework.
+        Infrastructure as Code always: nothing I run was clicked into existence.
       </p>
       <p>
-        DynamoDB is my deep end; I've shipped on Postgres, SQL Server, Timestream,
-        and others. I'm from the Alex DeBrie school: single-table when
-        items are accessed together, and query shapes driving schema design rather than
-        the other way around.
+        DynamoDB is my store of choice, provided I know my access patterns upfront and have the time
+        to design an idiomatic schema. I'm from the Alex DeBrie school: designing schemas directly
+        around access patterns and storing simultaneously retrieved items in the same table.
       </p>
       <p>
-        I've ended up the Automation Guy at every company I've worked
-        at: the person who notices the manual steps everybody's been wading through and
-        lowers the water level.
-        Firmly a backend engineer, shifted left.
+        I end up the Automation Guy in every role. I notice the manual steps everyone's
+        been wading through, and I truly enjoy lowering the water level.
       </p>
     </div>
-    <!-- Renders the chips itself wherever the diagram won't fit. -->
-    <PipelineDiagram stack={stack} />
+
+    <!-- Deliberately quieter than the Projects pills: there a chip means "this
+         repo uses this", and reusing that treatment here would both change what
+         the chip claims and put thirty of them on one page. -->
+    <dl
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk mt-10 max-w-prose space-y-3 border-t pt-6 font-mono text-xs"
+    >
+      {
+        breadth.map(([label, items]) => (
+          <div class="sm:grid sm:grid-cols-[8rem_1fr] sm:gap-4">
+            <dt class="tracking-widest uppercase opacity-70">{label}</dt>
+            <dd class="mt-1 leading-relaxed sm:mt-0">{items.join(" · ")}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <PipelineDiagram />
   </section>
 
   <!-- A full-viewport band, and the only snapping target on the site.

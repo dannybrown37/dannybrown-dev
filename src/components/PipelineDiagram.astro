@@ -1,28 +1,38 @@
 ---
 // The actual topology the paragraphs above describe. It replaces the stack
-// chips rather than joining them — the chips list the same service names with
-// none of the shape, and showing both is the same content twice. The chips are
-// this component's own fallback rather than the page's, so the two can never
-// drift out of sync: they share one media query, one shows where the other
-// hides.
+// chips rather than joining them — the chips listed the same service names with
+// none of the shape, and showing both is the same content twice.
 //
-// The two ends are the point of the drawing: vehicles on the left, people on
-// the right, and everything between them inside the IaC boundary. Both ends sit
+// The two ends are the point of the drawing: the fleet at one end, people at
+// the other, and everything between them inside the IaC boundary. Both ends sit
 // outside that boundary because neither is something you provision.
 //
 // Lambda is the hub, not a stop on the way. Both ingress paths end there — the
 // fleet's through IoT Core, people's through API Gateway — and it is the only
-// thing that touches storage, which is why the stores hang beneath it rather
-// than sitting in the horizontal chain. Drawn inline, they'd claim API Gateway
-// reads DynamoDB directly, which is the one thing in here nobody builds.
+// thing that touches storage, which is why the stores hang off it rather than
+// sitting in the chain. Drawn inline, they'd claim API Gateway reads DynamoDB
+// directly, which is the one thing in here nobody builds.
 //
-// Left-to-right is distance from a human, not direction of travel: every link
+// The long axis is distance from a human, not direction of travel: every link
 // runs both ways, since vehicles take commands as readily as they report.
-interface Props {
-  stack: string[];
+//
+// Two geometries, one topology. The wide drawing can't shrink to a phone — at
+// 390px its labels land under 7px — and it can't scroll either, because the
+// clipped end is where the people are, and a reader who never drags sees the
+// system trail off into nothing. So the narrow view turns the same graph down
+// the page instead. Everything that carries meaning is shared below: the node
+// names, the sub-labels, the fleet grid, and the flow timings. Only the
+// coordinates differ, so a renamed service can't say two different things in
+// the two views.
+interface Node {
+  label: string;
+  sub: string;
 }
 
-const { stack } = Astro.props;
+const iotCore: Node = { label: "IoT Core", sub: "topic rules" };
+const lambda: Node = { label: "Lambda", sub: "python · typescript" };
+const apiGateway: Node = { label: "API Gateway", sub: "rest" };
+const storeLabels = ["DynamoDB", "S3"];
 
 const nodeBox = "fill-paper-soft dark:fill-paper-soft-dk stroke-line dark:stroke-line-dk";
 const nodeLabel = "fill-ink dark:fill-ink-dk font-mono text-[13px]";
@@ -30,80 +40,94 @@ const subLabel = "fill-muted dark:fill-muted-dk font-mono text-[9px]";
 const wire = "stroke-line dark:stroke-line-dk";
 const pulse = "flow-short stroke-accent dark:stroke-accent-dk";
 
-// Stores are cylinders, the one shape that has meant "this is where the data
-// sits" for long enough that it needs no label to say so.
-const stores = [
-  { x: 224, label: "DynamoDB" },
-  { x: 324, label: "S3" },
-];
+const boundary = "infrastructure as code";
 
-// Curves use control points sharing an axis with their endpoint, so the tangent
-// is flat where each one lands and the arrowheads sit square against the boxes.
-//
 // Every leg gets its own period as well as its own delay. Sharing one duration
 // makes the whole drawing re-sync on a fixed beat no matter how the delays are
 // staggered — the pattern repeats, and a repeating pattern reads as a loop
 // rather than as traffic. Durations here are deliberately non-harmonic, so the
 // arrangement takes minutes to come back around.
-const wires = [
-  {
-    d: "M64 68 H 100",
-    out: { delay: -0.4, dur: 2.3, dash: "22 78" },
-    back: { delay: -1.9, dur: 3.9, dash: "14 86" },
-  },
-  {
-    d: "M200 68 H 246",
-    out: { delay: -1.1, dur: 3.1, dash: "16 84" },
-    back: { delay: -2.6, dur: 2.5, dash: "26 74" },
-  },
-  {
-    d: "M286 90 C 286 103, 262 103, 262 116",
-    out: { delay: -1.8, dur: 2.7, dash: "28 72" },
-    back: { delay: -0.7, dur: 3.4, dash: "18 82" },
-  },
-  {
-    d: "M338 90 C 338 103, 362 103, 362 116",
-    out: { delay: -2.1, dur: 3.7, dash: "20 80" },
-    back: { delay: -1.0, dur: 2.2, dash: "30 70" },
-  },
-  {
-    d: "M374 68 H 430",
-    out: { delay: -2.4, dur: 2.9, dash: "24 76" },
-    back: { delay: -3.5, dur: 4.1, dash: "12 88" },
-  },
-  {
-    d: "M534 68 H 594",
-    out: { delay: -3.0, dur: 3.3, dash: "18 82" },
-    back: { delay: -1.3, dur: 2.8, dash: "26 74" },
-  },
+//
+// Indexed the same in both views: fleet link, IoT Core to Lambda, the two
+// stores, Lambda to API Gateway, API Gateway to people.
+const flows = [
+  { out: { delay: -0.4, dur: 2.3, dash: "22 78" }, back: { delay: -1.9, dur: 3.9, dash: "14 86" } },
+  { out: { delay: -1.1, dur: 3.1, dash: "16 84" }, back: { delay: -2.6, dur: 2.5, dash: "26 74" } },
+  { out: { delay: -1.8, dur: 2.7, dash: "28 72" }, back: { delay: -0.7, dur: 3.4, dash: "18 82" } },
+  { out: { delay: -2.1, dur: 3.7, dash: "20 80" }, back: { delay: -1.0, dur: 2.2, dash: "30 70" } },
+  { out: { delay: -2.4, dur: 2.9, dash: "24 76" }, back: { delay: -3.5, dur: 4.1, dash: "12 88" } },
+  { out: { delay: -3.0, dur: 3.3, dash: "18 82" }, back: { delay: -1.3, dur: 2.8, dash: "26 74" } },
 ];
 
+// Curves use control points sharing an axis with their endpoint, so the tangent
+// is flat where each one lands and the arrowheads sit square against the boxes.
+const widePaths = [
+  "M64 68 H 100",
+  "M200 68 H 246",
+  "M286 90 C 286 103, 262 103, 262 116",
+  "M338 90 C 338 103, 362 103, 362 116",
+  "M374 68 H 430",
+  "M534 68 H 594",
+];
+
+// The stores branch sideways here rather than downward, which is the one change
+// the turn forces: below Lambda is where the chain itself has to go.
+const narrowPaths = [
+  "M110 80 V 124",
+  "M110 164 V 200",
+  "M172 210 C 202 210, 202 196, 232 196",
+  "M172 230 C 202 230, 202 256, 232 256",
+  "M110 240 V 282",
+  "M110 310 V 366",
+];
+
+const wideWires = widePaths.map((d, i) => ({ d, ...flows[i] }));
+const narrowWires = narrowPaths.map((d, i) => ({ d, ...flows[i] }));
+
+// Stores are cylinders, the one shape that has meant "this is where the data
+// sits" for long enough that it needs no label to say so. `x`/`y` is the centre
+// of the top ellipse; the body runs 20 below it and the base bulges 6 past that.
+const wideStores = storeLabels.map((label, i) => ({ x: 224 + i * 100, y: 122, label }));
+const narrowStores = storeLabels.map((label, i) => ({ x: 232, y: 186 + i * 60, label }));
+
 // Nine vehicles, two of them mid-transmit. Drawn as cars rather than as blocks
-// because a block at this size is just a chip, and the left end of the drawing
+// because a block at this size is just a chip, and the fleet end of the drawing
 // is the one place that has to read as "not something you provision".
-const fleet = [0, 21, 42].flatMap((x) =>
-  [44, 62, 80].map((y) => ({ x, y, live: (x === 21 && y === 44) || (x === 0 && y === 80) })),
-);
+const fleetAt = (originX: number, originY: number) =>
+  [0, 21, 42].flatMap((dx) =>
+    [0, 18, 36].map((dy) => ({
+      x: originX + dx,
+      y: originY + dy,
+      live: (dx === 21 && dy === 0) || (dx === 0 && dy === 36),
+    })),
+  );
+
+// Three of them, spaced 20 apart, each 14 wide and drawn from a baseline of 0.
+const peopleAt = (originX: number) => [0, 20, 40].map((dx) => originX + dx);
+
+const description =
+  "Vehicles exchange MQTT with AWS IoT Core, and people reach the system through API Gateway. Both sides meet at Lambda, the only compute in the drawing, which reads and writes the DynamoDB and S3 layer beside it. Everything but the vehicles and the people is defined as infrastructure as code, and every link carries traffic in both directions — commands go back down to the fleet the same way telemetry comes up.";
 ---
 
-<!-- `max-w-prose` and a viewBox whose ink runs edge to edge with no internal
-     margin: that pair is what locks the drawing to the same measure as the
-     paragraphs above, rather than approximating it. Nothing here may set a
-     max-height — a height cap makes `meet` letterbox, which silently shrinks
-     the width back off the text's edges. Short viewports drop to the chips
-     instead. -->
+{/* `max-w-prose` and a viewBox whose ink runs edge to edge with no internal
+    margin: that pair is what locks the wide drawing to the same measure as the
+    paragraphs above, rather than approximating it. Nothing here may set a
+    max-height — a height cap makes `meet` letterbox, which silently shrinks the
+    width back off the text's edges. */}
 <svg
   class="diagram mt-6 w-full max-w-prose"
   viewBox="0 0 657 190"
   fill="none"
   role="img"
-  aria-label="Vehicles exchange MQTT with AWS IoT Core, and people reach the system through API Gateway. Both sides meet at Lambda, the only compute in the drawing, which reads and writes the DynamoDB and S3 layer beneath it. Everything but the vehicles and the people is defined as infrastructure as code, and every link carries traffic in both directions — commands go back down to the fleet the same way telemetry comes up."
+  aria-label={description}
   data-flow
 >
   <defs>
     <!-- Two markers, not one with `orient="auto-start-reverse"`: that keyword
          only landed in Safari 16.4, and a browser that ignores it draws the
-         return arrowhead pointing backwards into the line. -->
+         return arrowhead pointing backwards into the line. Each view carries
+         its own pair — a marker defined inside a `display: none` SVG is not
+         reliably resolvable from the one that is showing. -->
     <marker
       id="pipeline-arrow"
       viewBox="0 0 6 6"
@@ -132,7 +156,7 @@ const fleet = [0, 21, 42].flatMap((x) =>
 
   <!-- The fleet: nine of thousands. -->
   {
-    fleet.map(({ x, y, live }) => (
+    fleetAt(0, 44).map(({ x, y, live }) => (
       <g
         transform={`translate(${x} ${y})`}
         class={live ? "fill-accent/70 dark:fill-accent-dk/70" : "fill-line dark:fill-line-dk"}
@@ -164,13 +188,13 @@ const fleet = [0, 21, 42].flatMap((x) =>
     height="14"
     class="fill-paper dark:fill-paper-dk"
     stroke="none"></rect>
-  <text x="112" y="26" class={subLabel}>infrastructure as code</text>
+  <text x="112" y="26" class={subLabel}>{boundary}</text>
 
   <!-- Two pulses per wire, not two wires: the outbound and the return leg are
        one physical connection, and splitting them would double the ink for a
        single link. -->
   {
-    wires.map(({ d, out, back }) => (
+    wideWires.map(({ d, out, back }) => (
       <>
         <path
           d={d}
@@ -205,41 +229,41 @@ const fleet = [0, 21, 42].flatMap((x) =>
        them is read: a hexagon that routes, a rounded box that computes, a
        waisted gate that everything from outside has to pass through. -->
   <path d="M104 68 L114 48 H190 L200 68 L190 88 H114 Z" class={nodeBox} stroke-width="1"></path>
-  <text x="152" y="66" text-anchor="middle" class={nodeLabel}>IoT Core</text>
-  <text x="152" y="79" text-anchor="middle" class={subLabel}>topic rules</text>
+  <text x="152" y="66" text-anchor="middle" class={nodeLabel}>{iotCore.label}</text>
+  <text x="152" y="79" text-anchor="middle" class={subLabel}>{iotCore.sub}</text>
 
   <rect x="250" y="48" width="124" height="40" rx="6" class={nodeBox} stroke-width="1"
   ></rect>
-  <text x="312" y="66" text-anchor="middle" class={nodeLabel}>Lambda</text>
-  <text x="312" y="79" text-anchor="middle" class={subLabel}>python · typescript</text>
+  <text x="312" y="66" text-anchor="middle" class={nodeLabel}>{lambda.label}</text>
+  <text x="312" y="79" text-anchor="middle" class={subLabel}>{lambda.sub}</text>
 
   <path
     d="M424 48 H540 C532 58, 532 78, 540 88 H424 C432 78, 432 58, 424 48 Z"
     class={nodeBox}
     stroke-width="1"></path>
-  <text x="482" y="66" text-anchor="middle" class={nodeLabel}>API Gateway</text>
-  <text x="482" y="79" text-anchor="middle" class={subLabel}>rest</text>
+  <text x="482" y="66" text-anchor="middle" class={nodeLabel}>{apiGateway.label}</text>
+  <text x="482" y="79" text-anchor="middle" class={subLabel}>{apiGateway.sub}</text>
 
   {
-    stores.map(({ x, label }) => (
+    wideStores.map(({ x, y, label }) => (
       <>
         <path
-          d={`M${x} 122 V142 A38 6 0 0 0 ${x + 76} 142 V122`}
+          d={`M${x} ${y} V${y + 20} A38 6 0 0 0 ${x + 76} ${y + 20} V${y}`}
           class={nodeBox}
           stroke-width="1"
         />
-        <ellipse cx={x + 38} cy="122" rx="38" ry="6" class={nodeBox} stroke-width="1" />
-        <text x={x + 38} y="140" text-anchor="middle" class={nodeLabel}>
+        <ellipse cx={x + 38} cy={y} rx="38" ry="6" class={nodeBox} stroke-width="1" />
+        <text x={x + 38} y={y + 18} text-anchor="middle" class={nodeLabel}>
           {label}
         </text>
       </>
     ))
   }
 
-  <!-- People, not screens: the right end is who the system is for, and the
-       screen they happen to be sitting at is the one detail nobody needs. -->
+  <!-- People, not screens: this end is who the system is for, and the screen
+       they happen to be sitting at is the one detail nobody needs. -->
   {
-    [600, 620, 640].map((x) => (
+    peopleAt(600).map((x) => (
       <g transform={`translate(${x} 0)`} class="fill-line dark:fill-line-dk" stroke="none">
         <circle cx="7" cy="57" r="4" />
         <path d="M0 76 v-4 a7 7 0 0 1 14 0 v4 z" />
@@ -249,12 +273,153 @@ const fleet = [0, 21, 42].flatMap((x) =>
   <text x="627" y="106" text-anchor="middle" class={subLabel}>people</text>
 </svg>
 
-<ul
-  class="diagram-fallback text-muted dark:text-muted-dk mt-6 flex-wrap gap-2 font-mono text-xs"
+{/* Capped rather than stretched to the measure: the narrow view only ever
+    shows under 40rem, where the prose can still be 600px wide, and scaling a
+    340-wide viewBox up to that renders the node labels at 23px. */}
+<svg
+  class="diagram-narrow mt-6 w-full max-w-[22rem]"
+  viewBox="0 0 340 420"
+  fill="none"
+  role="img"
+  aria-label={description}
+  data-flow
 >
+  <defs>
+    <marker
+      id="pipeline-arrow-n"
+      viewBox="0 0 6 6"
+      refX="6"
+      refY="3"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0 0 L6 3 L0 6 z" class="fill-line dark:fill-line-dk" stroke="none"
+      ></path>
+    </marker>
+    <marker
+      id="pipeline-arrow-back-n"
+      viewBox="0 0 6 6"
+      refX="0"
+      refY="3"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M6 0 L0 3 L6 6 z" class="fill-line dark:fill-line-dk" stroke="none"
+      ></path>
+    </marker>
+  </defs>
+
   {
-    stack.map((tech) => (
-      <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">{tech}</li>
+    fleetAt(80, 8).map(({ x, y, live }) => (
+      <g
+        transform={`translate(${x} ${y})`}
+        class={live ? "fill-accent/70 dark:fill-accent-dk/70" : "fill-line dark:fill-line-dk"}
+        stroke="none"
+      >
+        <path d="M3.5 5.5 L5.5 2 H11.5 L13.5 5.5 Z" />
+        <rect x="0.5" y="5" width="17" height="4.5" rx="1.5" />
+        <circle cx="4.5" cy="10" r="1.7" />
+        <circle cx="13.5" cy="10" r="1.7" />
+      </g>
     ))
   }
-</ul>
+  <text x="110" y="72" text-anchor="middle" class={subLabel}>vehicles</text>
+
+  <!-- The boundary's tab moves to the right here: the chain enters through the
+       top edge at centre, straight through where the label sat in the wide
+       view. -->
+  <rect
+    x="20"
+    y="96"
+    width="300"
+    height="240"
+    rx="8"
+    class="stroke-line dark:stroke-line-dk"
+    stroke-width="1"
+    stroke-dasharray="3 5"></rect>
+  <rect
+    x="174"
+    y="89"
+    width="138"
+    height="14"
+    class="fill-paper dark:fill-paper-dk"
+    stroke="none"></rect>
+  <text x="182" y="100" class={subLabel}>{boundary}</text>
+
+  {
+    narrowWires.map(({ d, out, back }) => (
+      <>
+        <path
+          d={d}
+          class={wire}
+          stroke-width="1.25"
+          marker-start="url(#pipeline-arrow-back-n)"
+          marker-end="url(#pipeline-arrow-n)"
+        />
+        <path
+          d={d}
+          class={pulse}
+          stroke-width="2"
+          pathLength="100"
+          style={`--flow-delay: ${out.delay}s; --flow-duration: ${out.dur}s; stroke-dasharray: ${out.dash}`}
+        />
+        <path
+          d={d}
+          class={`${pulse} flow-reverse`}
+          stroke-width="2"
+          pathLength="100"
+          style={`--flow-delay: ${back.delay}s; --flow-duration: ${back.dur}s; stroke-dasharray: ${back.dash}`}
+        />
+      </>
+    ))
+  }
+
+  <text x="104" y="92" text-anchor="end" class={subLabel}>mqtt</text>
+
+  <path d="M62 144 L72 124 H148 L158 144 L148 164 H72 Z" class={nodeBox} stroke-width="1"
+  ></path>
+  <text x="110" y="142" text-anchor="middle" class={nodeLabel}>{iotCore.label}</text>
+  <text x="110" y="155" text-anchor="middle" class={subLabel}>{iotCore.sub}</text>
+
+  <rect x="48" y="200" width="124" height="40" rx="6" class={nodeBox} stroke-width="1"
+  ></rect>
+  <text x="110" y="218" text-anchor="middle" class={nodeLabel}>{lambda.label}</text>
+  <text x="110" y="231" text-anchor="middle" class={subLabel}>{lambda.sub}</text>
+
+  <!-- The gate turns with the chain: waisted on the edges the traffic crosses,
+       which are the top and bottom here rather than the sides. -->
+  <path
+    d="M48 276 C 58 284, 162 284, 172 276 V316 C 162 308, 58 308, 48 316 Z"
+    class={nodeBox}
+    stroke-width="1"></path>
+  <text x="110" y="294" text-anchor="middle" class={nodeLabel}>{apiGateway.label}</text>
+  <text x="110" y="307" text-anchor="middle" class={subLabel}>{apiGateway.sub}</text>
+
+  {
+    narrowStores.map(({ x, y, label }) => (
+      <>
+        <path
+          d={`M${x} ${y} V${y + 20} A38 6 0 0 0 ${x + 76} ${y + 20} V${y}`}
+          class={nodeBox}
+          stroke-width="1"
+        />
+        <ellipse cx={x + 38} cy={y} rx="38" ry="6" class={nodeBox} stroke-width="1" />
+        <text x={x + 38} y={y + 18} text-anchor="middle" class={nodeLabel}>
+          {label}
+        </text>
+      </>
+    ))
+  }
+
+  {
+    peopleAt(83).map((x) => (
+      <g transform={`translate(${x} 315)`} class="fill-line dark:fill-line-dk" stroke="none">
+        <circle cx="7" cy="57" r="4" />
+        <path d="M0 76 v-4 a7 7 0 0 1 14 0 v4 z" />
+      </g>
+    ))
+  }
+  <text x="110" y="407" text-anchor="middle" class={subLabel}>people</text>
+</svg>

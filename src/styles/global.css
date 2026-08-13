@@ -361,32 +361,31 @@ html {
   stroke-dasharray: 24 76;
 }
 
-/* The pipeline diagram and its chip fallback are two views of one thing, so
-   they share a single query here rather than a Tailwind variant on each, which
-   would be two queries free to drift apart — and, written as a template literal
-   to avoid that, would compile to nothing at all: Tailwind only sees class
-   names that appear literally in the source.
+/* The wide and narrow pipeline drawings are two views of one thing, so they
+   share a single query here rather than a Tailwind variant on each, which would
+   be two queries free to drift apart — and, written as a template literal to
+   avoid that, would compile to nothing at all: Tailwind only sees class names
+   that appear literally in the source.
 
-   Both conditions are load-bearing. Width, because the SVG's labels scale with
-   its viewBox and a phone would render them at about six pixels. Height,
-   because at prose width the drawing is 173px tall, which four paragraphs and a
-   heading leave no room for under ~720px of viewport — and a panel taller than
-   the screen is one the snap lock can never show all of. */
+   Labels scale with the viewBox, which is what rules out serving the wide
+   drawing to a phone: at 390px it would render them under 7px, and letting it
+   overflow instead clips off the end where the people are. The narrow view is
+   the same graph turned down the page, at full label size. */
 .diagram {
+  display: block;
+}
+
+.diagram-narrow {
   display: none;
 }
 
-.diagram-fallback {
-  display: flex;
-}
-
-@media (min-width: 40rem) and (min-height: 45rem) {
+@media (max-width: 40rem) {
   .diagram {
-    display: block;
+    display: none;
   }
 
-  .diagram-fallback {
-    display: none;
+  .diagram-narrow {
+    display: block;
   }
 }
 

@@ -9,6 +9,21 @@ repos:
     rev: v0.11.0
     hooks:
       - id: block-private-terms
+      # The script owns the whole file and stages it; regen-file runs it
+      # without a shell and re-stages only when the bytes actually moved.
+      - id: regen-file
+        name: Refresh ccgarden garden
+        args:
+          - '--command=node scripts/sync-ccgarden.mjs'
+          - '--file=public/ccgarden.svg'
+      # Widened from the hook's JS default: a .astro component or a post's
+      # .md frontmatter breaks these tests as readily as a .ts file. Matched
+      # by extension rather than by an `astro` type tag, which older
+      # identify releases -- including the one pre-commit is pinned to here
+      # -- do not know about.
+      - id: vitest
+        types_or: [text]
+        files: \.(ts|astro|md)$
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
@@ -24,20 +39,3 @@ repos:
     rev: v8.30.1
     hooks:
       - id: gitleaks
-
-  - repo: local
-    hooks:
-      - id: ccgarden
-        name: Refresh ccgarden garden
-        entry: bash -c 'cd "$(git rev-parse --show-toplevel)" && node scripts/sync-ccgarden.mjs'
-        language: system
-        always_run: true
-        pass_filenames: false
-        require_serial: true
-
-      - id: vitest
-        name: vitest
-        entry: bash -c 'cd "$(git rev-parse --show-toplevel)" && npm test'
-        language: system
-        files: \.(ts|astro|md)$
-        pass_filenames: false
