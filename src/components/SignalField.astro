@@ -26,7 +26,7 @@ const path = (y: number, bend: number) =>
 <!-- Masked at both edges so the lanes emerge from and dissolve into the page
      instead of stopping at a hard crop line. -->
 <div
-  class="relative left-1/2 mt-14 h-[clamp(5rem,24svh,16rem)] w-screen -translate-x-1/2 [contain:paint] [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+  class="relative left-1/2 mt-14 h-[clamp(5rem,20svh,9rem)] w-screen sm:h-[clamp(5rem,24svh,16rem)] -translate-x-1/2 [contain:paint] [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
   aria-hidden="true"
   data-flow
 >
@@ -34,11 +34,18 @@ const path = (y: number, bend: number) =>
        1920px the natural aspect is a 350px band, which on a short wide screen
        pushes this panel past the viewport — and a panel taller than the screen
        is one the snap lock can never show all of. Cropping the field top and
-       bottom costs nothing; it has no edges that mean anything. -->
+       bottom costs nothing; it has no edges that mean anything.
+
+       `xMax`, not `xMid`: once the container is narrower than ~5.5x its height
+       (any phone) `slice` starts cropping horizontally too, and centering on x
+       throws away the right side — which is where the hub lives. Anchoring the
+       right edge keeps the hub and its exit on screen and crops the lanes'
+       far-left origins instead, which the mask was already fading anyway. Wide
+       screens are past that threshold, so nothing changes there. -->
   <svg
     class="h-full w-full"
     viewBox="0 0 1200 220"
-    preserveAspectRatio="xMidYMid slice"
+    preserveAspectRatio="xMaxYMid slice"
     fill="none"
     stroke-linecap="round"
   >
