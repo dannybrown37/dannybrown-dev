@@ -3,6 +3,13 @@
 exclude: ^public/ccgarden\.svg$
 
 repos:
+  # gitleaks finds credentials. This finds the strings that are only
+  # sensitive because of who typed them, from a file outside the tree.
+  - repo: https://github.com/dannybrown37/git-a-grip
+    rev: v0.11.0
+    hooks:
+      - id: block-private-terms
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:

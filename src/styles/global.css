@@ -419,7 +419,10 @@ html {
   .flow-out,
   .flow-short {
     animation: none;
-    stroke-dasharray: none;
+    /* `!important` because the pipeline's pulses set their dasharray inline, to
+       give every leg its own rhythm — without it those six lines would keep
+       their dashes here and read as broken wires. */
+    stroke-dasharray: none !important;
     opacity: 0.55;
   }
 }
