@@ -24,13 +24,12 @@ interface Project {
 // here repeats a tool the paragraphs already argue for — these are the edges a
 // reader can't predict from "connected-vehicle backends on AWS".
 const breadth: [label: string, items: string[]][] = [
-  ["Languages", ["Python", "TypeScript", "Bash", "Node.js"]],
+  ["Languages", ["Python", "TypeScript", "JavaScript", "Node.js", "Bash"]],
   [
     "Infrastructure",
-    ["Terraform", "OpenTofu", "CloudFormation", "Serverless Framework", "GitHub Actions"],
+    ["AWS", "Terraform", "OpenTofu", "CloudFormation", "Serverless Framework", "GitHub Actions", "Jenkins"],
   ],
   ["Data", ["DynamoDB", "Postgres", "Athena", "Timestream", "SQLite"]],
-  ["Interfaces", ["Next.js", "Astro", "Textual", "Flask", "Neovim", "Pre-Commit"]],
 ];
 
 // These are the repos the ccgarden tree above is grown from.
@@ -161,6 +160,8 @@ const eyebrowClass =
       </p>
     </div>
 
+    <PipelineDiagram />
+
     <!-- Deliberately quieter than the Projects pills: there a chip means "this
          repo uses this", and reusing that treatment here would both change what
          the chip claims and put thirty of them on one page. -->
@@ -176,8 +177,6 @@ const eyebrowClass =
         ))
       }
     </dl>
-
-    <PipelineDiagram />
   </section>
 
   <!-- A full-viewport band, and the only snapping target on the site.
