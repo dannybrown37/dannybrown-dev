@@ -332,6 +332,98 @@ html {
   }
 }
 
+/* Travelling pulses in the hero field and the pipeline diagram. Both are dash
+   animations on a path with `pathLength="100"`, so the dash pattern is in
+   percent of the path rather than user units — one keyframe set covers strokes
+   of wildly different lengths, and a -100 offset is exactly one seamless lap
+   regardless of geometry.
+
+   Delays are negative so every pulse is already mid-flight at first paint;
+   starting them all at zero gives a synchronised burst and then a dead beat. */
+.flow,
+.flow-out,
+.flow-short {
+  animation: flow var(--flow-duration, 3s) linear infinite;
+  animation-delay: var(--flow-delay, 0s);
+}
+
+.flow {
+  stroke-dasharray: 7 93;
+}
+
+.flow-out {
+  --flow-duration: 2.4s;
+  stroke-dasharray: 12 88;
+}
+
+.flow-short {
+  --flow-duration: 2.6s;
+  stroke-dasharray: 24 76;
+}
+
+/* The pipeline diagram and its chip fallback are two views of one thing, so
+   they share a single query here rather than a Tailwind variant on each, which
+   would be two queries free to drift apart — and, written as a template literal
+   to avoid that, would compile to nothing at all: Tailwind only sees class
+   names that appear literally in the source.
+
+   Both conditions are load-bearing. Width, because the SVG's labels scale with
+   its viewBox and a phone would render them at about six pixels. Height,
+   because at prose width the drawing is 173px tall, which four paragraphs and a
+   heading leave no room for under ~720px of viewport — and a panel taller than
+   the screen is one the snap lock can never show all of. */
+.diagram {
+  display: none;
+}
+
+.diagram-fallback {
+  display: flex;
+}
+
+@media (min-width: 40rem) and (min-height: 45rem) {
+  .diagram {
+    display: block;
+  }
+
+  .diagram-fallback {
+    display: none;
+  }
+}
+
+/* The return leg of a two-way link. Must stay after the rules above: their
+   `animation` shorthand resets animation-direction, so declaring this first
+   would leave both pulses running the same way. */
+.flow-reverse {
+  animation-direction: reverse;
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* Off-screen is paused, not just invisible — an infinite animation keeps
+   repainting for as long as the page is open otherwise. Set by the observer in
+   index.astro; the whole rule is inert without it, so no-JS gets a static
+   diagram rather than a stuck one. */
+[data-flow-paused] :is(.flow, .flow-out, .flow-short) {
+  animation-play-state: paused;
+}
+
+/* No dash pattern at all under reduced motion. Leaving the dasharray in place
+   would freeze each line as a stub with a gap after it, which reads as a
+   rendering bug; the solid stroke is the honest static equivalent. */
+@media (prefers-reduced-motion: reduce) {
+  .flow,
+  .flow-out,
+  .flow-short {
+    animation: none;
+    stroke-dasharray: none;
+    opacity: 0.55;
+  }
+}
+
 ::selection {
   background: var(--color-accent);
   color: white;

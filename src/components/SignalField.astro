@@ -1,0 +1,87 @@
+---
+// Lanes converging on a hub, with a pulse travelling each one. Abstract on
+// purpose — it's the hero, not a diagram — but the shape is the job: many
+// noisy inputs, one ordered exit.
+//
+// Every lane is drawn twice: a static base stroke, and an accent stroke
+// dashed short enough to read as a single travelling pulse. Dash animation
+// rather than <animateMotion> so one CSS property carries the whole effect
+// and `prefers-reduced-motion` can switch it off from the stylesheet.
+const lanes = [
+  { y: 18, dur: "5.6s", delay: "-0.2s", bend: 430 },
+  { y: 52, dur: "4.4s", delay: "-2.9s", bend: 380 },
+  { y: 86, dur: "6.8s", delay: "-1.4s", bend: 500 },
+  { y: 120, dur: "4.9s", delay: "-3.7s", bend: 350 },
+  { y: 154, dur: "6.1s", delay: "-0.9s", bend: 470 },
+  { y: 188, dur: "5.2s", delay: "-2.3s", bend: 410 },
+  { y: 202, dur: "7.4s", delay: "-4.6s", bend: 540 },
+];
+
+const HUB_X = 1010;
+const HUB_Y = 110;
+const path = (y: number, bend: number) =>
+  `M0 ${y} C ${bend} ${y}, 660 ${HUB_Y}, ${HUB_X} ${HUB_Y}`;
+---
+
+<!-- Masked at both edges so the lanes emerge from and dissolve into the page
+     instead of stopping at a hard crop line. -->
+<div
+  class="relative left-1/2 mt-14 h-[clamp(5rem,24svh,16rem)] w-screen -translate-x-1/2 [contain:paint] [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+  aria-hidden="true"
+  data-flow
+>
+  <!-- Height-capped and `slice`, not width-driven and `h-auto`: full-bleed at
+       1920px the natural aspect is a 350px band, which on a short wide screen
+       pushes this panel past the viewport — and a panel taller than the screen
+       is one the snap lock can never show all of. Cropping the field top and
+       bottom costs nothing; it has no edges that mean anything. -->
+  <svg
+    class="h-full w-full"
+    viewBox="0 0 1200 220"
+    preserveAspectRatio="xMidYMid slice"
+    fill="none"
+    stroke-linecap="round"
+  >
+    {
+      lanes.map(({ y, dur, delay, bend }) => (
+        <>
+          <path
+            d={path(y, bend)}
+            class="stroke-line dark:stroke-line-dk"
+            stroke-width="1"
+          />
+          <path
+            d={path(y, bend)}
+            class="flow stroke-accent dark:stroke-accent-dk"
+            stroke-width="1.75"
+            pathLength="100"
+            style={`--flow-duration: ${dur}; --flow-delay: ${delay}`}
+          />
+        </>
+      ))
+    }
+
+    <path
+      d={`M${HUB_X} ${HUB_Y} H 1200`}
+      class="stroke-line dark:stroke-line-dk"
+      stroke-width="2"></path>
+    <path
+      d={`M${HUB_X} ${HUB_Y} H 1200`}
+      class="flow-out stroke-accent dark:stroke-accent-dk"
+      stroke-width="2.5"
+      pathLength="100"></path>
+
+    <circle
+      cx={HUB_X}
+      cy={HUB_Y}
+      r="13"
+      class="stroke-accent/40 dark:stroke-accent-dk/40"
+      stroke-width="1"></circle>
+    <circle
+      cx={HUB_X}
+      cy={HUB_Y}
+      r="4.5"
+      class="fill-accent dark:fill-accent-dk"
+      stroke="none"></circle>
+  </svg>
+</div>

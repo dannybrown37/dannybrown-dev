@@ -1,0 +1,245 @@
+---
+// The actual topology the paragraphs above describe. It replaces the stack
+// chips rather than joining them — the chips list the same service names with
+// none of the shape, and showing both is the same content twice. The chips are
+// this component's own fallback rather than the page's, so the two can never
+// drift out of sync: they share one media query, one shows where the other
+// hides.
+//
+// The two ends are the point of the drawing: vehicles on the left, people on
+// the right, and everything between them inside the IaC boundary. Both ends sit
+// outside that boundary because neither is something you provision.
+interface Props {
+  stack: string[];
+}
+
+const { stack } = Astro.props;
+
+const nodeBox = "fill-paper-soft dark:fill-paper-soft-dk stroke-line dark:stroke-line-dk";
+const nodeLabel = "fill-ink dark:fill-ink-dk font-mono text-[13px]";
+const subLabel = "fill-muted dark:fill-muted-dk font-mono text-[9px]";
+const wire = "stroke-line dark:stroke-line-dk";
+const pulse = "flow-short stroke-accent dark:stroke-accent-dk";
+
+const sinks = [
+  { y: 28, label: "DynamoDB" },
+  { y: 78, label: "S3" },
+  { y: 128, label: "API Gateway" },
+];
+
+// Two-way, all three: Lambda reads as much as it writes, and drawing it
+// one-way told a story where data only ever falls downhill. Each leaves
+// Lambda's edge at its own height — a single shared origin point stacks three
+// arrowheads on top of each other once the return direction is drawn too.
+const fanOut = [
+  "M358 82 C 380 82, 376 45, 396 45",
+  "M358 95 H 396",
+  "M358 108 C 380 108, 376 145, 396 145",
+];
+---
+
+<!-- `max-w-prose` and a viewBox whose ink runs edge to edge with no internal
+     margin: that pair is what locks the drawing to the same measure as the
+     paragraphs above, rather than approximating it. Nothing here may set a
+     max-height — a height cap makes `meet` letterbox, which silently shrinks
+     the width back off the text's edges. Short viewports drop to the chips
+     instead. -->
+<svg
+  class="diagram mt-6 w-full max-w-prose"
+  viewBox="0 0 657 190"
+  fill="none"
+  role="img"
+  aria-label="Vehicle telemetry arrives over MQTT into AWS IoT Core and seeds Lambda, which reads and writes DynamoDB, S3, and API Gateway — all of it defined as infrastructure as code — with API Gateway serving the people at the other end."
+  data-flow
+>
+  <defs>
+    <!-- Two markers, not one with `orient="auto-start-reverse"`: that keyword
+         only landed in Safari 16.4, and a browser that ignores it draws the
+         return arrowhead pointing backwards into the line. -->
+    <marker
+      id="pipeline-arrow"
+      viewBox="0 0 6 6"
+      refX="6"
+      refY="3"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0 0 L6 3 L0 6 z" class="fill-line dark:fill-line-dk" stroke="none"
+      ></path>
+    </marker>
+    <marker
+      id="pipeline-arrow-back"
+      viewBox="0 0 6 6"
+      refX="0"
+      refY="3"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M6 0 L0 3 L6 6 z" class="fill-line dark:fill-line-dk" stroke="none"
+      ></path>
+    </marker>
+  </defs>
+
+  <!-- The fleet: nine of thousands, two of them mid-transmit. -->
+  {
+    [0, 21, 42].map((x) =>
+      [64, 80, 96].map((y) => (
+        <rect
+          x={x}
+          y={y}
+          width="16"
+          height="11"
+          rx="2.5"
+          class={
+            (x === 21 && y === 64) || (x === 0 && y === 96)
+              ? "fill-accent/70 dark:fill-accent-dk/70"
+              : "fill-line dark:fill-line-dk"
+          }
+          stroke="none"
+        />
+      )),
+    )
+  }
+  <text x="29" y="124" text-anchor="middle" class={subLabel}>vehicles</text>
+
+  <!-- Infrastructure as Code, drawn as the boundary it actually is. -->
+  <rect
+    x="94"
+    y="14"
+    width="470"
+    height="162"
+    rx="8"
+    class="stroke-line dark:stroke-line-dk"
+    stroke-width="1"
+    stroke-dasharray="3 5"></rect>
+  <rect
+    x="106"
+    y="7"
+    width="146"
+    height="14"
+    class="fill-paper dark:fill-paper-dk"
+    stroke="none"></rect>
+  <text x="114" y="18" class={subLabel}>infrastructure as code</text>
+
+  <!-- One-way on purpose, and the only one left: telemetry goes up, nothing
+       comes back down this wire. -->
+  <path
+    d="M64 95 H 100"
+    class={wire}
+    stroke-width="1.25"
+    marker-end="url(#pipeline-arrow)"></path>
+  <path
+    d="M64 95 H 100"
+    class={pulse}
+    stroke-width="2"
+    pathLength="100"
+    style="--flow-delay: -0.4s"></path>
+  <!-- Left of centre on its wire: centred, the label's right edge grazes the
+       IaC boundary the wire is crossing. -->
+  <text x="78" y="86" text-anchor="middle" class={subLabel}>mqtt</text>
+
+  <rect x="106" y="76" width="104" height="38" rx="6" class={nodeBox} stroke-width="1"
+  ></rect>
+  <text x="158" y="94" text-anchor="middle" class={nodeLabel}>IoT Core</text>
+  <text x="158" y="107" text-anchor="middle" class={subLabel}>topic rules</text>
+
+  <path
+    d="M210 95 H 240"
+    class={wire}
+    stroke-width="1.25"
+    marker-end="url(#pipeline-arrow)"></path>
+  <path
+    d="M210 95 H 240"
+    class={pulse}
+    stroke-width="2"
+    pathLength="100"
+    style="--flow-delay: -1.1s"></path>
+
+  <rect x="248" y="76" width="104" height="38" rx="6" class={nodeBox} stroke-width="1"
+  ></rect>
+  <text x="300" y="94" text-anchor="middle" class={nodeLabel}>Lambda</text>
+  <text x="300" y="107" text-anchor="middle" class={subLabel}>python · typescript</text>
+
+  {
+    fanOut.map((d, index) => (
+      <>
+        <path
+          d={d}
+          class={wire}
+          stroke-width="1.25"
+          marker-start="url(#pipeline-arrow-back)"
+          marker-end="url(#pipeline-arrow)"
+        />
+        <path
+          d={d}
+          class={pulse}
+          stroke-width="2"
+          pathLength="100"
+          style={`--flow-delay: ${-1.8 - index * 0.5}s`}
+        />
+      </>
+    ))
+  }
+
+  {
+    sinks.map(({ y, label }) => (
+      <>
+        <rect
+          x="396"
+          y={y}
+          width="146"
+          height="34"
+          rx="6"
+          class={nodeBox}
+          stroke-width="1"
+        />
+        <text x="469" y={y + 22} text-anchor="middle" class={nodeLabel}>
+          {label}
+        </text>
+      </>
+    ))
+  }
+
+  <!-- Out of API Gateway, back across the boundary, and in again. Two pulses
+       rather than two wires: the request going up and the response coming back
+       are the same connection, and the whole left-to-right read only means
+       anything because it ends here. -->
+  <path
+    d="M548 145 C 574 145, 574 95, 592 95"
+    class={wire}
+    stroke-width="1.25"
+    marker-start="url(#pipeline-arrow-back)"
+    marker-end="url(#pipeline-arrow)"></path>
+  <path
+    d="M548 145 C 574 145, 574 95, 592 95"
+    class={pulse}
+    stroke-width="2"
+    pathLength="100"
+    style="--flow-delay: -2.2s"></path>
+  <path
+    d="M548 145 C 574 145, 574 95, 592 95"
+    class={`${pulse} flow-reverse`}
+    stroke-width="2"
+    pathLength="100"
+    style="--flow-delay: -0.9s"></path>
+
+  <rect x="600" y="72" width="38" height="28" rx="3" class="fill-line dark:fill-line-dk"
+    stroke="none"></rect>
+  <rect x="600" y="80" width="38" height="1.5" class="fill-accent/70 dark:fill-accent-dk/70"
+    stroke="none"></rect>
+  <rect x="644" y="76" width="13" height="21" rx="3" class="fill-line dark:fill-line-dk"
+    stroke="none"></rect>
+  <text x="628" y="124" text-anchor="middle" class={subLabel}>people</text>
+</svg>
+
+<ul
+  class="diagram-fallback text-muted dark:text-muted-dk mt-6 flex-wrap gap-2 font-mono text-xs"
+>
+  {
+    stack.map((tech) => (
+      <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">{tech}</li>
+    ))
+  }
+</ul>

@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import PostRow from "../components/PostRow.astro";
+import SignalField from "../components/SignalField.astro";
+import PipelineDiagram from "../components/PipelineDiagram.astro";
 import { svgAspect } from "../lib/svg-aspect";
 
 interface Project {
@@ -135,6 +137,7 @@ const eyebrowClass =
       agents into real engineering workflows, accomplishing tasks with the fewest
       motions possible, and making it fun to use the computer again.
     </p>
+    <SignalField />
   </section>
 
   <section aria-labelledby="experience-heading" class={sectionClass}>
@@ -163,15 +166,8 @@ const eyebrowClass =
         Firmly a backend engineer, shifted left.
       </p>
     </div>
-    <ul class="text-muted dark:text-muted-dk mt-6 flex flex-wrap gap-2 font-mono text-xs">
-      {
-        stack.map((tech) => (
-          <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">
-            {tech}
-          </li>
-        ))
-      }
-    </ul>
+    <!-- Renders the chips itself wherever the diagram won't fit. -->
+    <PipelineDiagram stack={stack} />
   </section>
 
   <!-- A full-viewport band, and the only snapping target on the site.
@@ -464,6 +460,29 @@ const eyebrowClass =
       });
     }
 
+    // Same rule the garden follows, for the same reason: the hero field and the
+    // pipeline diagram loop forever, and a paged layout means each one spends
+    // most of the visit scrolled off screen still repainting. CSS owns the
+    // pause; this only marks who is visible.
+    function controlFlow() {
+      const flows = document.querySelectorAll<HTMLElement>("[data-flow]");
+      if (!flows.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          const element = entry.target as HTMLElement;
+          if (entry.isIntersecting) delete element.dataset.flowPaused;
+          else element.dataset.flowPaused = "";
+        }
+      });
+
+      for (const flow of flows) observer.observe(flow);
+      document.addEventListener("astro:before-swap", () => observer.disconnect(), {
+        once: true,
+      });
+    }
+
     document.addEventListener("astro:page-load", controlGarden);
+    document.addEventListener("astro:page-load", controlFlow);
   </script>
 </Layout>
