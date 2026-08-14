@@ -1,7 +1,11 @@
 ---
-// The actual topology the paragraphs above describe. It replaces the stack
+// The topology the Experience paragraphs describe — a shape assembled from
+// ordinary AWS services, not any one employer's system. It replaces the stack
 // chips rather than joining them — the chips listed the same service names with
 // none of the shape, and showing both is the same content twice.
+//
+// "above" is only true of the wide view: under 40rem the drawing moves to its
+// own panel and the prose is a swipe back up.
 //
 // The two ends are the point of the drawing: the fleet at one end, people at
 // the other, and everything between them inside the IaC boundary. Both ends sit
@@ -24,6 +28,21 @@
 // names, the sub-labels, and the flow timings. Only the coordinates differ, so
 // a renamed service can't say two different things in the two views — the one
 // exception is the fleet, which turns from a grid into a row (see fleetRowAt).
+//
+// The two views render from separate call sites because they live in different
+// panels: measured across phones, prose plus drawing overran a 100svh panel by
+// 110–150px on everything shorter than an iPhone 14, and the drawing can't give
+// that back — it's already at the size where `meet` starts scaling node labels
+// under 8px, which is what disqualified the wide view from phones to begin
+// with. So under 40rem the drawing gets a panel of its own. Which view a call
+// site renders is still decided by the media query in global.css, not here:
+// passing `view` only says which one this slot is for.
+interface Props {
+  view?: "wide" | "narrow";
+}
+
+const { view = "wide" } = Astro.props;
+
 interface Node {
   label: string;
   sub: string;
@@ -128,6 +147,8 @@ const description =
     drawing's edges on the paragraphs' edges rather than near them. Nothing here
     may set a max-height: a height cap makes `meet` letterbox, which silently
     shrinks the width back off the text's edges. */}
+{
+  view === "wide" && (
 <svg
   class="diagram mt-8 w-full"
   viewBox="0 0 657 190"
@@ -286,16 +307,20 @@ const description =
   }
   <text x="627" y="106" text-anchor="middle" class={subLabel}>people</text>
 </svg>
+  )
+}
 
 {/* Capped rather than stretched to the measure: the narrow view only ever
     shows under 40rem, where the prose can still be 600px wide, and scaling a
     340-wide viewBox up to that renders the node labels at 23px.
 
-    Height-capped too. At 22rem wide this is 335px tall, which on a short phone
-    is still most of the panel before anything else is drawn; `meet` letterboxes
-    it into whichever of the two budgets binds. */}
+    Height-capped too, at a fraction that leaves the panel's own eyebrow and
+    padding room on a 640px-tall phone; `meet` letterboxes it into whichever of
+    the two budgets binds. */}
+{
+  view === "narrow" && (
 <svg
-  class="diagram-narrow mt-4 max-h-[46svh] w-full max-w-[22rem]"
+  class="diagram-narrow mt-8 max-h-[76svh] w-full max-w-[24rem]"
   viewBox="0 0 340 324"
   fill="none"
   role="img"
@@ -441,3 +466,5 @@ const description =
   }
   <text x="110" y="318" text-anchor="middle" class={subLabel}>people</text>
 </svg>
+  )
+}

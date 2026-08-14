@@ -19,7 +19,7 @@ export const projects: Project[] = [
   {
     name: "gtd",
     description:
-      "A TUI, CLI, API, and webapp for personal productivity built around Getting Things Done. Capture to an inbox, triage into projects with contexts and next actions, auto-reschedule recurring items, and run reviews grouped by Area of Focus.",
+      "A TUI, CLI, API, and self-hosted PWA for personal productivity built around Getting Things Done. Capture to an inbox, triage into projects with contexts and next actions, auto-reschedule recurring items, and run reviews grouped by Area of Focus.",
     url: "https://github.com/dannybrown37/gtd",
     tech: [
       "Textual",
@@ -29,7 +29,7 @@ export const projects: Project[] = [
       "Oracle Cloud",
       "Python",
     ],
-    blurb: "Getting Things Done as a TUI, CLI, API, and webapp: capture, triage, review.",
+    blurb: "Getting Things Done as a TUI, CLI, API, and self-hosted PWA: capture, triage, review.",
     install: "uv tool install gtd-tui",
     license: "MIT",
     featured: true,

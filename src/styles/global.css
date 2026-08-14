@@ -387,7 +387,11 @@ html {
   display: block;
 }
 
-.diagram-narrow {
+/* `display: none` on the section, not just the drawing: it is a `.panel`, so
+   leaving it in flow above 40rem would put a blank screenful between Experience
+   and Toolbelt — and a snap stop on it. */
+.diagram-narrow,
+.diagram-panel {
   display: none;
 }
 
@@ -398,6 +402,11 @@ html {
 
   .diagram-narrow {
     display: block;
+  }
+
+  /* Restores .panel's own display, which the rule above overrode. */
+  .diagram-panel {
+    display: flex;
   }
 }
 

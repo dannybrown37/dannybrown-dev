@@ -13,10 +13,11 @@ import { svgAspect } from "../lib/svg-aspect";
 // here repeats a tool the paragraphs already argue for — these are the edges a
 // reader can't predict from "connected-vehicle backends on AWS".
 const breadth: [label: string, items: string[]][] = [
-  ["Languages", ["Python", "TypeScript", "JavaScript", "Bash", "Lua"]],
-  ["Infrastructure", ["AWS", "Terraform", "OpenTofu", "CloudFormation", "Serverless Framework"]],
-  ["Data", ["DynamoDB", "S3", "Postgres", "SQLite", "Athena", "Timestream", "SQL Server", "Firestore"]],
-  ["Daily Drivers", ["tmux", "uv", "pre-commit", "pytest", "ruff", "fzf", "GitHub Actions"]]
+  ["Languages", ["Python", "TypeScript", "JavaScript", "Bash"]],
+  ["Data", ["DynamoDB", "S3",  "SQLite", "Postgres", "Athena", "Timestream", "Firestore", "SQL Server"]],
+  ["Infrastructure", ["AWS", "Terraform", "OpenTofu", "CloudFormation", "Serverless Framework", "GCP"]],
+  ["Python Toolchain", ["uv", "pytest", "ruff", "click", "pydantic"]],
+  ["Workflow", ["pre-commit", "tmux", "fzf", "GitHub Actions"]]
 
 ];
 
@@ -80,31 +81,54 @@ const eyebrowClass =
     <div class="text-muted dark:text-muted-dk mt-8 space-y-4 leading-relaxed">
       <p>
         Billions of messages from thousands of vehicles, <a class={linkClass} href="https://www.linkedin.com/in/dannybrown37">across two companies since 2021</a>.
-        I've built backends that handle the scale while flexibly adapting to the unique needs of each end user.
+        Hundreds of fleets, a growing shelf of partner integrations,
+        and firmware going over the air to hardware
+        the company builds itself.
       </p>
       <p>
-        DynamoDB when the access patterns are known upfront: single-table,
-        usage driving the schema design, the Alex DeBrie school.
+        DynamoDB is my store of choice when the access patterns are known upfront: single-table,
+        usage driving the schema design, the Alex DeBrie school. Infrastructure as Code always.
+        Nothing I run was clicked into existence.
       </p>
       <p>
-        Infrastructure as Code? Nothing I run was clicked into existence. <a class={linkClass} target="_blank" href="mailto:tinker@dannybrown.dev">You can click an email to me
-        into reality, though.</a>
+        I build the tooling that lets a project grow in scope without growing the team's
+        checklists of manual tasks. CI/CD pipelines, pre-commit hooks, and
+        automated tests that catch the mistakes humans and AI make. The systems I build are
+        installable, self-documenting, and auditable.
       </p>
     </div>
 
-    <PipelineDiagram />
+    <PipelineDiagram view="wide" />
   </section>
 
-  <section aria-labelledby="toolbelt-heading" class={sectionClass}>
-    <h2 id="toolbelt-heading" class={eyebrowClass}>Toolbelt</h2>
+  <!-- Phone only, and a panel rather than a tail on Experience above. Measured
+       at 375x667 and 360x640, prose plus drawing wanted 788-801px inside a
+       100svh panel: the reader lost the bottom of the IaC boundary and the
+       people beyond it, which is the half of the drawing that says who the
+       system is for. Shrinking the drawing can't buy that back — it is already
+       at the width where `meet` scales node labels under 8px, the same thing
+       that keeps the wide view off phones. So the drawing gets the screen.
+       Above 40rem this section collapses to nothing and the wide drawing sits
+       inside Experience as before; see .diagram / .diagram-narrow. -->
+  <!-- "How I Build", not "Architecture": the drawing is a shape I reach for out
+       of ordinary AWS services, and a bare noun labels it as *the* architecture
+       — which invites the reader to wonder whose system they're looking at. -->
+  <section aria-labelledby="approach-heading" class="diagram-panel panel">
+    <h2 id="approach-heading" class={eyebrowClass}>How I Build</h2>
+    <PipelineDiagram view="narrow" />
+  </section>
+
+  <section aria-labelledby="utility-belt-heading" class={sectionClass}>
+    <h2 id="utility-belt-heading" class={eyebrowClass}>Utility Belt</h2>
     <div class="text-muted dark:text-muted-dk mt-8 space-y-4 leading-relaxed">
       <p>
-        Every project morphs me further into The Automation Guy™. I notice the manual steps everyone's
+        I keep ending up the automation guy. I notice the manual steps everyone's
         been wading through and enjoy lowering the water level.
       </p>
       <p>
-        That means <em class="text-accent dark:text-accent-dk not-italic">systems:</em> installable, self-documenting, and auditable. I want to step away for a year and
-        step back in without breaking stride.
+        This list is living, roughly ordered by how much I'd want to be asked about each item.
+        Things go on it when I use them enough to have an opinion,
+        and off it should I not want to use them again.
       </p>
     </div>
 
