@@ -21,9 +21,9 @@
 // clipped end is where the people are, and a reader who never drags sees the
 // system trail off into nothing. So the narrow view turns the same graph down
 // the page instead. Everything that carries meaning is shared below: the node
-// names, the sub-labels, the fleet grid, and the flow timings. Only the
-// coordinates differ, so a renamed service can't say two different things in
-// the two views.
+// names, the sub-labels, and the flow timings. Only the coordinates differ, so
+// a renamed service can't say two different things in the two views — the one
+// exception is the fleet, which turns from a grid into a row (see fleetRowAt).
 interface Node {
   label: string;
   sub: string;
@@ -73,12 +73,12 @@ const widePaths = [
 // The stores branch sideways here rather than downward, which is the one change
 // the turn forces: below Lambda is where the chain itself has to go.
 const narrowPaths = [
-  "M110 80 V 124",
-  "M110 164 V 200",
-  "M172 210 C 202 210, 202 196, 232 196",
-  "M172 230 C 202 230, 202 256, 232 256",
-  "M110 240 V 282",
-  "M110 310 V 366",
+  "M110 44 V 88",
+  "M110 128 V 164",
+  "M172 174 C 202 174, 202 160, 232 160",
+  "M172 194 C 202 194, 202 220, 232 220",
+  "M110 204 V 246",
+  "M110 274 V 330",
 ];
 
 const wideWires = widePaths.map((d, i) => ({ d, ...flows[i] }));
@@ -88,7 +88,7 @@ const narrowWires = narrowPaths.map((d, i) => ({ d, ...flows[i] }));
 // sits" for long enough that it needs no label to say so. `x`/`y` is the centre
 // of the top ellipse; the body runs 20 below it and the base bulges 6 past that.
 const wideStores = storeLabels.map((label, i) => ({ x: 224 + i * 100, y: 122, label }));
-const narrowStores = storeLabels.map((label, i) => ({ x: 232, y: 186 + i * 60, label }));
+const narrowStores = storeLabels.map((label, i) => ({ x: 232, y: 150 + i * 60, label }));
 
 // Nine vehicles, two of them mid-transmit. Drawn as cars rather than as blocks
 // because a block at this size is just a chip, and the fleet end of the drawing
@@ -101,6 +101,17 @@ const fleetAt = (originX: number, originY: number) =>
       live: (dx === 21 && dy === 0) || (dx === 0 && dy === 36),
     })),
   );
+
+// The same fleet on a phone, in one row rather than three. The grid reads as
+// "many" at desktop width, but stacked on a narrow screen it costs two extra
+// rows of height in the panel that can least afford them — and a row of five
+// says "a fleet" just as well as a block of nine.
+const fleetRowAt = (originX: number, originY: number) =>
+  [0, 21, 42, 63, 84].map((dx, i) => ({
+    x: originX + dx,
+    y: originY,
+    live: i === 1 || i === 3,
+  }));
 
 // Three of them, spaced 20 apart, each 14 wide and drawn from a baseline of 0.
 const peopleAt = (originX: number) => [0, 20, 40].map((dx) => originX + dx);
@@ -282,7 +293,7 @@ const description =
     into whichever of the two budgets binds. */}
 <svg
   class="diagram-narrow mt-6 max-h-[52svh] w-full max-w-[22rem]"
-  viewBox="0 0 340 420"
+  viewBox="0 0 340 384"
   fill="none"
   role="img"
   aria-label={description}
@@ -316,7 +327,7 @@ const description =
   </defs>
 
   {
-    fleetAt(80, 8).map(({ x, y, live }) => (
+    fleetRowAt(59, 8).map(({ x, y, live }) => (
       <g
         transform={`translate(${x} ${y})`}
         class={live ? "fill-accent/70 dark:fill-accent-dk/70" : "fill-line dark:fill-line-dk"}
@@ -329,14 +340,14 @@ const description =
       </g>
     ))
   }
-  <text x="110" y="72" text-anchor="middle" class={subLabel}>vehicles</text>
+  <text x="110" y="36" text-anchor="middle" class={subLabel}>vehicles</text>
 
   <!-- The boundary's tab moves to the right here: the chain enters through the
        top edge at centre, straight through where the label sat in the wide
        view. -->
   <rect
     x="20"
-    y="96"
+    y="60"
     width="300"
     height="240"
     rx="8"
@@ -345,12 +356,12 @@ const description =
     stroke-dasharray="3 5"></rect>
   <rect
     x="174"
-    y="89"
+    y="53"
     width="138"
     height="14"
     class="fill-paper dark:fill-paper-dk"
     stroke="none"></rect>
-  <text x="182" y="100" class={subLabel}>{boundary}</text>
+  <text x="182" y="64" class={subLabel}>{boundary}</text>
 
   {
     narrowWires.map(({ d, out, back }) => (
@@ -380,26 +391,26 @@ const description =
     ))
   }
 
-  <text x="104" y="92" text-anchor="end" class={subLabel}>mqtt</text>
+  <text x="104" y="56" text-anchor="end" class={subLabel}>mqtt</text>
 
-  <path d="M62 144 L72 124 H148 L158 144 L148 164 H72 Z" class={nodeBox} stroke-width="1"
+  <path d="M62 108 L72 88 H148 L158 108 L148 128 H72 Z" class={nodeBox} stroke-width="1"
   ></path>
-  <text x="110" y="142" text-anchor="middle" class={nodeLabel}>{iotCore.label}</text>
-  <text x="110" y="155" text-anchor="middle" class={subLabel}>{iotCore.sub}</text>
+  <text x="110" y="106" text-anchor="middle" class={nodeLabel}>{iotCore.label}</text>
+  <text x="110" y="119" text-anchor="middle" class={subLabel}>{iotCore.sub}</text>
 
-  <rect x="48" y="200" width="124" height="40" rx="6" class={nodeBox} stroke-width="1"
+  <rect x="48" y="164" width="124" height="40" rx="6" class={nodeBox} stroke-width="1"
   ></rect>
-  <text x="110" y="218" text-anchor="middle" class={nodeLabel}>{lambda.label}</text>
-  <text x="110" y="231" text-anchor="middle" class={subLabel}>{lambda.sub}</text>
+  <text x="110" y="182" text-anchor="middle" class={nodeLabel}>{lambda.label}</text>
+  <text x="110" y="195" text-anchor="middle" class={subLabel}>{lambda.sub}</text>
 
   <!-- The gate turns with the chain: waisted on the edges the traffic crosses,
        which are the top and bottom here rather than the sides. -->
   <path
-    d="M48 276 C 58 284, 162 284, 172 276 V316 C 162 308, 58 308, 48 316 Z"
+    d="M48 240 C 58 248, 162 248, 172 240 V280 C 162 272, 58 272, 48 280 Z"
     class={nodeBox}
     stroke-width="1"></path>
-  <text x="110" y="294" text-anchor="middle" class={nodeLabel}>{apiGateway.label}</text>
-  <text x="110" y="307" text-anchor="middle" class={subLabel}>{apiGateway.sub}</text>
+  <text x="110" y="258" text-anchor="middle" class={nodeLabel}>{apiGateway.label}</text>
+  <text x="110" y="271" text-anchor="middle" class={subLabel}>{apiGateway.sub}</text>
 
   {
     narrowStores.map(({ x, y, label }) => (
@@ -419,11 +430,11 @@ const description =
 
   {
     peopleAt(83).map((x) => (
-      <g transform={`translate(${x} 315)`} class="fill-line dark:fill-line-dk" stroke="none">
+      <g transform={`translate(${x} 279)`} class="fill-line dark:fill-line-dk" stroke="none">
         <circle cx="7" cy="57" r="4" />
         <path d="M0 76 v-4 a7 7 0 0 1 14 0 v4 z" />
       </g>
     ))
   }
-  <text x="110" y="407" text-anchor="middle" class={subLabel}>people</text>
+  <text x="110" y="371" text-anchor="middle" class={subLabel}>people</text>
 </svg>

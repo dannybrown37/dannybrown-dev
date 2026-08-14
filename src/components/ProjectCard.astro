@@ -63,7 +63,18 @@ const description = (compact && project.blurb) || project.description;
       <pre class="border-accent/40 dark:border-accent-dk/40 text-muted dark:text-muted-dk relative mt-3 max-w-prose overflow-x-auto border-l-2 py-0.5 pl-3 font-mono text-xs leading-relaxed"><code>{project.install}</code></pre>
     )
   }
-  <ul class="text-muted dark:text-muted-dk mt-3 flex flex-wrap gap-2 font-mono text-xs">
+  <!-- compact: one row, whatever the viewport. The pills still wrap; the row is
+       clipped to a single pill's height, so anything that doesn't fit lands on a
+       second row nobody can see. Clipping the *row* rather than the strip is
+       what keeps it from cutting a pill in half at an arbitrary width — the
+       ones that survive are always whole. Tech is ordered most-telling first,
+       so a narrow screen drops the least interesting end. -->
+  <ul
+    class:list={[
+      "text-muted dark:text-muted-dk mt-3 flex flex-wrap gap-2 font-mono text-xs",
+      compact && "max-h-6 overflow-hidden",
+    ]}
+  >
     {
       project.tech.map((tech) => (
         <li class="bg-paper-soft dark:bg-paper-soft-dk rounded-full px-2.5 py-1">

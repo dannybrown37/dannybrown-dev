@@ -79,15 +79,16 @@ const eyebrowClass =
     <h2 id="experience-heading" class={eyebrowClass}>Experience</h2>
     <div class="text-muted dark:text-muted-dk mt-8 space-y-4 leading-relaxed">
       <p>
-        Billions of messages from thousands of vehicles, across two companies since 2021. See
-        more details on <a class={linkClass} href="https://www.linkedin.com/in/dannybrown37">LinkedIn</a>.
+        Billions of messages from thousands of vehicles, <a class={linkClass} href="https://www.linkedin.com/in/dannybrown37">across two companies since 2021</a>.
+        I've built backends that handle the scale while flexibly adapting to the unique needs of each end user.
       </p>
       <p>
-        Every end user drives the downnstream web application differently, which means the
-        product needs flexibility alongside reliability.
+        DynamoDB when the access patterns are known upfront: single-table,
+        usage driving the schema design, the Alex DeBrie school.
       </p>
       <p>
-        Infrastructure as Code? Nothing I run was clicked into existence. If it's not repeatable, it's not done.
+        Infrastructure as Code? Nothing I run was clicked into existence. <a class={linkClass} target="_blank" href="mailto:tinker@dannybrown.dev">You can click an email to me
+        into reality, though.</a>
       </p>
     </div>
 
@@ -98,17 +99,12 @@ const eyebrowClass =
     <h2 id="toolbelt-heading" class={eyebrowClass}>Toolbelt</h2>
     <div class="text-muted dark:text-muted-dk mt-8 space-y-4 leading-relaxed">
       <p>
-        DynamoDB is my store of choice when I know the access patterns upfront: single-table,
-        usage driving the schema design, the Alex DeBrie school.
+        Every project morphs me further into The Automation Guy™. I notice the manual steps everyone's
+        been wading through and enjoy lowering the water level.
       </p>
       <p>
-        I end up the Automation Guy on every team I join. I can't help but notice the manual steps everyone's
-        been wading through, and I find joy in lowering the water level.
-      </p>
-      <p>
-        More than that, I build installable, self-documenting, auditable <em>systems</em>. "It works on my machine"
-        is just not an acceptable phrase in my world. If I step away from a project, I must be able to step
-        back in months or years later without breaking stride.
+        That means <em class="text-accent dark:text-accent-dk not-italic">systems:</em> installable, self-documenting, and auditable. I want to step away for a year and
+        step back in without breaking stride.
       </p>
     </div>
 
@@ -121,15 +117,39 @@ const eyebrowClass =
       {
         breadth.map(([label, items]) => (
           <div class="sm:grid sm:grid-cols-[8rem_1fr] sm:gap-4">
-            <dt class="tracking-widest uppercase opacity-70">{label}</dt>
-            <dd class="mt-1 leading-relaxed sm:mt-0">{items.join(" · ")}</dd>
+            <dt class="text-accent/80 dark:text-accent-dk/80 tracking-widest uppercase">
+              {label}
+            </dt>
+            <dd class="mt-1 leading-relaxed sm:mt-0">
+              {items.map((item, i) => (
+                <>
+                  {i > 0 && <span class="opacity-40"> · </span>}
+                  <span class="hover:text-ink dark:hover:text-ink-dk transition-colors">
+                    {item}
+                  </span>
+                </>
+              ))}
+            </dd>
           </div>
         ))
       }
     </dl>
   </section>
 
-  <!-- A full-viewport band, and the only snapping target on the site.
+  <section aria-labelledby="projects-heading" class={sectionClass}>
+    <h2 id="projects-heading" class={eyebrowClass}>Projects</h2>
+    <ul class="mt-8 space-y-6">
+      {featured.map((project) => <ProjectCard project={project} compact />)}
+    </ul>
+    <a
+      class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors"
+      href="/projects"
+    >
+      All projects →
+    </a>
+  </section>
+
+    <!-- A full-viewport band, and the only snapping target on the site.
        `scroll-snap-stop: always` is the lock: a fling that would carry past the
        garden has to stop here first, so you land on it square instead of
        catching a sliver of it on the way to Projects. Only this one section
@@ -199,19 +219,6 @@ const eyebrowClass =
         href="https://github.com/dannybrown37/ccgarden">grow your own</a
       >. Dollar figures are notional, priced at listed API rates.
     </p>
-  </section>
-
-  <section aria-labelledby="projects-heading" class={sectionClass}>
-    <h2 id="projects-heading" class={eyebrowClass}>Projects</h2>
-    <ul class="mt-8 space-y-6">
-      {featured.map((project) => <ProjectCard project={project} compact />)}
-    </ul>
-    <a
-      class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors"
-      href="/projects"
-    >
-      All projects →
-    </a>
   </section>
 
   {
