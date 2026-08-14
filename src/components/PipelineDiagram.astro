@@ -71,14 +71,17 @@ const widePaths = [
 ];
 
 // The stores branch sideways here rather than downward, which is the one change
-// the turn forces: below Lambda is where the chain itself has to go.
+// the turn forces: below Lambda is where the chain itself has to go. They also
+// straddle Lambda rather than hanging under it, so the column they sit in is
+// height the chain was spending anyway — the drawing has to clear a phone
+// viewport with the prose above it still on screen.
 const narrowPaths = [
-  "M110 44 V 88",
-  "M110 128 V 164",
-  "M172 174 C 202 174, 202 160, 232 160",
-  "M172 194 C 202 194, 202 220, 232 220",
-  "M110 204 V 246",
-  "M110 274 V 330",
+  "M110 38 V 62",
+  "M110 102 V 126",
+  "M172 136 C 202 136, 202 122, 232 122",
+  "M172 156 C 202 156, 202 182, 232 182",
+  "M110 166 V 196",
+  "M110 224 V 272",
 ];
 
 const wideWires = widePaths.map((d, i) => ({ d, ...flows[i] }));
@@ -88,7 +91,7 @@ const narrowWires = narrowPaths.map((d, i) => ({ d, ...flows[i] }));
 // sits" for long enough that it needs no label to say so. `x`/`y` is the centre
 // of the top ellipse; the body runs 20 below it and the base bulges 6 past that.
 const wideStores = storeLabels.map((label, i) => ({ x: 224 + i * 100, y: 122, label }));
-const narrowStores = storeLabels.map((label, i) => ({ x: 232, y: 150 + i * 60, label }));
+const narrowStores = storeLabels.map((label, i) => ({ x: 232, y: 112 + i * 60, label }));
 
 // Nine vehicles, two of them mid-transmit. Drawn as cars rather than as blocks
 // because a block at this size is just a chip, and the fleet end of the drawing
@@ -288,12 +291,12 @@ const description =
     shows under 40rem, where the prose can still be 600px wide, and scaling a
     340-wide viewBox up to that renders the node labels at 23px.
 
-    Height-capped too. At 22rem wide this is 435px tall, which on a short phone
-    is most of the panel before anything else is drawn; `meet` letterboxes it
-    into whichever of the two budgets binds. */}
+    Height-capped too. At 22rem wide this is 335px tall, which on a short phone
+    is still most of the panel before anything else is drawn; `meet` letterboxes
+    it into whichever of the two budgets binds. */}
 <svg
-  class="diagram-narrow mt-6 max-h-[52svh] w-full max-w-[22rem]"
-  viewBox="0 0 340 384"
+  class="diagram-narrow mt-4 max-h-[46svh] w-full max-w-[22rem]"
+  viewBox="0 0 340 324"
   fill="none"
   role="img"
   aria-label={description}
@@ -327,7 +330,7 @@ const description =
   </defs>
 
   {
-    fleetRowAt(59, 8).map(({ x, y, live }) => (
+    fleetRowAt(59, 6).map(({ x, y, live }) => (
       <g
         transform={`translate(${x} ${y})`}
         class={live ? "fill-accent/70 dark:fill-accent-dk/70" : "fill-line dark:fill-line-dk"}
@@ -340,28 +343,28 @@ const description =
       </g>
     ))
   }
-  <text x="110" y="36" text-anchor="middle" class={subLabel}>vehicles</text>
+  <text x="110" y="30" text-anchor="middle" class={subLabel}>vehicles</text>
 
   <!-- The boundary's tab moves to the right here: the chain enters through the
        top edge at centre, straight through where the label sat in the wide
        view. -->
   <rect
     x="20"
-    y="60"
+    y="44"
     width="300"
-    height="240"
+    height="200"
     rx="8"
     class="stroke-line dark:stroke-line-dk"
     stroke-width="1"
     stroke-dasharray="3 5"></rect>
   <rect
     x="174"
-    y="53"
+    y="37"
     width="138"
     height="14"
     class="fill-paper dark:fill-paper-dk"
     stroke="none"></rect>
-  <text x="182" y="64" class={subLabel}>{boundary}</text>
+  <text x="182" y="48" class={subLabel}>{boundary}</text>
 
   {
     narrowWires.map(({ d, out, back }) => (
@@ -391,26 +394,26 @@ const description =
     ))
   }
 
-  <text x="104" y="56" text-anchor="end" class={subLabel}>mqtt</text>
+  <text x="104" y="54" text-anchor="end" class={subLabel}>mqtt</text>
 
-  <path d="M62 108 L72 88 H148 L158 108 L148 128 H72 Z" class={nodeBox} stroke-width="1"
+  <path d="M62 82 L72 62 H148 L158 82 L148 102 H72 Z" class={nodeBox} stroke-width="1"
   ></path>
-  <text x="110" y="106" text-anchor="middle" class={nodeLabel}>{iotCore.label}</text>
-  <text x="110" y="119" text-anchor="middle" class={subLabel}>{iotCore.sub}</text>
+  <text x="110" y="80" text-anchor="middle" class={nodeLabel}>{iotCore.label}</text>
+  <text x="110" y="93" text-anchor="middle" class={subLabel}>{iotCore.sub}</text>
 
-  <rect x="48" y="164" width="124" height="40" rx="6" class={nodeBox} stroke-width="1"
+  <rect x="48" y="126" width="124" height="40" rx="6" class={nodeBox} stroke-width="1"
   ></rect>
-  <text x="110" y="182" text-anchor="middle" class={nodeLabel}>{lambda.label}</text>
-  <text x="110" y="195" text-anchor="middle" class={subLabel}>{lambda.sub}</text>
+  <text x="110" y="144" text-anchor="middle" class={nodeLabel}>{lambda.label}</text>
+  <text x="110" y="157" text-anchor="middle" class={subLabel}>{lambda.sub}</text>
 
   <!-- The gate turns with the chain: waisted on the edges the traffic crosses,
        which are the top and bottom here rather than the sides. -->
   <path
-    d="M48 240 C 58 248, 162 248, 172 240 V280 C 162 272, 58 272, 48 280 Z"
+    d="M48 190 C 58 198, 162 198, 172 190 V230 C 162 222, 58 222, 48 230 Z"
     class={nodeBox}
     stroke-width="1"></path>
-  <text x="110" y="258" text-anchor="middle" class={nodeLabel}>{apiGateway.label}</text>
-  <text x="110" y="271" text-anchor="middle" class={subLabel}>{apiGateway.sub}</text>
+  <text x="110" y="208" text-anchor="middle" class={nodeLabel}>{apiGateway.label}</text>
+  <text x="110" y="221" text-anchor="middle" class={subLabel}>{apiGateway.sub}</text>
 
   {
     narrowStores.map(({ x, y, label }) => (
@@ -430,11 +433,11 @@ const description =
 
   {
     peopleAt(83).map((x) => (
-      <g transform={`translate(${x} 279)`} class="fill-line dark:fill-line-dk" stroke="none">
+      <g transform={`translate(${x} 226)`} class="fill-line dark:fill-line-dk" stroke="none">
         <circle cx="7" cy="57" r="4" />
         <path d="M0 76 v-4 a7 7 0 0 1 14 0 v4 z" />
       </g>
     ))
   }
-  <text x="110" y="371" text-anchor="middle" class={subLabel}>people</text>
+  <text x="110" y="318" text-anchor="middle" class={subLabel}>people</text>
 </svg>
