@@ -83,18 +83,18 @@ const secrets: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["f86753o9", "(Danny Brown 2026-08-11)", "it was me"],
+      lines: ["f8675309", "(Danny Brown 2026-08-11)", "it was me"],
     },
     secret: true,
   },
   {
-    id: "git status",
-    title: "git status",
-    keywords: ["git", "status"],
+    id: "make coffee",
+    title: "make coffee",
+    keywords: ["coffee", "tea", "418", "brew"],
     kind: "action",
     action: {
       type: "say",
-      lines: ["On branch dannybrown.dev", "Your branch is up to date with 'origin/main'", "", "nothing to commit, working tree clean"],
+      lines: ["HTTP 418: I'm a teapot.", "make: *** [Makefile:1: coffee] Error 418"],
     },
     secret: true,
   },
@@ -106,9 +106,59 @@ const secrets: PaletteCommand[] = [
     action: {
       type: "say",
       lines: [
-        "NAME danny - senior software engineer",
-        "SYNOPSIS danny [--python] [--node] [--aws] [--terraform]",
-        "SEE ALSO uptime, whoami",
+        "NAME",
+        "    danny - senior software engineer",
+        "",
+        "SYNOPSIS",
+        "    danny [--python] [--node] [--aws] [--cli]",
+        "          [--devops] [--automation] [--agentic-ai]",
+        "",
+        "DESCRIPTION",
+        "    Builds developer tools and automates the rest.",
+        "    Leaves silly jokes no one may ever see.",
+        "",
+        "SEE ALSO",
+        "    neofetch, ps, uptime, whoami",
+      ],
+    },
+    secret: true,
+  },
+  {
+    id: "neofetch",
+    title: "neofetch",
+    keywords: ["neofetch", "fetch", "system", "setup", "dotfiles", "rice"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: [
+        "danny@dannybrown.dev",
+        "-------------------",
+        "OS       Debian GNU/Linux 12 (WSL2)",
+        "Shell    bash, aggressively configured",
+        "Editor   Neovim for speed, VSCode for depth",
+        "Terminal tmux",
+        "WM       komorebi + whkd",
+        "Agent    Claude Code / Copilot / skill-tree",
+        "Memory   Offloaded to GTD system",
+        "Uptime   see `uptime`",
+      ],
+    },
+    secret: true,
+  },
+  {
+    id: "ps aux",
+    title: "ps aux",
+    keywords: ["ps", "processes", "running", "side projects"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: [
+        "PID   COMMAND",
+        "1     gtd --triage-inbox",
+        "37    git-a-grip --pre-commit",
+        "42    skill-tree --watch",
+        "137   ccgarden --grow",
+        "873   dotfiles --tinker  [never exits]",
       ],
     },
     secret: true,
@@ -120,7 +170,7 @@ const secrets: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["dannybrown.dev"],
+      lines: ["/home/danny/projects/dannybrown.dev"],
     },
     secret: true,
   },
@@ -131,7 +181,21 @@ const secrets: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["Permission denied. Nice try"],
+      lines: ["rm: it is dangerous to operate recursively on '/'", "Permission denied. Nice try."],
+    },
+    secret: true,
+  },
+  {
+    id: "sudo",
+    title: "sudo",
+    keywords: ["sudo", "root", "admin", "permission"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: [
+        "Visitor is not in the sudoers file.",
+        "This incident will be reported.",
+      ],
     },
     secret: true,
   },
@@ -146,6 +210,17 @@ const secrets: PaletteCommand[] = [
         "2013 - 2021 · freelance content · articles written/edited: thousands",
         "2014 - 2019 · public service · cases investigated: hundreds",
       ]
+    },
+    secret: true,
+  },
+  {
+    id: "vim",
+    title: "vim",
+    keywords: ["vim", "quit", "exit", "q", "wq", "editor"],
+    kind: "action",
+    action: {
+      type: "say",
+      lines: ["You are now in vim. There is no way out.", "(esc. it's esc.)"],
     },
     secret: true,
   },
@@ -218,7 +293,7 @@ const commands: PaletteCommand[] = [
     <p
       id="palette-say"
       hidden
-      class="border-line dark:border-line-dk text-muted dark:text-muted-dk border-b px-4 py-3 font-mono text-xs leading-relaxed whitespace-pre-line"
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk border-b px-4 py-3 font-mono text-xs leading-relaxed whitespace-pre-wrap"
       role="status"
     >
     </p>
