@@ -8,8 +8,48 @@ export interface PaletteCommand {
   keywords: string[];
   kind: "navigate" | "action" | "external";
   action: PaletteAction;
-  /** Hidden from the empty-query list; only surfaces once typed for. */
+  /** Hidden from the empty-query list, and listed by `ls`. */
   secret?: boolean;
+  /** Hidden from the empty-query list, but not an easter egg — content, not commands. */
+  hidden?: boolean;
+  /** Right-aligned category label, e.g. "post". */
+  hint?: string;
+}
+
+interface PostLike {
+  id: string;
+  data: { title: string; tags?: string[] };
+}
+
+interface ProjectLike {
+  name: string;
+  description: string;
+  url: string;
+  tech: string[];
+}
+
+export function postCommands(posts: PostLike[]): PaletteCommand[] {
+  return posts.map((post) => ({
+    id: `post-${post.id}`,
+    title: post.data.title,
+    keywords: ["blog", "post", "writing", ...(post.data.tags ?? [])],
+    kind: "navigate",
+    action: { type: "href", href: `/blog/${post.id}` },
+    hidden: true,
+    hint: "post",
+  }));
+}
+
+export function projectCommands(projects: ProjectLike[]): PaletteCommand[] {
+  return projects.map((project) => ({
+    id: `project-${project.name}`,
+    title: project.name,
+    keywords: ["project", "repo", "code", ...project.tech],
+    kind: "external",
+    action: { type: "href", href: project.url, external: true },
+    hidden: true,
+    hint: "project",
+  }));
 }
 
 /**
@@ -60,7 +100,7 @@ export function filterCommands(
   query: string,
 ): PaletteCommand[] {
   const trimmed = query.trim().toLowerCase();
-  if (!trimmed) return commands.filter((command) => !command.secret);
+  if (!trimmed) return commands.filter((command) => !command.secret && !command.hidden);
 
   return commands
     .map((command, order) => ({ command, order, score: score(command, trimmed) }))

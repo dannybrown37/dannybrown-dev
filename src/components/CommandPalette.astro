@@ -1,5 +1,16 @@
 ---
-import { secretTitles, type PaletteCommand } from "../lib/palette";
+import { getCollection } from "astro:content";
+import {
+  postCommands,
+  projectCommands,
+  secretTitles,
+  type PaletteCommand,
+} from "../lib/palette";
+import { projects } from "../lib/projects";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 
 const visible: PaletteCommand[] = [
   {
@@ -97,7 +108,7 @@ const secrets: PaletteCommand[] = [
       lines: [
         "NAME danny - senior software engineer",
         "SYNOPSIS danny [--python] [--node] [--aws] [--terraform]",
-        "SEE ALSO uptime(1), whoami(1)",
+        "SEE ALSO uptime, whoami",
       ],
     },
     secret: true,
@@ -161,6 +172,9 @@ const secrets: PaletteCommand[] = [
 // rebuilt on every keystroke, so the client owns the DOM for it either way.
 const commands: PaletteCommand[] = [
   ...visible,
+  // Hidden until typed for: they'd bury the eight commands worth listing.
+  ...postCommands(posts),
+  ...projectCommands(projects),
   {
     id: "ls",
     title: "ls",
@@ -283,9 +297,16 @@ const commands: PaletteCommand[] = [
 
         const label = document.createElement("span");
         label.textContent = command.title;
-        if (command.secret) label.className = "font-mono";
+        label.className = command.secret ? "truncate font-mono" : "truncate";
 
         item.append(icon, label);
+
+        if (command.hint) {
+          const hint = document.createElement("span");
+          hint.className = "text-muted dark:text-muted-dk ml-auto shrink-0 font-mono text-[0.7rem]";
+          hint.textContent = command.hint;
+          item.append(hint);
+        }
         return [command.id, item];
       }),
     );

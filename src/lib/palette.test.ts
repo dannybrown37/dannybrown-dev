@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { filterCommands, nextIndex, secretTitles, type PaletteCommand } from "./palette";
+import {
+  filterCommands,
+  nextIndex,
+  postCommands,
+  projectCommands,
+  secretTitles,
+  type PaletteCommand,
+} from "./palette";
 
 const command = (id: string, title: string, keywords: string[] = []): PaletteCommand => ({
   id,
@@ -65,6 +72,70 @@ describe("filterCommands", () => {
     const a = command("a", "Deploy");
     const b = command("b", "Deploy");
     expect(ids(filterCommands([a, b], "deploy"))).toEqual(["a", "b"]);
+  });
+});
+
+describe("postCommands", () => {
+  const posts = [
+    { id: "2026-08-10-easter-eggs", data: { title: "Easter Eggs", tags: ["astro", "fun"] } },
+    { id: "2026-08-05-ergonomic-clis", data: { title: "Ergonomic CLIs", tags: [] } },
+  ];
+
+  it("links each post to its page", () => {
+    expect(postCommands(posts)[0]).toMatchObject({
+      title: "Easter Eggs",
+      kind: "navigate",
+      hint: "post",
+      action: { type: "href", href: "/blog/2026-08-10-easter-eggs" },
+    });
+  });
+
+  it("keeps posts out of the empty-query list", () => {
+    expect(filterCommands(postCommands(posts), "")).toEqual([]);
+  });
+
+  it("finds a post by title", () => {
+    expect(ids(filterCommands(postCommands(posts), "easter"))).toEqual([
+      "post-2026-08-10-easter-eggs",
+    ]);
+  });
+
+  it("finds a post by tag", () => {
+    expect(ids(filterCommands(postCommands(posts), "astro"))).toEqual([
+      "post-2026-08-10-easter-eggs",
+    ]);
+  });
+
+  it("stays out of the `ls` listing", () => {
+    expect(secretTitles(postCommands(posts))).toEqual([]);
+  });
+});
+
+describe("projectCommands", () => {
+  const built = projectCommands([
+    { name: "ccgarden", description: "Grows a tree.", url: "https://github.com/x/ccgarden", tech: ["SVG", "Python"] },
+    { name: "gtd", description: "Getting Things Done.", url: "https://github.com/x/gtd", tech: ["Python"] },
+  ]);
+
+  it("opens the project's url externally", () => {
+    expect(built[0]).toMatchObject({
+      title: "ccgarden",
+      kind: "external",
+      hint: "project",
+      action: { type: "href", href: "https://github.com/x/ccgarden", external: true },
+    });
+  });
+
+  it("keeps projects out of the empty-query list", () => {
+    expect(filterCommands(built, "")).toEqual([]);
+  });
+
+  it("finds a project by name", () => {
+    expect(ids(filterCommands(built, "ccgar"))).toEqual(["project-ccgarden"]);
+  });
+
+  it("finds a project by tech", () => {
+    expect(ids(filterCommands(built, "svg"))).toEqual(["project-ccgarden"]);
   });
 });
 
