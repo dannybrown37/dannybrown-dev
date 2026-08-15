@@ -173,6 +173,32 @@ const eyebrowClass =
     </a>
   </section>
 
+  {
+    posts.length > 0 && (
+      <section aria-labelledby="writing-heading" class={sectionClass}>
+        <h2 id="writing-heading" class={eyebrowClass}>
+          Writing
+        </h2>
+        <ul class="mt-8 space-y-4">
+          {posts.map((post) => (
+            <PostRow
+              id={post.id}
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              compact
+            />
+          ))}
+        </ul>
+        <a
+          class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors"
+          href="/blog"
+        >
+          All posts →
+        </a>
+      </section>
+    )
+  }
+
   <section id="garden" aria-labelledby="garden-heading" class="panel">
     <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
 
@@ -234,32 +260,6 @@ const eyebrowClass =
         bare ground; hover or tap anything for the numbers behind it.
     </p>
   </section>
-
-  {
-    posts.length > 0 && (
-      <section aria-labelledby="writing-heading" class={sectionClass}>
-        <h2 id="writing-heading" class={eyebrowClass}>
-          Writing
-        </h2>
-        <ul class="mt-8 space-y-4">
-          {posts.map((post) => (
-            <PostRow
-              id={post.id}
-              title={post.data.title}
-              pubDate={post.data.pubDate}
-              compact
-            />
-          ))}
-        </ul>
-        <a
-          class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors"
-          href="/blog"
-        >
-          All posts →
-        </a>
-      </section>
-    )
-  }
 
   <!-- The garden ships as a still image; this is the machinery behind the play
        button. Everything it touches — a 3MB fetch, several thousand SMIL
