@@ -14,10 +14,10 @@ import { svgAspect } from "../lib/svg-aspect";
 // reader can't predict from "connected-vehicle backends on AWS".
 const breadth: [label: string, items: string[]][] = [
   ["Languages", ["Python", "TypeScript", "JavaScript", "Bash"]],
-  ["Data", ["DynamoDB", "S3",  "SQLite", "Postgres", "Athena", "Timestream", "Firestore", "SQL Server"]],
+  ["Data", ["DynamoDB", "S3", "SQLite", "Postgres", "Athena", "Timestream", "Firestore", "SQL Server"]],
   ["Infrastructure", ["AWS", "Terraform", "OpenTofu", "CloudFormation", "Serverless Framework", "GCP"]],
   ["Python Toolchain", ["uv", "pytest", "ruff", "click", "pydantic"]],
-  ["Workflow", ["pre-commit", "tmux", "fzf", "GitHub Actions"]]
+  ["Workflow", ["pre-commit", "GitHub Actions", "Claude Code", "Copilot", "tmux", "fzf"]]
 
 ];
 
@@ -65,7 +65,7 @@ const eyebrowClass =
       High throughput, low ceremony. I build the tooling that keeps it that way.
     </h1>
     <p class="text-muted dark:text-muted-dk mt-6 max-w-prose text-lg leading-relaxed">
-      Senior software engineer building connected-vehicle backends on AWS, fitting LLM
+      Software engineer building connected-vehicle backends on AWS, fitting LLM
       agents into engineering workflows, and making it fun to use the computer again.
     </p>
     <SignalField />
@@ -87,12 +87,12 @@ const eyebrowClass =
       </p>
       <p>
         DynamoDB is my store of choice when the access patterns are known upfront: single-table,
-        usage driving the schema design, the Alex DeBrie school. Infrastructure as Code always.
-        Nothing I run was clicked into existence.
+        usage driving the schema design, the Alex DeBrie school.
+        Nothing I run was clicked into existence, it's all infrastructure as code.
       </p>
       <p>
         I build the tooling that lets a project grow in scope without growing the team's
-        checklists of manual tasks. CI/CD pipelines, pre-commit hooks, and
+        manual checklists. CI/CD pipelines, pre-commit hooks, and
         automated tests that catch the mistakes humans and AI make. The systems I build are
         installable, self-documenting, and auditable.
       </p>
@@ -126,9 +126,9 @@ const eyebrowClass =
         been wading through and enjoy lowering the water level.
       </p>
       <p>
-        This list is living, roughly ordered by how much I'd want to be asked about each item.
+        The list is living, each row roughly ordered by how much I'd want to be asked about its items.
         Things go on it when I use them enough to have an opinion,
-        and off it should I not want to use them again.
+        and off when I don't care to use them again.
       </p>
     </div>
 
@@ -173,17 +173,7 @@ const eyebrowClass =
     </a>
   </section>
 
-    <!-- A full-viewport band, and the only snapping target on the site.
-       `scroll-snap-stop: always` is the lock: a fling that would carry past the
-       garden has to stop here first, so you land on it square instead of
-       catching a sliver of it on the way to Projects. Only this one section
-       gets that treatment — page-wide mandatory snapping breaks keyboard
-       paging and find-in-page on the prose above and below. -->
-  <section
-    id="garden"
-    aria-labelledby="garden-heading"
-    class="panel [scroll-snap-stop:always]"
-  >
+  <section id="garden" aria-labelledby="garden-heading" class="panel">
     <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
 
     <!-- The default render is a *still* — see src/lib/ccgarden-poster.ts. The
@@ -236,12 +226,13 @@ const eyebrowClass =
     </div>
 
     <p class="text-muted dark:text-muted-dk mt-6 max-w-2xl text-sm">
-      <code class="font-mono">ccgarden</code> is generative art built from Claude Code
-      session history, regrown on every commit. Play it to watch this tree grow from
-      bare ground and to hover or tap anything for the numbers behind it — or <a
+      <a
         class={linkClass}
-        href="https://github.com/dannybrown37/ccgarden">grow your own</a
-      >. Dollar figures are notional, priced at listed API rates.
+        href="https://github.com/dannybrown37/ccgarden"><code class="font-mono">ccgarden</code></a> is
+        generative art built from Claude Code
+        session history. Play it to watch this tree grow from
+        bare ground; hover or tap anything for the numbers behind it.
+        Dollar figures are notional, priced at listed API rates.
     </p>
   </section>
 

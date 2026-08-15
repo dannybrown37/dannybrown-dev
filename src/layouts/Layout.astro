@@ -320,39 +320,56 @@ const analytics = import.meta.env.PROD;
     </main>
 
     <footer class="border-line dark:border-line-dk border-t">
-      <div
-        class="text-muted dark:text-muted-dk mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm"
-      >
-        <p>© {year} Danny Brown</p>
-        <div class="flex items-center gap-6">
-          <a
-            class="hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
-            href="/rss.xml"
+      <div class="text-muted dark:text-muted-dk mx-auto max-w-3xl px-6 py-8 text-sm">
+        <!-- A coda, deliberately: no heading, no panel, last thing on the page.
+             Anyone who reads this far is already sold, and everyone else never
+             sees it — which is the point. A section with a "Hire" header would
+             make the quietest thing here structurally as loud as Experience.
+
+             "Room for" and not "I take on": the second asserts a track record,
+             and every other number on this site is one a reader could check. -->
+        <p class="max-w-prose leading-relaxed">
+          Space for a couple scoped projects a year, alongside the day job. Scalable AWS backends,
+          CI/CD and release automations, and fast static web sites:  <a
+            class="decoration-line dark:decoration-line-dk hover:text-accent dark:hover:text-accent-dk underline underline-offset-4 transition-colors"
+            href="mailto:tinker@dannybrown.dev">Email Me</a
           >
-            RSS
-          </a>
-          <a
-            class="hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
-            href="https://github.com/dannybrown37"
-            target="_blank"
-            rel="noopener"
-          >
-            GitHub
-          </a>
-          <a
-            class="hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
-            href="https://linkedin.com/in/dannybrown37"
-            target="_blank"
-            rel="noopener"
-          >
-            LinkedIn
-          </a>
-          <a
-            class="hover:text-ink dark:hover:text-ink-dk -my-4 -mr-6 -ml-3 py-4 pr-6 pl-3 transition-colors"
-            href="mailto:tinker@dannybrown.dev"
-          >
-            Email
-          </a>
+        </p>
+
+        <div
+          class="border-line dark:border-line-dk mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-6"
+        >
+          <p>© {year} Danny Brown</p>
+          <div class="flex items-center gap-6">
+            <a
+              class="hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
+              href="/rss.xml"
+            >
+              RSS
+            </a>
+            <a
+              class="hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
+              href="https://github.com/dannybrown37"
+              target="_blank"
+              rel="noopener"
+            >
+              GitHub
+            </a>
+            <a
+              class="hover:text-ink dark:hover:text-ink-dk -mx-3 -my-4 px-3 py-4 transition-colors"
+              href="https://linkedin.com/in/dannybrown37"
+              target="_blank"
+              rel="noopener"
+            >
+              LinkedIn
+            </a>
+            <a
+              class="hover:text-ink dark:hover:text-ink-dk -my-4 -mr-6 -ml-3 py-4 pr-6 pl-3 transition-colors"
+              href="mailto:tinker@dannybrown.dev"
+            >
+              Email
+            </a>
+          </div>
         </div>
       </div>
     </footer>

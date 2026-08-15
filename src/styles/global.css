@@ -246,6 +246,15 @@ html {
      scrolled down. `safe` falls back to flex-start exactly then. */
   justify-content: safe center;
   scroll-snap-align: start;
+  /* `align` alone only decides where a scroll *settles*; a fling still coasts
+     across several panels and lands on whichever one it happened to reach.
+     `stop: always` makes every panel a hard landing, which is the whole premise
+     of a paged layout — one section per screen, arrived at deliberately. It was
+     on the garden alone, so that was the one section a reader couldn't skim
+     past, which is backwards. Only meaningful inside a snap container, so it is
+     inert wherever .paged isn't set, and the reduced-motion opt-out above
+     disables it with the rest of the snapping. */
+  scroll-snap-stop: always;
 }
 
 /* Phone screens can't afford 7rem of chrome around a screenful of prose. */

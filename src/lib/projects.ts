@@ -54,7 +54,7 @@ export const projects: Project[] = [
   {
     name: "git-a-grip",
     description:
-    "Take control of your Git history with this curated collection of hooks plus a CLI for global pre-commit management",
+    "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
     url: "https://github.com/dannybrown37/git-a-grip",
     tech: ["Pre-Commit", "Commitizen", "Ruff", "ESLint", "Bash", "Python"],
     blurb: "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
@@ -66,7 +66,7 @@ export const projects: Project[] = [
   {
     name: "skill-tree",
     description:
-      "A shared home for reusable Claude Code/Copilot skills: the tooling behind each skill, not just its playbook. Portable across repos and machines, packaged as a single installable plugin.",
+      "A shared home for reusable Claude Code/Copilot skills, including the tooling behind each skill. Portable across repos and machines, packaged as a single installable plugin.",
     url: "https://github.com/dannybrown37/skill-tree",
     blurb: "Reusable agentic LLM skills, packaged as one installable plugin.",
     tech: ["Claude Code", "Copilot", "Bash", "Python"],
