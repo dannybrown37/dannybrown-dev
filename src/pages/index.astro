@@ -14,9 +14,9 @@ import { svgAspect } from "../lib/svg-aspect";
 // reader can't predict from "connected-vehicle backends on AWS".
 const breadth: [label: string, items: string[]][] = [
   ["Languages", ["Python", "TypeScript", "JavaScript", "Bash"]],
-  ["Data", ["DynamoDB", "S3", "SQLite", "Postgres", "Athena", "Timestream", "Firestore", "SQL Server"]],
-  ["Infrastructure", ["AWS", "Terraform", "OpenTofu", "CloudFormation", "Serverless Framework", "GCP"]],
-  ["Python Toolchain", ["uv", "pytest", "ruff", "click", "pydantic"]],
+  ["Data", ["DynamoDB", "S3", "SQLite", "PostgreSQL", "Athena", "Timestream"]],
+  ["Infrastructure", ["AWS", "Terraform / OpenTofu", "CloudFormation", "Serverless Framework", "GCP"]],
+  ["Python Toolchain", ["uv", "pytest", "pydantic", "ruff", "click", "mypy"]],
   ["Workflow", ["pre-commit", "GitHub Actions", "Claude Code", "Copilot", "tmux", "fzf"]]
 
 ];
@@ -91,7 +91,7 @@ const eyebrowClass =
         Nothing I run was clicked into existence, it's all infrastructure as code.
       </p>
       <p>
-        I build the tooling that lets a project grow in scope without growing the team's
+        My work is often tooling that lets a project grow in scope without growing the team's
         manual checklists. CI/CD pipelines, pre-commit hooks, and
         automated tests that catch the mistakes humans and AI make. The systems I build are
         installable, self-documenting, and auditable.
@@ -232,7 +232,6 @@ const eyebrowClass =
         generative art built from Claude Code
         session history. Play it to watch this tree grow from
         bare ground; hover or tap anything for the numbers behind it.
-        Dollar figures are notional, priced at listed API rates.
     </p>
   </section>
 
