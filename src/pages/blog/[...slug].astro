@@ -5,6 +5,7 @@ import TagList from "../../components/TagList.astro";
 import { getReadingTime } from "../../lib/reading-time";
 import { formatDate } from "../../lib/format-date";
 import { blogOgImagePath } from "../../lib/og-image";
+import { commentMailto } from "../../lib/comment-mailto";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -17,6 +18,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const readingTime = getReadingTime(post.body ?? "");
+const mailto = commentMailto(post.data.title);
 ---
 
 <Layout
@@ -51,5 +53,15 @@ const readingTime = getReadingTime(post.body ?? "");
     >
       <Content />
     </div>
+    <aside
+      class="text-muted dark:text-muted-dk border-line dark:border-line-dk mt-12 border-t pt-6 text-sm"
+    >
+      <p class="max-w-prose leading-relaxed">
+        No comment box here, but I love a discussion. <a
+          class="decoration-line dark:decoration-line-dk hover:text-accent dark:hover:text-accent-dk underline underline-offset-4 transition-colors"
+          href={mailto}>Email me</a
+        > your thoughts and I'll read them.
+      </p>
+    </aside>
   </article>
 </Layout>
