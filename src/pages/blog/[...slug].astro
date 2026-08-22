@@ -6,19 +6,21 @@ import { getReadingTime } from "../../lib/reading-time";
 import { formatDate } from "../../lib/format-date";
 import { blogOgImagePath } from "../../lib/og-image";
 import { commentMailto } from "../../lib/comment-mailto";
+import { getAdjacentPosts } from "../../lib/adjacent-posts";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: { post },
+    props: { post, allPosts: posts },
   }));
 }
 
-const { post } = Astro.props;
+const { post, allPosts } = Astro.props;
 const { Content } = await render(post);
 const readingTime = getReadingTime(post.body ?? "");
 const mailto = commentMailto(post.data.title);
+const { older, newer } = getAdjacentPosts(allPosts, post.id);
 ---
 
 <Layout
@@ -63,5 +65,27 @@ const mailto = commentMailto(post.data.title);
         > your thoughts and I'll read them.
       </p>
     </aside>
+    {(older || newer) && (
+      <nav
+        class="text-sm border-line dark:border-line-dk mt-8 flex justify-between border-t pt-6"
+      >
+        {older ? (
+          <a
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk transition-colors"
+            href={`/blog/${older.id}`}
+          >
+            ← {older.data.title}
+          </a>
+        ) : <span />}
+        {newer && (
+          <a
+            class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk ml-auto text-right transition-colors"
+            href={`/blog/${newer.id}`}
+          >
+            {newer.data.title} →
+          </a>
+        )}
+      </nav>
+    )}
   </article>
 </Layout>
