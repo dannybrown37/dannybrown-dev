@@ -74,6 +74,15 @@ export const projects: Project[] = [
     license: "MIT",
   },
   {
+    name: "gfunk",
+    blurb: "Nuthin' but a G-Suite Thang",
+    description: "Nuthin' but a G-Suite thang: TUI, CLI, and MCP tools for managing Google Workspace resources, with a '90s west-coast hiphop flavor.",
+    url: "https://github.com/dannybrown37/gfunk",
+    tech: ["Textual", "Python", "Google Workspace API", "MCP Server"],
+    install: "uv tool install gfunk # (coming soon)",
+    license: "MIT",
+  },
+  {
     name: "dotfiles",
     description:
       "Shell config and global dev tooling. And also the sandbox where most of my projects start.",
