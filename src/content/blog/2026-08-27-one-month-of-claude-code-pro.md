@@ -126,7 +126,7 @@ This represents a new, exciting problem to solve for me. Tokenmaxxing isn't a th
 
 Back to `ccstats`. I wanted to to build a visualization of my usage, so I pushed past just the stats dashboard and into the realm of generative art:
 
-![My Claude Code Garden as of August 27, 2026](../../../public/images/ccgarden-2026-08-27.svg)
+![My Claude Code Garden as of August 27, 2026](../../../public/images/ccgarden-2026-08-27-poster.svg)
 
 `ccgarden` generates a SVG based on the usage, with tooltips explaining what everything *means*. If you've been using Claude Code, you can generate your own:
 
