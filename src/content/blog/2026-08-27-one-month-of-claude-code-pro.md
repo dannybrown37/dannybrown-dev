@@ -126,7 +126,100 @@ This represents a new, exciting problem to solve for me. Tokenmaxxing isn't a th
 
 Back to `ccstats`. I wanted to to build a visualization of my usage, so I pushed past just the stats dashboard and into the realm of generative art:
 
-![My Claude Code Garden as of August 27, 2026](../../../public/images/ccgarden-2026-08-27-poster.svg)
+<div id="garden-frame" style="position:relative;width:100%;contain:paint">
+  <img
+    id="ccgarden-poster"
+    src="/images/ccgarden-2026-08-27-poster.svg"
+    width="800"
+    height="966"
+    decoding="async"
+    style="width:100%;height:auto;transition:opacity .5s"
+    alt="My Claude Code Garden as of August 27, 2026"
+  />
+  <object
+    id="ccgarden"
+    type="image/svg+xml"
+    data-src="/images/ccgarden-2026-08-27.svg"
+    aria-label="The same garden, growing from bare ground to today"
+    style="pointer-events:none;position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .5s"
+  ></object>
+  <button
+    id="garden-play"
+    type="button"
+    style="display:none;position:absolute;top:.75rem;left:.75rem;align-items:center;gap:.5rem;border-radius:9999px;border:1px solid #d1d5db;padding:.5rem .875rem;font-family:monospace;font-size:.75rem;backdrop-filter:blur(8px);background:rgba(255,255,255,.85);color:#1a1a1a;cursor:pointer;transition:border-color .2s"
+  >
+    <svg style="width:.75rem;height:.75rem" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5v14l11-7z"></path>
+    </svg>
+    <span id="garden-play-label">Watch it grow</span>
+  </button>
+</div>
+
+<script>
+(function () {
+  const GROWN = 60;
+  const object = document.getElementById("ccgarden");
+  const poster = document.getElementById("ccgarden-poster");
+  const play = document.getElementById("garden-play");
+  const label = document.getElementById("garden-play-label");
+  if (!(object instanceof HTMLObjectElement) || !(play instanceof HTMLButtonElement)) return;
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  play.style.display = "inline-flex";
+  if (label) label.textContent = reduced ? "Explore it" : "Watch it grow";
+
+  let replay = null;
+
+  const reveal = () => {
+    object.style.opacity = "1";
+    object.style.pointerEvents = "auto";
+    if (poster) poster.style.opacity = "0";
+    if (label) label.textContent = reduced ? "Explore it" : "Replay";
+  };
+
+  const attach = () => {
+    const svg = object.contentDocument?.documentElement;
+    if (typeof svg?.pauseAnimations !== "function") return;
+
+    if (reduced) {
+      svg.setCurrentTime(GROWN);
+      svg.pauseAnimations();
+      reveal();
+      return;
+    }
+
+    let onScreen = true;
+    const halt = svg.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "style");
+    halt.textContent = "*{animation-play-state:paused !important}";
+
+    const sync = () => {
+      if (onScreen) { svg.unpauseAnimations(); halt.remove(); }
+      else { svg.pauseAnimations(); svg.append(halt); }
+    };
+
+    replay = () => { svg.setCurrentTime(0); onScreen = true; sync(); };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      sync();
+    }, { threshold: 0 });
+    observer.observe(object);
+
+    svg.setCurrentTime(0);
+    svg.unpauseAnimations();
+    reveal();
+  };
+
+  play.addEventListener("click", () => {
+    if (replay) { replay(); return; }
+    if (object.data) return;
+    if (label) label.textContent = "Loading…";
+    object.addEventListener("load", attach, { once: true });
+    object.data = object.dataset.src ?? "";
+    if (object.contentDocument?.readyState === "complete") attach();
+  });
+})();
+</script>
 
 `ccgarden` generates a SVG based on the usage, with tooltips explaining what everything *means*. If you've been using Claude Code, you can generate your own:
 
