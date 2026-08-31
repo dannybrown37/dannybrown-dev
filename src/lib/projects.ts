@@ -79,7 +79,7 @@ export const projects: Project[] = [
     description: "Nuthin' but a G-Suite thang: TUI, CLI, and MCP tools for managing Google Workspace resources, with a '90s west-coast hiphop flavor.",
     url: "https://github.com/dannybrown37/gfunk",
     tech: ["Textual", "Python", "Google Workspace API", "MCP Server"],
-    install: "uv tool install gfunk # (coming soon)",
+    install: "uv tool install gfunk",
     license: "MIT",
   },
   {
