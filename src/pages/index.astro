@@ -221,6 +221,7 @@ const eyebrowClass =
         src="/ccgarden-poster.svg"
         width="800"
         height="966"
+        loading="lazy"
         decoding="async"
         class="h-full w-full transition-opacity duration-500"
         alt="A tree grown from my real Claude Code session history: trunk width from total sessions, one branch per repo, leaves for each session, under a sky that darkens with late-night prompts."
@@ -409,6 +410,25 @@ const eyebrowClass =
       });
     }
 
+    function prefetchGardenPoster() {
+      const trigger = document.getElementById("projects-heading");
+      if (!trigger) return;
+      let fired = false;
+      const observer = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting || fired) return;
+        fired = true;
+        observer.disconnect();
+        const link = document.createElement("link");
+        link.rel = "prefetch";
+        link.as = "image";
+        link.href = "/ccgarden-poster.svg";
+        document.head.appendChild(link);
+      });
+      observer.observe(trigger);
+      document.addEventListener("astro:before-swap", () => observer.disconnect(), { once: true });
+    }
+
+    document.addEventListener("astro:page-load", prefetchGardenPoster);
     document.addEventListener("astro:page-load", controlGarden);
     document.addEventListener("astro:page-load", controlFlow);
   </script>
