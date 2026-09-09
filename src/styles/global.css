@@ -261,7 +261,7 @@ html {
 /* Phone screens can't afford 7rem of chrome around a screenful of prose. */
 @media (max-width: 40rem) {
   .panel {
-    padding-block: 4rem 1rem;
+    padding-block: 3.5rem 0.75rem;
     /* dvh tracks the toolbar: svh is the viewport with the bar visible, so
        when a scroll hides it the viewport outgrows the panel and the next
        section peeks in below the fold. dvh resizes with the toolbar, closing

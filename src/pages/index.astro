@@ -136,7 +136,7 @@ const eyebrowClass =
          repo uses this", and reusing that treatment here would both change what
          the chip claims and put thirty of them on one page. -->
     <dl
-      class="border-line dark:border-line-dk text-muted dark:text-muted-dk mt-10 space-y-3 border-t pt-6 font-mono text-xs"
+      class="border-line dark:border-line-dk text-muted dark:text-muted-dk mt-10 space-y-3 border-t pt-6 font-mono text-xs max-sm:mt-6 max-sm:space-y-2 max-sm:pt-4"
     >
       {
         breadth.map(([label, items]) => (
@@ -144,7 +144,7 @@ const eyebrowClass =
             <dt class="text-accent/80 dark:text-accent-dk/80 tracking-widest uppercase">
               {label}
             </dt>
-            <dd class="mt-1 leading-relaxed sm:mt-0">
+            <dd class="mt-1 leading-relaxed sm:mt-0 max-sm:leading-normal">
               {items.map((item, i) => (
                 <>
                   {i > 0 && <span class="opacity-40"> · </span>}
@@ -162,11 +162,11 @@ const eyebrowClass =
 
   <section aria-labelledby="projects-heading" class={sectionClass}>
     <h2 id="projects-heading" class={eyebrowClass}>Projects</h2>
-    <ul class="mt-8 space-y-6">
+    <ul class="mt-8 space-y-6 max-sm:mt-5 max-sm:space-y-4">
       {featured.map((project) => <ProjectCard project={project} compact />)}
     </ul>
     <a
-      class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors"
+      class="text-muted dark:text-muted-dk hover:text-ink dark:hover:text-ink-dk mt-8 inline-block text-sm transition-colors max-sm:mt-5"
       href="/projects"
     >
       All projects →
