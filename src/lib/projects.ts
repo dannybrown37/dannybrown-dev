@@ -61,6 +61,16 @@ export const projects: Project[] = [
     install:
     "# .pre-commit-config.yaml:\nrepos:\n  - repo: https://github.com/dannybrown37/git-a-grip\n    rev: v0.y.z\n    hooks:\n      - id: choose-your-hooks\n\n# For pre-commit tooling:\nuv tool install git-a-grip",
     license: "MIT",
+  },
+  {
+    name: "deluge.quest",
+    description:
+      "Browser-based tools for the Synthstrom Deluge music workstation. Manage SD cards, analyze songs, preview tracks, build kits, generate patches, convert scores. All client-side, no upload, no server.",
+    url: "https://deluge.quest",
+    blurb: "Browser-based tools for the Synthstrom Deluge. All client-side, no server.",
+    tech: ["Astro", "Svelte", "Pyodide", "Web Audio", "Python"],
+    live: true,
+    license: "GPL-3.0",
     featured: true,
   },
   {
