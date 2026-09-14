@@ -109,6 +109,15 @@ export const projects: Project[] = [
     license: "MIT",
   },
   {
+    name: "MAAD Goat Pizza Website",
+    description:
+      "Website for MAAD GOAT, a pop-up pizzeria & catering operation in the Florida panhandle area. CMS-managed menu and content, deployed to Cloudflare Workers.",
+    url: "https://maadgoat.com",
+    blurb: "Website for MAAD GOAT, a pop-up pizzeria & catering in Pensacola, FL.",
+    tech: ["Astro", "Keystatic", "Cloudflare Workers", "TypeScript"],
+    live: true,
+  },
+  {
     name: "dannybrown.dev",
     description: "This site.",
     url: "https://www.dannybrown.dev",
