@@ -52,17 +52,6 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    name: "git-a-grip",
-    description:
-    "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
-    url: "https://github.com/dannybrown37/git-a-grip",
-    tech: ["Pre-Commit", "Commitizen", "Ruff", "ESLint", "Bash", "Python"],
-    blurb: "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
-    install:
-    "# .pre-commit-config.yaml:\nrepos:\n  - repo: https://github.com/dannybrown37/git-a-grip\n    rev: v0.y.z\n    hooks:\n      - id: choose-your-hooks\n\n# For pre-commit tooling:\nuv tool install git-a-grip",
-    license: "MIT",
-  },
-  {
     name: "deluge.quest",
     description:
       "Browser-based tools for the Synthstrom Deluge music workstation. Manage SD cards, analyze songs, preview tracks, build kits, generate patches, convert scores. All client-side, no upload, no server.",
@@ -72,6 +61,17 @@ export const projects: Project[] = [
     live: true,
     license: "GPL-3.0",
     featured: true,
+  },
+  {
+    name: "git-a-grip",
+    description:
+    "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
+    url: "https://github.com/dannybrown37/git-a-grip",
+    tech: ["Pre-Commit", "Commitizen", "Ruff", "ESLint", "Bash", "Python"],
+    blurb: "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
+    install:
+    "# .pre-commit-config.yaml:\nrepos:\n  - repo: https://github.com/dannybrown37/git-a-grip\n    rev: v0.y.z\n    hooks:\n      - id: choose-your-hooks\n\n# For pre-commit tooling:\nuv tool install git-a-grip",
+    license: "MIT",
   },
   {
     name: "skill-tree",
@@ -93,13 +93,6 @@ export const projects: Project[] = [
     license: "MIT",
   },
   {
-    name: "dotfiles",
-    description:
-      "Shell config and global dev tooling. And also the sandbox where most of my projects start.",
-    url: "https://github.com/dannybrown37/dotfiles",
-    tech: ["Bash", "Neovim", "TMUX", "WSL", "AutoHotKey", "Pre-Commit", "Python"],
-  },
-  {
     name: "ccgarden",
     description:
       "Grows a tree from your Claude Code session history: each item represents a statistic. The tree on my home page is one of them.",
@@ -116,6 +109,13 @@ export const projects: Project[] = [
     blurb: "Website for MAAD GOAT, a pop-up pizzeria & catering in Pensacola, FL.",
     tech: ["Astro", "Keystatic", "Cloudflare Workers", "TypeScript"],
     live: true,
+  },
+  {
+    name: "dotfiles",
+    description:
+      "Shell config and global dev tooling. And also the sandbox where most of my projects start.",
+    url: "https://github.com/dannybrown37/dotfiles",
+    tech: ["Bash", "Neovim", "TMUX", "WSL", "AutoHotKey", "Pre-Commit", "Python"],
   },
   {
     name: "dannybrown.dev",
