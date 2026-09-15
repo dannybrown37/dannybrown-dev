@@ -1,5 +1,5 @@
 ---
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import PostRow from "../components/PostRow.astro";
@@ -25,7 +25,10 @@ const featured = featuredProjects();
 
 // Read at build time, never hardcoded: the tree grows a little taller with
 // every regeneration, and a stale ratio crops the canopy.
-const garden = svgAspect(readFileSync("public/ccgarden.svg", "utf8")) ?? {
+const gardenSvg = existsSync("public/ccgarden-web.svg")
+  ? "public/ccgarden-web.svg"
+  : "public/ccgarden.svg";
+const garden = svgAspect(readFileSync(gardenSvg, "utf8")) ?? {
   css: "800 / 966",
   ratio: 800 / 966,
 };
@@ -202,12 +205,10 @@ const eyebrowClass =
   <section id="garden" aria-labelledby="garden-heading" class="panel">
     <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
 
-    <!-- The default render is a *still* — see src/lib/ccgarden-poster.ts. The
-         live document is 3MB of SMIL across five thousand animation elements
-         plus two scripts of its own, and paying for that on every visit is
-         what made the whole page feel like wading: the palette went sticky,
-         scrolling dropped frames, and the snap never settled. An <img> of the
-         frozen end state costs one rasterization and no main thread at all.
+    <!-- The default render is the --web variant: static data with CSS wind
+         animation, a date range in the legend, and no scrubber. Much lighter
+         than the full timeline (~2MB vs ~6MB, no SMIL, no scripts). Lazy-loaded
+         when the Projects section scrolls into view.
 
          contain:paint keeps the live version's repaints inside this box once
          it is running; without it the whole page re-composites every frame. -->
@@ -216,16 +217,14 @@ const eyebrowClass =
       class="relative left-1/2 mt-6 -translate-x-1/2 [contain:paint]"
       style={`width: ${gardenWidth}; aspect-ratio: ${garden.css}`}
     >
-      <img
-        id="ccgarden-poster"
-        src="/ccgarden-poster.svg"
-        width="800"
-        height="966"
-        loading="lazy"
-        decoding="async"
+      <object
+        id="ccgarden-web"
+        type="image/svg+xml"
+        data-src="/ccgarden-web.svg"
+        aria-label="A tree grown from my real Claude Code session history: trunk width from total sessions, one branch per repo, leaves for each session, under a sky that darkens with late-night prompts."
         class="h-full w-full transition-opacity duration-500"
-        alt="A tree grown from my real Claude Code session history: trunk width from total sessions, one branch per repo, leaves for each session, under a sky that darkens with late-night prompts."
-      />
+      >
+      </object>
 
       <!-- Empty until asked for. `data` is set by the script, never here: the
            attribute alone starts the 3MB fetch and parse. -->
@@ -271,7 +270,7 @@ const eyebrowClass =
 
     function controlGarden() {
       const object = document.getElementById("ccgarden");
-      const poster = document.getElementById("ccgarden-poster");
+      const web = document.getElementById("ccgarden-web");
       const play = document.getElementById("garden-play");
       const label = document.getElementById("garden-play-label");
       if (!(object instanceof HTMLObjectElement) || !(play instanceof HTMLButtonElement))
@@ -287,7 +286,7 @@ const eyebrowClass =
       const reveal = () => {
         object.style.opacity = "1";
         object.classList.remove("pointer-events-none");
-        if (poster) poster.style.opacity = "0";
+        if (web) web.style.opacity = "0";
         if (label) label.textContent = reduced ? "Explore it" : "Replay";
       };
 
@@ -410,7 +409,10 @@ const eyebrowClass =
       });
     }
 
-    function prefetchGardenPoster() {
+    function lazyLoadWebGarden() {
+      const web = document.getElementById("ccgarden-web") as HTMLObjectElement | null;
+      if (!web || web.data) return;
+
       const trigger = document.getElementById("projects-heading");
       if (!trigger) return;
       let fired = false;
@@ -418,17 +420,13 @@ const eyebrowClass =
         if (!entry.isIntersecting || fired) return;
         fired = true;
         observer.disconnect();
-        const link = document.createElement("link");
-        link.rel = "prefetch";
-        link.as = "image";
-        link.href = "/ccgarden-poster.svg";
-        document.head.appendChild(link);
+        web.data = web.dataset.src ?? "";
       });
       observer.observe(trigger);
       document.addEventListener("astro:before-swap", () => observer.disconnect(), { once: true });
     }
 
-    document.addEventListener("astro:page-load", prefetchGardenPoster);
+    document.addEventListener("astro:page-load", lazyLoadWebGarden);
     document.addEventListener("astro:page-load", controlGarden);
     document.addEventListener("astro:page-load", controlFlow);
   </script>
