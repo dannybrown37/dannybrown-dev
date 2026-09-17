@@ -207,20 +207,18 @@ html {
    is only coherent when every child of <main> is a .panel — on a prose page it
    would take the scroll position away from the reader on every gesture. */
 .paged {
-  /* Mandatory on every screen, phones included. It used to drop to `proximity`
-     under 40rem — which on a phone reads as no snapping at all, and phones are
-     where the effect is worth having. The fear it was hedging against (a panel
-     taller than the screen becoming unreadable, since the scroll would refuse
-     to rest inside it) isn't real: the spec relaxes snapping wherever the snap
-     area is larger than the snapport, and Chrome does. Measured at 375x667,
-     where Experience still overflows: the scroll rests mid-panel and stays. */
   scroll-snap-type: y mandatory;
-  /* Overrides scroll-pt-20. That padding exists so an anchor jump clears the
-     sticky header, but it also parks a snapped panel 80px down the screen,
-     leaving an 80px sliver of the previous panel on top — measured, and exactly
-     the peeking this layout exists to prevent. Panels clear the header with
-     their own top padding instead. */
   scroll-padding-top: 0;
+}
+
+/* Mandatory snap fights short swipes on touch screens — the browser snaps back
+   to the panel the gesture started on instead of completing the transition.
+   Proximity lets a deliberate swipe land naturally while still pulling a
+   half-hearted scroll to the nearest panel. */
+@media (max-width: 40rem) {
+  .paged {
+    scroll-snap-type: y proximity;
+  }
 }
 
 /* Fixed rather than sticky, on paged pages only. A sticky header still occupies
