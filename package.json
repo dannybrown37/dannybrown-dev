@@ -23,9 +23,13 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/typography": "^0.5.20",
     "astro-og-canvas": "^0.13.0",
     "canvaskit-wasm": "^0.41.1",
+    "eslint": "^10.10.0",
+    "eslint-plugin-astro": "^3.2.0",
+    "typescript-eslint": "^8.70.0",
     "vitest": "^4.1.10"
   }
 }

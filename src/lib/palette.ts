@@ -107,7 +107,7 @@ export function filterCommands(
     .filter((entry) => entry.score !== null)
     // `order` breaks ties, keeping the author's ordering meaningful — Array.sort
     // is stable in practice, but the ranking above is too coarse to rely on it.
-    .sort((a, b) => a.score! - b.score! || a.order - b.order)
+    .sort((a, b) => (a.score as number) - (b.score as number) || a.order - b.order)
     .map((entry) => entry.command);
 }
 
