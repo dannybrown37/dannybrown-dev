@@ -211,15 +211,6 @@ html {
   scroll-padding-top: 0;
 }
 
-/* Mandatory snap fights short swipes on touch screens — the browser snaps back
-   to the panel the gesture started on instead of completing the transition.
-   Proximity lets a deliberate swipe land naturally while still pulling a
-   half-hearted scroll to the nearest panel. */
-@media (max-width: 40rem) {
-  .paged {
-    scroll-snap-type: y proximity;
-  }
-}
 
 /* Fixed rather than sticky, on paged pages only. A sticky header still occupies
    flow space, which pushes every panel down by its height — so the first snap
