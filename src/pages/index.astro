@@ -205,26 +205,21 @@ const eyebrowClass =
   <section id="garden" aria-labelledby="garden-heading" class="panel">
     <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
 
-    <!-- The default render is the --web variant: static data with CSS wind
-         animation, a date range in the legend, and no scrubber. Much lighter
-         than the full timeline (~2MB vs ~6MB, no SMIL, no scripts). Lazy-loaded
-         when the Projects section scrolls into view.
-
-         contain:paint keeps the live version's repaints inside this box once
-         it is running; without it the whole page re-composites every frame. -->
+    <!-- Static WebP poster of the garden; the full animated SVG loads only
+         when someone hits play. contain:paint keeps repaints inside this box. -->
     <div
       id="garden-frame"
       class="relative left-1/2 mt-6 -translate-x-1/2 [contain:paint]"
       style={`width: ${gardenWidth}; aspect-ratio: ${garden.css}`}
     >
-      <object
-        id="ccgarden-web"
-        type="image/svg+xml"
-        data-src="/ccgarden-web.svg"
-        aria-label="A tree grown from my real Claude Code session history: trunk width from total sessions, one branch per repo, leaves for each session, under a sky that darkens with late-night prompts."
-        class="h-full w-full transition-opacity duration-500"
-      >
-      </object>
+      <img
+        id="ccgarden-poster"
+        src="/ccgarden-web.webp"
+        alt="A tree grown from my real Claude Code session history: trunk width from total sessions, one branch per repo, leaves for each session, under a sky that darkens with late-night prompts."
+        class="h-full w-full object-contain transition-opacity duration-500"
+        loading="eager"
+        decoding="async"
+      />
 
       <!-- Empty until asked for. `data` is set by the script, never here: the
            attribute alone starts the 3MB fetch and parse. -->
@@ -270,11 +265,10 @@ const eyebrowClass =
 
     function controlGarden() {
       const object = document.getElementById("ccgarden");
-      const web = document.getElementById("ccgarden-web");
+      const poster = document.getElementById("ccgarden-poster");
       const play = document.getElementById("garden-play");
       const label = document.getElementById("garden-play-label");
-      if (!(object instanceof HTMLObjectElement) || !(play instanceof HTMLButtonElement))
-        return;
+      if (!(object instanceof HTMLObjectElement) || !(play instanceof HTMLButtonElement)) return;
 
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       play.dataset.ready = "";
@@ -286,7 +280,7 @@ const eyebrowClass =
       const reveal = () => {
         object.style.opacity = "1";
         object.classList.remove("pointer-events-none");
-        if (web) web.style.opacity = "0";
+        if (poster) poster.style.opacity = "0";
         if (label) label.textContent = reduced ? "Explore it" : "Replay";
       };
 
@@ -409,38 +403,6 @@ const eyebrowClass =
       });
     }
 
-    // Profiled at 4x CPU on a phone viewport: the poster's idle sway holds the
-    // main thread at ~10fps, and frozen it's 60fps. Its tap-tooltip script
-    // still runs, so the tooltips survive; the full timeline stays one tap away.
-    function freezePoster(web: HTMLObjectElement) {
-      const svg = web.contentDocument?.documentElement;
-      if (!svg) return;
-      const halt = svg.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "style");
-      halt.textContent = "*{animation:none !important}";
-      svg.append(halt);
-    }
-
-    function lazyLoadWebGarden() {
-      const web = document.getElementById("ccgarden-web") as HTMLObjectElement | null;
-      if (!web || web.data) return;
-
-      const trigger = document.getElementById("experience-heading");
-      if (!trigger) return;
-      let fired = false;
-      const observer = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting || fired) return;
-        fired = true;
-        observer.disconnect();
-        if (window.matchMedia("(max-width: 40rem)").matches) {
-          web.addEventListener("load", () => freezePoster(web), { once: true });
-        }
-        web.data = web.dataset.src ?? "";
-      });
-      observer.observe(trigger);
-      document.addEventListener("astro:before-swap", () => observer.disconnect(), { once: true });
-    }
-
-    document.addEventListener("astro:page-load", lazyLoadWebGarden);
     document.addEventListener("astro:page-load", controlGarden);
     document.addEventListener("astro:page-load", controlFlow);
   </script>
