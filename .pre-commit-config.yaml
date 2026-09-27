@@ -1,6 +1,6 @@
-# public/ccgarden.svg is generated, ~900KB, and single-line -- no fixer,
+# public/ccgarden*.svg are generated, ~700KB+, and single-line -- no fixer,
 # linter, or size check should have an opinion about it.
-exclude: ^public/ccgarden\.svg$
+exclude: ^public/ccgarden(-plot)?\.svg$
 
 repos:
   # gitleaks finds credentials. This finds the strings that are only
@@ -15,7 +15,7 @@ repos:
         name: Refresh ccgarden garden
         args:
           - '--command=node scripts/sync-ccgarden.mjs'
-          - '--file=public/ccgarden.svg'
+          - '--file=public/ccgarden-plot.svg'
       # Widened from the hook's JS default: a .astro component or a post's
       # .md frontmatter breaks these tests as readily as a .ts file. Matched
       # by extension rather than by an `astro` type tag, which older

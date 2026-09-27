@@ -23,21 +23,19 @@ const breadth: [label: string, items: string[]][] = [
 
 const featured = featuredProjects();
 
-// Read at build time, never hardcoded: the tree grows a little taller with
-// every regeneration, and a stale ratio crops the canopy.
-const gardenSvg = existsSync("public/ccgarden-web.svg")
-  ? "public/ccgarden-web.svg"
-  : "public/ccgarden.svg";
-const garden = svgAspect(readFileSync(gardenSvg, "utf8")) ?? {
-  css: "800 / 966",
-  ratio: 800 / 966,
+// Read at build time, never hardcoded: a regeneration can change the plot's
+// dimensions, and a stale ratio crops it.
+const gardenSvg = "public/ccgarden-plot.svg";
+const garden = (existsSync(gardenSvg) && svgAspect(readFileSync(gardenSvg, "utf8"))) || {
+  css: "800 / 1100",
+  ratio: 800 / 1100,
 };
 
-// Sized off the viewport's *height* first: the tree is taller than it is wide,
+// Sized off the viewport's *height* first: the plot is taller than it is wide,
 // so width-first sizing (the old `max-w-4xl`) makes something no screen can
 // show at once. Full-bleed out of the prose column, capped by the height budget
 // — the band minus the sticky header, heading, and caption — and by the
-// viewport width so a phone gets the whole tree rather than a cropped one.
+// viewport width so a phone gets the whole plot rather than a cropped one.
 const gardenWidth = `min(56rem, 100vw - 2rem, calc((100svh - 16rem) * ${garden.ratio.toFixed(4)}))`;
 
 const posts = (await getCollection("blog"))
@@ -205,45 +203,21 @@ const eyebrowClass =
   <section id="garden" aria-labelledby="garden-heading" class="panel">
     <h2 id="garden-heading" class={eyebrowClass}>Garden</h2>
 
-    <!-- Static WebP poster of the garden; the full animated SVG loads only
-         when someone hits play. contain:paint keeps repaints inside this box. -->
+    <!-- `data` is set by the script as the section nears the viewport, never
+         here: the attribute alone starts a ~650KB fetch and parse. -->
     <div
       id="garden-frame"
       class="relative left-1/2 mt-6 -translate-x-1/2 [contain:paint]"
       style={`width: ${gardenWidth}; aspect-ratio: ${garden.css}`}
     >
-      <img
-        id="ccgarden-poster"
-        src="/ccgarden-web.webp"
-        alt="A tree grown from my real Claude Code session history: trunk width from total sessions, one branch per repo, leaves for each session, under a sky that darkens with late-night prompts."
-        class="h-full w-full object-contain transition-opacity duration-500"
-        loading="eager"
-        decoding="async"
-      />
-
-      <!-- Empty until asked for. `data` is set by the script, never here: the
-           attribute alone starts the 3MB fetch and parse. -->
       <object
         id="ccgarden"
         type="image/svg+xml"
-        data-src="/ccgarden.svg"
-        aria-label="The same garden, growing from bare ground to today"
-        class="pointer-events-none absolute inset-0 h-full w-full opacity-0 transition-opacity duration-500"
+        data-src="/ccgarden-plot.svg"
+        aria-label="A top-down kitchen garden grown from my real Claude Code session history: a raised bed per repo, a plant species per model, flowers for skills."
+        class="h-full w-full"
       >
       </object>
-
-      <!-- Gated on data-ready so a no-JS visitor is left with the poster
-           rather than a button that does nothing. -->
-      <button
-        id="garden-play"
-        type="button"
-        class="bg-paper/85 dark:bg-paper-dk/85 border-line dark:border-line-dk text-ink dark:text-ink-dk hover:border-accent dark:hover:border-accent-dk absolute top-3 left-3 hidden items-center gap-2 rounded-full border px-3.5 py-2 font-mono text-xs backdrop-blur transition-colors data-ready:inline-flex"
-      >
-        <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M8 5v14l11-7z"></path>
-        </svg>
-        <span id="garden-play-label">Watch it grow</span>
-      </button>
     </div>
 
     <p class="text-muted dark:text-muted-dk mt-6 max-w-2xl text-sm">
@@ -251,134 +225,59 @@ const eyebrowClass =
         class={linkClass}
         href="https://github.com/dannybrown37/ccgarden"><code class="font-mono">ccgarden</code></a> is
         generative art built from Claude Code
-        session history. Play it to watch this tree grow from
-        bare ground; hover or tap anything for the numbers behind it.
+        session history. Drag the scrubber to watch this plot fill
+        in; hover or tap anything for the numbers behind it.
     </p>
   </section>
 
-  <!-- The garden ships as a still image; this is the machinery behind the play
-       button. Everything it touches — a 3MB fetch, several thousand SMIL
-       elements, and the CSS keyframe motion that never settles on its own —
-       happens only once someone has actually asked to see the tree grow. -->
   <script>
-    const GROWN = 60; // seconds; comfortably past the longest growth animation.
-
     function controlGarden() {
       const object = document.getElementById("ccgarden");
-      const poster = document.getElementById("ccgarden-poster");
-      const play = document.getElementById("garden-play");
-      const label = document.getElementById("garden-play-label");
-      if (!(object instanceof HTMLObjectElement) || !(play instanceof HTMLButtonElement)) return;
+      if (!(object instanceof HTMLObjectElement)) return;
 
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      play.dataset.ready = "";
-      if (label) label.textContent = reduced ? "Explore it" : "Watch it grow";
+      let onScreen = false;
+      // The palette opens on top of the plot, so intersection alone still
+      // leaves it repainting while someone is typing into it.
+      let paletteOpen = false;
 
-      // Owned by attach(), called by the click handler once the document is up.
-      let replay: (() => void) | null = null;
-
-      const reveal = () => {
-        object.style.opacity = "1";
-        object.classList.remove("pointer-events-none");
-        if (poster) poster.style.opacity = "0";
-        if (label) label.textContent = reduced ? "Explore it" : "Replay";
-      };
-
-      const attach = () => {
-        // Duck-typed, and it has to be. `instanceof SVGSVGElement` is false
-        // here: <object> is its own browsing context with its own realm, so
-        // the root element is an instance of the *inner* window's constructor,
-        // never this one's. That guard silently disabled everything below it.
-        const svg = object.contentDocument?.documentElement as SVGSVGElement | undefined;
-        if (typeof svg?.pauseAnimations !== "function") return;
-
-        if (reduced) {
-          // Jump to the end before pausing. Pausing at t=0 freezes the growth
-          // animations before anything has grown — a blank patch of dirt. The
-          // tooltips are the point of loading it at all in this mode.
-          svg.setCurrentTime(GROWN);
-          svg.pauseAnimations();
-          reveal();
-          return;
-        }
-
-        let onScreen = true;
-        // The palette opens on top of the tree, so intersection alone still
-        // leaves it repainting while someone is typing into it — and the
-        // keystrokes lose the main thread to it.
-        let paletteOpen = false;
-
-        // pauseAnimations() only reaches SMIL. The idle motion — wind, the
-        // star twinkle, the rain — is CSS keyframes, which needs its own
-        // switch or it keeps running through both pauses below.
-        // Namespaced: the SVG is a real XML document, and a null-namespace
-        // <style> from createElement would parse but never apply.
-        const halt = svg.ownerDocument.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "style",
-        );
+      // The idle motion is CSS keyframes inside the <object>'s own document,
+      // so it needs a switch of its own. Namespaced: the SVG is a real XML
+      // document, and a null-namespace <style> would parse but never apply.
+      let halt: Element | null = null;
+      const sync = () => {
+        const svg = object.contentDocument?.documentElement;
+        if (!svg) return;
+        halt ??= svg.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "style");
         halt.textContent = "*{animation-play-state:paused !important}";
-
-        const sync = () => {
-          if (onScreen && !paletteOpen) {
-            svg.unpauseAnimations();
-            halt.remove();
-          } else {
-            svg.pauseAnimations();
-            svg.append(halt);
-          }
-        };
-
-        replay = () => {
-          svg.setCurrentTime(0);
-          onScreen = true;
-          sync();
-        };
-
-        const observer = new IntersectionObserver(
-          ([entry]) => {
-            onScreen = entry.isIntersecting;
-            sync();
-          },
-          { threshold: 0 },
-        );
-        observer.observe(object);
-
-        const onPalette = (event: Event) => {
-          paletteOpen = (event as CustomEvent<{ open: boolean }>).detail.open;
-          sync();
-        };
-        document.addEventListener("palette:toggle", onPalette);
-
-        document.addEventListener(
-          "astro:before-swap",
-          () => {
-            observer.disconnect();
-            document.removeEventListener("palette:toggle", onPalette);
-          },
-          { once: true },
-        );
-
-        svg.setCurrentTime(0);
-        svg.unpauseAnimations();
-        reveal();
+        if (onScreen && !paletteOpen) halt.remove();
+        else svg.append(halt);
       };
+      object.addEventListener("load", sync);
 
-      play.addEventListener("click", () => {
-        if (replay) {
-          replay();
-          return;
-        }
-        // Second click before it lands would start the fetch twice.
-        if (object.data) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          onScreen = entry.isIntersecting;
+          if (onScreen && !object.data) object.data = object.dataset.src ?? "";
+          sync();
+        },
+        { rootMargin: "100% 0px" },
+      );
+      observer.observe(object);
 
-        if (label) label.textContent = "Loading…";
-        object.addEventListener("load", attach, { once: true });
-        // contentDocument is null until the SVG's own document finishes
-        // parsing, and a bfcache restore replays no event — so try both paths.
-        object.data = object.dataset.src ?? "";
-        if (object.contentDocument?.readyState === "complete") attach();
-      });
+      const onPalette = (event: Event) => {
+        paletteOpen = (event as CustomEvent<{ open: boolean }>).detail.open;
+        sync();
+      };
+      document.addEventListener("palette:toggle", onPalette);
+
+      document.addEventListener(
+        "astro:before-swap",
+        () => {
+          observer.disconnect();
+          document.removeEventListener("palette:toggle", onPalette);
+        },
+        { once: true },
+      );
     }
 
     // Same rule the garden follows, for the same reason: the hero field and the

@@ -11,10 +11,8 @@ import { join } from "node:path";
 
 import { roundSvgPrecision } from "../src/lib/round-svg-precision.ts";
 
-const SOURCE = join(homedir(), ".claude", "ccgarden.svg");
-const TARGET = join(import.meta.dirname, "..", "public", "ccgarden.svg");
-const WEB_SOURCE = join(homedir(), ".claude", "ccgarden-web.svg");
-const WEB_TARGET = join(import.meta.dirname, "..", "public", "ccgarden-web.svg");
+const SOURCE = join(homedir(), ".claude", "ccgarden-plot.svg");
+const TARGET = join(import.meta.dirname, "..", "public", "ccgarden-plot.svg");
 
 const force = process.argv.includes("--force");
 
@@ -34,10 +32,9 @@ function run() {
   }
 
   try {
-    execFileSync("ccgarden", ["--no-open"], { stdio: "ignore" });
     execFileSync(
       "ccgarden",
-      ["--web", "--no-open", "--output", WEB_SOURCE],
+      ["--plot", "--poster", "--no-open", "--output", SOURCE],
       { stdio: "ignore" },
     );
   } catch (error) {
@@ -46,15 +43,12 @@ function run() {
   }
 
   const rounded = roundSvgPrecision(readFileSync(SOURCE, "utf8"));
-  const web = roundSvgPrecision(readFileSync(WEB_SOURCE, "utf8"));
   writeFileSync(TARGET, rounded);
-  writeFileSync(WEB_TARGET, web);
-  execFileSync("git", ["add", TARGET, WEB_TARGET]);
+  execFileSync("git", ["add", TARGET]);
 
   const kb = (bytes) => (Buffer.byteLength(bytes) / 1024).toFixed(0);
   console.log(
-    `ccgarden: refreshed public/ccgarden.svg (${kb(rounded)}KB) and ` +
-      `public/ccgarden-web.svg (${kb(web)}KB), and staged them`,
+    `ccgarden: refreshed public/ccgarden-plot.svg (${kb(rounded)}KB) and staged it`,
   );
 }
 
