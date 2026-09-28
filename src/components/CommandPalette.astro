@@ -1,10 +1,10 @@
 ---
 import { getCollection } from "astro:content";
 import {
+  type PaletteCommand,
   postCommands,
   projectCommands,
   secretTitles,
-  type PaletteCommand,
 } from "../lib/palette";
 import { projects } from "../lib/projects";
 
@@ -30,14 +30,30 @@ const visible: PaletteCommand[] = [
   {
     id: "garden",
     title: "Garden",
-    keywords: ["visualization", "Claude Code", "projects", "svg", "art", "skill-tree"],
+    keywords: [
+      "visualization",
+      "Claude Code",
+      "projects",
+      "svg",
+      "art",
+      "skill-tree",
+    ],
     kind: "navigate",
     action: { type: "href", href: "/#garden-heading" },
   },
   {
     id: "projects",
     title: "Projects",
-    keywords: ["work", "code", "repos", "gtd", "ccgarden", "skill-tree", "dotfiles", "git-a-grip"],
+    keywords: [
+      "work",
+      "code",
+      "repos",
+      "gtd",
+      "ccgarden",
+      "skill-tree",
+      "dotfiles",
+      "git-a-grip",
+    ],
     kind: "navigate",
     action: { type: "href", href: "/projects" },
   },
@@ -63,14 +79,22 @@ const visible: PaletteCommand[] = [
     title: "GitHub",
     keywords: ["source", "code", "dannybrown37"],
     kind: "external",
-    action: { type: "href", href: "https://github.com/dannybrown37", external: true },
+    action: {
+      type: "href",
+      href: "https://github.com/dannybrown37",
+      external: true,
+    },
   },
   {
     id: "linkedin",
     title: "LinkedIn",
     keywords: ["linkedin", "hire", "recruit", "dannybrown37"],
     kind: "external",
-    action: { type: "href", href: "https://linkedin.com/in/dannybrown37", external: true },
+    action: {
+      type: "href",
+      href: "https://linkedin.com/in/dannybrown37",
+      external: true,
+    },
   },
 ];
 
@@ -94,7 +118,10 @@ const secrets: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["HTTP 418: I'm a teapot.", "make: *** [Makefile:1: coffee] Error 418"],
+      lines: [
+        "HTTP 418: I'm a teapot.",
+        "make: *** [Makefile:1: coffee] Error 418",
+      ],
     },
     secret: true,
   },
@@ -181,7 +208,10 @@ const secrets: PaletteCommand[] = [
     kind: "action",
     action: {
       type: "say",
-      lines: ["rm: it is dangerous to operate recursively on '/'", "Permission denied. Nice try."],
+      lines: [
+        "rm: it is dangerous to operate recursively on '/'",
+        "Permission denied. Nice try.",
+      ],
     },
     secret: true,
   },
@@ -204,12 +234,14 @@ const secrets: PaletteCommand[] = [
     title: "uptime",
     keywords: ["years", "experience", "how long"],
     kind: "action",
-    action: { type: "say", lines: [
+    action: {
+      type: "say",
+      lines: [
         "Since 2021 · connected vehicles · messages handled: billions",
         "2019 - 2021 · fundraising tech · dollars processed: millions",
         "2013 - 2021 · freelance content · articles written/edited: thousands",
         "2014 - 2019 · public service · cases investigated: hundreds",
-      ]
+      ],
     },
     secret: true,
   },

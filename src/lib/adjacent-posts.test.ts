@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { getAdjacentPosts } from "./adjacent-posts";
 
 const post = (id: string, pubDate: string) => ({
@@ -40,8 +40,12 @@ describe("getAdjacentPosts", () => {
     },
   ])("$label", ({ currentId, expected }) => {
     const result = getAdjacentPosts(posts as any, currentId);
-    expect(result.older && { id: result.older.id, title: result.older.data.title }).toEqual(expected.older);
-    expect(result.newer && { id: result.newer.id, title: result.newer.data.title }).toEqual(expected.newer);
+    expect(
+      result.older && { id: result.older.id, title: result.older.data.title },
+    ).toEqual(expected.older);
+    expect(
+      result.newer && { id: result.newer.id, title: result.newer.data.title },
+    ).toEqual(expected.newer);
   });
 
   it("returns both undefined for a single post", () => {

@@ -9,13 +9,26 @@ function isoDate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function postFilename(pubDate: Date, title: string, slug?: string): string {
+export function postFilename(
+  pubDate: Date,
+  title: string,
+  slug?: string,
+): string {
   const derived = slugify(slug ?? title);
-  if (!derived) throw new Error(`Cannot derive a filename slug from ${JSON.stringify(slug ?? title)}`);
+  if (!derived)
+    throw new Error(
+      `Cannot derive a filename slug from ${JSON.stringify(slug ?? title)}`,
+    );
   return `${isoDate(pubDate)}-${derived}.md`;
 }
 
-export function postFrontmatter({ title, pubDate }: { title: string; pubDate: Date }): string {
+export function postFrontmatter({
+  title,
+  pubDate,
+}: {
+  title: string;
+  pubDate: Date;
+}): string {
   return [
     "---",
     `title: "${title.replace(/"/g, '\\"')}"`,

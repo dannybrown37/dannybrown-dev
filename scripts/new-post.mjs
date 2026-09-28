@@ -3,8 +3,8 @@
 //   npm run blog -- "My Post Title" [--slug custom-slug] [--no-open]
 import { spawn } from "node:child_process";
 import { existsSync, writeFileSync } from "node:fs";
-import { createInterface } from "node:readline/promises";
 import { join } from "node:path";
+import { createInterface } from "node:readline/promises";
 
 import { postFilename, postFrontmatter } from "../src/lib/new-post.ts";
 

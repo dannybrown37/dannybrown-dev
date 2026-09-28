@@ -23,16 +23,28 @@ describe("postFilename", () => {
 
 describe("postFrontmatter", () => {
   it("scaffolds the schema's required fields with empty placeholders", () => {
-    expect(postFrontmatter({ title: "My Post", pubDate: new Date("2026-08-01") })).toBe(
-      ['---', 'title: "My Post"', 'description: ""', "pubDate: 2026-08-01", "tags: []", "---", "", ""].join(
-        "\n",
-      ),
+    expect(
+      postFrontmatter({ title: "My Post", pubDate: new Date("2026-08-01") }),
+    ).toBe(
+      [
+        "---",
+        'title: "My Post"',
+        'description: ""',
+        "pubDate: 2026-08-01",
+        "tags: []",
+        "---",
+        "",
+        "",
+      ].join("\n"),
     );
   });
 
   it("escapes double quotes in the title", () => {
     expect(
-      postFrontmatter({ title: 'The "Good" Parts', pubDate: new Date("2026-08-01") }),
+      postFrontmatter({
+        title: 'The "Good" Parts',
+        pubDate: new Date("2026-08-01"),
+      }),
     ).toContain('title: "The \\"Good\\" Parts"');
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { featuredProjects, projects, type Project } from "./projects";
+import { featuredProjects, type Project, projects } from "./projects";
 
 const stub = (name: string, featured?: boolean): Project => ({
   name,
@@ -12,7 +12,10 @@ const stub = (name: string, featured?: boolean): Project => ({
 describe("featuredProjects", () => {
   it("keeps only the featured ones, in source order", () => {
     const all = [stub("a", true), stub("b"), stub("c", true)];
-    expect(featuredProjects(all).map((project) => project.name)).toEqual(["a", "c"]);
+    expect(featuredProjects(all).map((project) => project.name)).toEqual([
+      "a",
+      "c",
+    ]);
   });
 
   it("returns nothing when none are featured", () => {
@@ -27,8 +30,13 @@ describe("projects data", () => {
     expect(featuredProjects()).toHaveLength(3);
   });
 
-  it.each(projects)("$name has a unique name and an https url", ({ name, url }) => {
-    expect(projects.filter((project) => project.name === name)).toHaveLength(1);
-    expect(url).toMatch(/^https:\/\//);
-  });
+  it.each(projects)(
+    "$name has a unique name and an https url",
+    ({ name, url }) => {
+      expect(projects.filter((project) => project.name === name)).toHaveLength(
+        1,
+      );
+      expect(url).toMatch(/^https:\/\//);
+    },
+  );
 });

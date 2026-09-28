@@ -16,8 +16,16 @@ describe("ccgardenPoster", () => {
   });
 
   it.each([
-    ["opacity", `<g opacity="0"><animate attributeName="opacity" values="0;0.5;1" /></g>`, `opacity="1"`],
-    ["d", `<path d="M0 0"><animate attributeName="d" values="M0 0;M1 1" /></path>`, `d="M1 1"`],
+    [
+      "opacity",
+      `<g opacity="0"><animate attributeName="opacity" values="0;0.5;1" /></g>`,
+      `opacity="1"`,
+    ],
+    [
+      "d",
+      `<path d="M0 0"><animate attributeName="d" values="M0 0;M1 1" /></path>`,
+      `d="M1 1"`,
+    ],
     [
       "stroke-width",
       `<path stroke-width="9"><animate attributeName="stroke-width" values="1;4" /></path>`,
@@ -38,13 +46,18 @@ describe("ccgardenPoster", () => {
       `<g transform="scale(1)"><animateTransform attributeName="transform" type="scale" values="0;0.4;1" /></g>`,
       `transform="scale(1)"`,
     ],
-  ])("freezes an animated %s transform at its final value", (_name, body, expected) => {
-    expect(ccgardenPoster(wrap(body))).toContain(expected);
-  });
+  ])(
+    "freezes an animated %s transform at its final value",
+    (_name, body, expected) => {
+      expect(ccgardenPoster(wrap(body))).toContain(expected);
+    },
+  );
 
   it("adds the frozen attribute when the element carried no base value", () => {
     const poster = ccgardenPoster(
-      wrap(`<g><animateTransform attributeName="transform" type="translate" values="0,0;3,4" /></g>`),
+      wrap(
+        `<g><animateTransform attributeName="transform" type="translate" values="0,0;3,4" /></g>`,
+      ),
     );
     expect(poster).toContain(`transform="translate(3,4)"`);
   });
@@ -84,7 +97,9 @@ describe("ccgardenPoster", () => {
 
   it("pins CSS keyframe motion to a still frame", () => {
     const poster = ccgardenPoster(
-      wrap(`<style>.sway{animation:sway 3s infinite}</style><g class="sway" />`),
+      wrap(
+        `<style>.sway{animation:sway 3s infinite}</style><g class="sway" />`,
+      ),
     );
     expect(poster).toMatch(/animation:\s*none/);
     expect(poster).toMatch(/will-change:\s*auto/);

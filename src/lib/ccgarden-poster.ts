@@ -72,7 +72,8 @@ export function ccgardenPoster(source: string): string {
   const tags = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>|<[^>]*>/g;
   for (let match = tags.exec(stripped); match; match = tags.exec(stripped)) {
     const tag = match[0];
-    if (!tag.startsWith("<") || tag.startsWith("<!") || tag.startsWith("<?")) continue;
+    if (!tag.startsWith("<") || tag.startsWith("<!") || tag.startsWith("<?"))
+      continue;
 
     const name = tag.match(/^<\/?\s*([\w:-]+)/)?.[1];
     if (!name) continue;
@@ -87,7 +88,10 @@ export function ccgardenPoster(source: string): string {
       const parent = open.at(-1);
       const patch = frozenValue(tag);
       if (parent && patch) {
-        patches.set(parent.start, [...(patches.get(parent.start) ?? []), patch]);
+        patches.set(parent.start, [
+          ...(patches.get(parent.start) ?? []),
+          patch,
+        ]);
       }
       continue;
     }

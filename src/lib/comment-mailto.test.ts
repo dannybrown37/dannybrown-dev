@@ -9,11 +9,16 @@ describe("commentMailto", () => {
   });
 
   it.each([
-    ["Ampersands & plus + signs", "Re%3A%20Ampersands%20%26%20plus%20%2B%20signs"],
+    [
+      "Ampersands & plus + signs",
+      "Re%3A%20Ampersands%20%26%20plus%20%2B%20signs",
+    ],
     ["Em — dash", "Re%3A%20Em%20%E2%80%94%20dash"],
     ["  padded  ", "Re%3A%20padded"],
   ])("encodes %j", (title, subject) => {
-    expect(commentMailto(title)).toBe(`mailto:tinker@dannybrown.dev?subject=${subject}`);
+    expect(commentMailto(title)).toBe(
+      `mailto:tinker@dannybrown.dev?subject=${subject}`,
+    );
   });
 
   it("falls back to a bare mailto for an empty title", () => {

@@ -53,7 +53,8 @@ const lambda: Node = { label: "Lambda", sub: "python · typescript" };
 const apiGateway: Node = { label: "API Gateway", sub: "rest" };
 const storeLabels = ["DynamoDB", "S3"];
 
-const nodeBox = "fill-paper-soft dark:fill-paper-soft-dk stroke-line dark:stroke-line-dk";
+const nodeBox =
+  "fill-paper-soft dark:fill-paper-soft-dk stroke-line dark:stroke-line-dk";
 const nodeLabel = "fill-ink dark:fill-ink-dk font-mono text-[13px]";
 const subLabel = "fill-muted dark:fill-muted-dk font-mono text-[9px]";
 const wire = "stroke-line dark:stroke-line-dk";
@@ -70,12 +71,30 @@ const boundary = "infrastructure as code";
 // Indexed the same in both views: fleet link, IoT Core to Lambda, the two
 // stores, Lambda to API Gateway, API Gateway to people.
 const flows = [
-  { out: { delay: -0.4, dur: 2.3, dash: "22 78" }, back: { delay: -1.9, dur: 3.9, dash: "14 86" } },
-  { out: { delay: -1.1, dur: 3.1, dash: "16 84" }, back: { delay: -2.6, dur: 2.5, dash: "26 74" } },
-  { out: { delay: -1.8, dur: 2.7, dash: "28 72" }, back: { delay: -0.7, dur: 3.4, dash: "18 82" } },
-  { out: { delay: -2.1, dur: 3.7, dash: "20 80" }, back: { delay: -1.0, dur: 2.2, dash: "30 70" } },
-  { out: { delay: -2.4, dur: 2.9, dash: "24 76" }, back: { delay: -3.5, dur: 4.1, dash: "12 88" } },
-  { out: { delay: -3.0, dur: 3.3, dash: "18 82" }, back: { delay: -1.3, dur: 2.8, dash: "26 74" } },
+  {
+    out: { delay: -0.4, dur: 2.3, dash: "22 78" },
+    back: { delay: -1.9, dur: 3.9, dash: "14 86" },
+  },
+  {
+    out: { delay: -1.1, dur: 3.1, dash: "16 84" },
+    back: { delay: -2.6, dur: 2.5, dash: "26 74" },
+  },
+  {
+    out: { delay: -1.8, dur: 2.7, dash: "28 72" },
+    back: { delay: -0.7, dur: 3.4, dash: "18 82" },
+  },
+  {
+    out: { delay: -2.1, dur: 3.7, dash: "20 80" },
+    back: { delay: -1.0, dur: 2.2, dash: "30 70" },
+  },
+  {
+    out: { delay: -2.4, dur: 2.9, dash: "24 76" },
+    back: { delay: -3.5, dur: 4.1, dash: "12 88" },
+  },
+  {
+    out: { delay: -3.0, dur: 3.3, dash: "18 82" },
+    back: { delay: -1.3, dur: 2.8, dash: "26 74" },
+  },
 ];
 
 // Curves use control points sharing an axis with their endpoint, so the tangent
@@ -109,8 +128,16 @@ const narrowWires = narrowPaths.map((d, i) => ({ d, ...flows[i] }));
 // Stores are cylinders, the one shape that has meant "this is where the data
 // sits" for long enough that it needs no label to say so. `x`/`y` is the centre
 // of the top ellipse; the body runs 20 below it and the base bulges 6 past that.
-const wideStores = storeLabels.map((label, i) => ({ x: 224 + i * 100, y: 122, label }));
-const narrowStores = storeLabels.map((label, i) => ({ x: 232, y: 112 + i * 60, label }));
+const wideStores = storeLabels.map((label, i) => ({
+  x: 224 + i * 100,
+  y: 122,
+  label,
+}));
+const narrowStores = storeLabels.map((label, i) => ({
+  x: 232,
+  y: 112 + i * 60,
+  label,
+}));
 
 // Nine vehicles, two of them mid-transmit. Drawn as cars rather than as blocks
 // because a block at this size is just a chip, and the fleet end of the drawing

@@ -1,12 +1,12 @@
 ---
 import { getCollection, render } from "astro:content";
-import Layout from "../../layouts/Layout.astro";
 import TagList from "../../components/TagList.astro";
-import { getReadingTime } from "../../lib/reading-time";
+import Layout from "../../layouts/Layout.astro";
+import { getAdjacentPosts } from "../../lib/adjacent-posts";
+import { commentMailto } from "../../lib/comment-mailto";
 import { formatDate } from "../../lib/format-date";
 import { blogOgImagePath } from "../../lib/og-image";
-import { commentMailto } from "../../lib/comment-mailto";
-import { getAdjacentPosts } from "../../lib/adjacent-posts";
+import { getReadingTime } from "../../lib/reading-time";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");

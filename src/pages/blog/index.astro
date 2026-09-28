@@ -1,11 +1,11 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "../../layouts/Layout.astro";
 import PostRow from "../../components/PostRow.astro";
+import Layout from "../../layouts/Layout.astro";
 import { groupPostsByYear } from "../../lib/group-posts-by-year";
 
 const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const years = groupPostsByYear(posts);
 

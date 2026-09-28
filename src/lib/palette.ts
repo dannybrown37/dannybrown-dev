@@ -100,15 +100,25 @@ export function filterCommands(
   query: string,
 ): PaletteCommand[] {
   const trimmed = query.trim().toLowerCase();
-  if (!trimmed) return commands.filter((command) => !command.secret && !command.hidden);
+  if (!trimmed)
+    return commands.filter((command) => !command.secret && !command.hidden);
 
-  return commands
-    .map((command, order) => ({ command, order, score: score(command, trimmed) }))
-    .filter((entry) => entry.score !== null)
-    // `order` breaks ties, keeping the author's ordering meaningful — Array.sort
-    // is stable in practice, but the ranking above is too coarse to rely on it.
-    .sort((a, b) => (a.score as number) - (b.score as number) || a.order - b.order)
-    .map((entry) => entry.command);
+  return (
+    commands
+      .map((command, order) => ({
+        command,
+        order,
+        score: score(command, trimmed),
+      }))
+      .filter((entry) => entry.score !== null)
+      // `order` breaks ties, keeping the author's ordering meaningful — Array.sort
+      // is stable in practice, but the ranking above is too coarse to rely on it.
+      .sort(
+        (a, b) =>
+          (a.score as number) - (b.score as number) || a.order - b.order,
+      )
+      .map((entry) => entry.command)
+  );
 }
 
 /** The `ls` output, so adding a secret command lists itself without a second edit. */
@@ -124,7 +134,11 @@ export function secretTitles(commands: PaletteCommand[]): string[] {
  * selection that no longer exists — snaps to whichever end you're heading for,
  * rather than carrying the stale offset through the modulo.
  */
-export function nextIndex(current: number, length: number, delta: number): number {
+export function nextIndex(
+  current: number,
+  length: number,
+  delta: number,
+): number {
   if (length <= 0) return 0;
   if (current < 0 || current >= length) return delta < 0 ? length - 1 : 0;
   return (((current + delta) % length) + length) % length;

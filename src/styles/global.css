@@ -176,6 +176,7 @@ html:not([data-theme]) .theme-icon-system {
   border-color: var(--color-line-dk);
 }
 
+/* biome-ignore lint/style/noDescendingSpecificity: never matches the same element as `:not(pre) > code` */
 .prose pre code {
   background: none;
   border: 0;
@@ -187,6 +188,7 @@ html:not([data-theme]) .theme-icon-system {
 
 /* Shiki's dark theme ships as custom properties; class-based dark mode has to
    apply them explicitly (the built-in switch keys off prefers-color-scheme). */
+/* biome-ignore-start lint/complexity/noImportantStyles: must beat Shiki's inline styles */
 .dark .prose .astro-code,
 .dark .prose .astro-code span {
   color: var(--shiki-dark) !important;
@@ -195,6 +197,7 @@ html:not([data-theme]) .theme-icon-system {
   font-weight: var(--shiki-dark-font-weight) !important;
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
+/* biome-ignore-end lint/complexity/noImportantStyles: must beat Shiki's inline styles */
 
 html {
   scroll-behavior: smooth;
@@ -210,7 +213,6 @@ html {
   scroll-snap-type: y mandatory;
   scroll-padding-top: 0;
 }
-
 
 /* Fixed rather than sticky, on paged pages only. A sticky header still occupies
    flow space, which pushes every panel down by its height — so the first snap
@@ -447,6 +449,7 @@ html {
     /* `!important` because the pipeline's pulses set their dasharray inline, to
        give every leg its own rhythm — without it those six lines would keep
        their dashes here and read as broken wires. */
+    /* biome-ignore lint/complexity/noImportantStyles: see above */
     stroke-dasharray: none !important;
     opacity: 0.55;
   }

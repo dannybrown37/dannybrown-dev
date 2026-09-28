@@ -17,7 +17,9 @@ export function svgAspect(markup: string): SvgAspect | null {
   // otherwise happily match a child's `stroke-width`.
   const head = markup.slice(0, markup.indexOf(">") + 1 || 2000);
 
-  const viewBox = attribute(head, "viewBox")?.trim().split(/[\s,]+/);
+  const viewBox = attribute(head, "viewBox")
+    ?.trim()
+    .split(/[\s,]+/);
   if (viewBox?.length === 4) {
     return aspect(viewBox[2], viewBox[3]);
   }
@@ -32,7 +34,12 @@ function attribute(markup: string, name: string): string | undefined {
 function aspect(rawWidth?: string, rawHeight?: string): SvgAspect | null {
   const width = Number(rawWidth);
   const height = Number(rawHeight);
-  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+  if (
+    !Number.isFinite(width) ||
+    !Number.isFinite(height) ||
+    width <= 0 ||
+    height <= 0
+  ) {
     return null;
   }
   return {

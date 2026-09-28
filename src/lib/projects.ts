@@ -29,7 +29,8 @@ export const projects: Project[] = [
       "Oracle Cloud",
       "Python",
     ],
-    blurb: "Getting Things Done as a TUI, CLI, API, and self-hosted PWA: capture, triage, review.",
+    blurb:
+      "Getting Things Done as a TUI, CLI, API, and self-hosted PWA: capture, triage, review.",
     install: "uv tool install gtd-tui",
     license: "MIT",
     featured: true,
@@ -41,13 +42,7 @@ export const projects: Project[] = [
     url: "https://hamilhamilhamil.com",
     blurb:
       "CamelCamelCamel for Broadway: daily price and discount history from the TKTS board.",
-    tech: [
-      "TypeScript",
-      "Next.js",
-      "PostgreSQL",
-      "GitHub Actions",
-      "Python",
-    ],
+    tech: ["TypeScript", "Next.js", "PostgreSQL", "GitHub Actions", "Python"],
     live: true,
     featured: true,
   },
@@ -56,7 +51,8 @@ export const projects: Project[] = [
     description:
       "Browser-based tools for the Synthstrom Deluge music workstation. Manage SD cards, analyze songs, preview tracks, build kits, generate patches, convert scores. All client-side, no upload, no server.",
     url: "https://deluge.quest",
-    blurb: "Browser-based tools for the Synthstrom Deluge. All client-side, no server.",
+    blurb:
+      "Browser-based tools for the Synthstrom Deluge. All client-side, no server.",
     tech: ["Astro", "Svelte", "Pyodide", "Web Audio", "Python"],
     live: true,
     license: "GPL-3.0",
@@ -65,12 +61,13 @@ export const projects: Project[] = [
   {
     name: "git-a-grip",
     description:
-    "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
+      "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
     url: "https://github.com/dannybrown37/git-a-grip",
     tech: ["Pre-Commit", "Commitizen", "Ruff", "ESLint", "Bash", "Python"],
-    blurb: "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
+    blurb:
+      "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
     install:
-    "# .pre-commit-config.yaml:\nrepos:\n  - repo: https://github.com/dannybrown37/git-a-grip\n    rev: v0.y.z\n    hooks:\n      - id: choose-your-hooks\n\n# For pre-commit tooling:\nuv tool install git-a-grip",
+      "# .pre-commit-config.yaml:\nrepos:\n  - repo: https://github.com/dannybrown37/git-a-grip\n    rev: v0.y.z\n    hooks:\n      - id: choose-your-hooks\n\n# For pre-commit tooling:\nuv tool install git-a-grip",
     license: "MIT",
   },
   {
@@ -86,7 +83,8 @@ export const projects: Project[] = [
   {
     name: "gfunk",
     blurb: "Nuthin' but a G-Suite Thang",
-    description: "Nuthin' but a G-Suite thang: TUI, CLI, and MCP tools for managing Google Workspace resources, with a '90s west-coast hiphop flavor.",
+    description:
+      "Nuthin' but a G-Suite thang: TUI, CLI, and MCP tools for managing Google Workspace resources, with a '90s west-coast hiphop flavor.",
     url: "https://github.com/dannybrown37/gfunk",
     tech: ["Textual", "Python", "Google Workspace API", "MCP Server"],
     install: "uv tool install gfunk",
@@ -106,7 +104,8 @@ export const projects: Project[] = [
     description:
       "Website for MAAD GOAT, a pop-up pizzeria & catering operation in the Florida panhandle area. CMS-managed menu and content, deployed to Cloudflare Workers.",
     url: "https://maadgoat.com",
-    blurb: "Website for MAAD GOAT, a pop-up pizzeria & catering in Pensacola, FL.",
+    blurb:
+      "Website for MAAD GOAT, a pop-up pizzeria & catering in Pensacola, FL.",
     tech: ["Astro", "Keystatic", "Cloudflare Workers", "TypeScript"],
     live: true,
   },
@@ -115,7 +114,15 @@ export const projects: Project[] = [
     description:
       "Shell config and global dev tooling. And also the sandbox where most of my projects start.",
     url: "https://github.com/dannybrown37/dotfiles",
-    tech: ["Bash", "Neovim", "TMUX", "WSL", "AutoHotKey", "Pre-Commit", "Python"],
+    tech: [
+      "Bash",
+      "Neovim",
+      "TMUX",
+      "WSL",
+      "AutoHotKey",
+      "Pre-Commit",
+      "Python",
+    ],
   },
   {
     name: "dannybrown.dev",

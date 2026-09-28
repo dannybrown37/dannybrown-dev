@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "../../../layouts/Layout.astro";
 import PostRow from "../../../components/PostRow.astro";
+import Layout from "../../../layouts/Layout.astro";
 import { slugifyTag } from "../../../lib/tag-slug";
 
 export async function getStaticPaths() {
@@ -23,7 +23,7 @@ export async function getStaticPaths() {
     props: {
       label,
       posts: posts.sort(
-        (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+        (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
       ),
     },
   }));

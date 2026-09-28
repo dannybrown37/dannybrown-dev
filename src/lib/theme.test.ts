@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { nextTheme, parseTheme, resolveTheme, type Theme } from "./theme";
 
 describe("parseTheme", () => {
-  it.each([
+  it.each<[string | null, Theme]>([
     ["light", "light"],
     ["dark", "dark"],
     ["system", "system"],
@@ -15,7 +15,7 @@ describe("parseTheme", () => {
 });
 
 describe("nextTheme", () => {
-  it.each([
+  it.each<[Theme, Theme]>([
     ["system", "light"],
     ["light", "dark"],
     ["dark", "system"],
@@ -29,7 +29,7 @@ describe("nextTheme", () => {
 });
 
 describe("resolveTheme", () => {
-  it.each([
+  it.each<[Theme, boolean, "light" | "dark"]>([
     ["light", true, "light"],
     ["light", false, "light"],
     ["dark", true, "dark"],

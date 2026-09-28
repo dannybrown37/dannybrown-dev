@@ -26,7 +26,6 @@ const pages: Record<string, Card> = {
 };
 
 export const { getStaticPaths, GET } = await OGImageRoute({
-  param: "route",
   pages,
   // The default slug derivation strips a trailing file extension, which would
   // mangle any post id containing a dot. These keys are already the route.

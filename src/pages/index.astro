@@ -1,11 +1,11 @@
 ---
-import { existsSync, readFileSync } from "node:fs";
 import { getCollection } from "astro:content";
-import Layout from "../layouts/Layout.astro";
-import PostRow from "../components/PostRow.astro";
-import SignalField from "../components/SignalField.astro";
+import { existsSync, readFileSync } from "node:fs";
 import PipelineDiagram from "../components/PipelineDiagram.astro";
+import PostRow from "../components/PostRow.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import SignalField from "../components/SignalField.astro";
+import Layout from "../layouts/Layout.astro";
 import { featuredProjects } from "../lib/projects";
 import { svgAspect } from "../lib/svg-aspect";
 
@@ -15,10 +15,21 @@ import { svgAspect } from "../lib/svg-aspect";
 const breadth: [label: string, items: string[]][] = [
   ["Languages", ["Python", "TypeScript", "JavaScript", "Bash"]],
   ["Data", ["DynamoDB", "S3", "SQLite", "PostgreSQL", "Athena", "Timestream"]],
-  ["Infrastructure", ["AWS", "Terraform / OpenTofu", "CloudFormation", "Serverless Framework", "GCP"]],
+  [
+    "Infrastructure",
+    [
+      "AWS",
+      "Terraform / OpenTofu",
+      "CloudFormation",
+      "Serverless Framework",
+      "GCP",
+    ],
+  ],
   ["Python Toolchain", ["uv", "pytest", "pydantic", "ruff", "click", "mypy"]],
-  ["Workflow", ["pre-commit", "GitHub Actions", "Claude Code", "Copilot", "tmux", "fzf"]]
-
+  [
+    "Workflow",
+    ["pre-commit", "GitHub Actions", "Claude Code", "Copilot", "tmux", "fzf"],
+  ],
 ];
 
 const featured = featuredProjects();
@@ -26,7 +37,8 @@ const featured = featuredProjects();
 // Read at build time, never hardcoded: a regeneration can change the plot's
 // dimensions, and a stale ratio crops it.
 const gardenSvg = "public/ccgarden-plot.svg";
-const garden = (existsSync(gardenSvg) && svgAspect(readFileSync(gardenSvg, "utf8"))) || {
+const garden = (existsSync(gardenSvg) &&
+  svgAspect(readFileSync(gardenSvg, "utf8"))) || {
   css: "800 / 1100",
   ratio: 800 / 1100,
 };

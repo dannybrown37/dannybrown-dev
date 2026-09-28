@@ -2,13 +2,17 @@ import { describe, expect, it } from "vitest";
 import {
   filterCommands,
   nextIndex,
+  type PaletteCommand,
   postCommands,
   projectCommands,
   secretTitles,
-  type PaletteCommand,
 } from "./palette";
 
-const command = (id: string, title: string, keywords: string[] = []): PaletteCommand => ({
+const command = (
+  id: string,
+  title: string,
+  keywords: string[] = [],
+): PaletteCommand => ({
   id,
   title,
   keywords,
@@ -50,7 +54,10 @@ describe("filterCommands", () => {
   it("ranks a title prefix above a title substring", () => {
     const pro = command("pro", "Pro");
     const amateur = command("amateur", "Amateur pro");
-    expect(ids(filterCommands([amateur, pro], "pro"))).toEqual(["pro", "amateur"]);
+    expect(ids(filterCommands([amateur, pro], "pro"))).toEqual([
+      "pro",
+      "amateur",
+    ]);
   });
 
   it("ranks a title substring above a keyword-only match", () => {
@@ -65,7 +72,10 @@ describe("filterCommands", () => {
   it("ranks a contiguous match above a scattered subsequence", () => {
     const scattered = command("s", "Ping around Jets");
     const contiguous = command("c", "Projects");
-    expect(ids(filterCommands([scattered, contiguous], "proj"))).toEqual(["c", "s"]);
+    expect(ids(filterCommands([scattered, contiguous], "proj"))).toEqual([
+      "c",
+      "s",
+    ]);
   });
 
   it("keeps the given order between equally good matches", () => {
@@ -77,8 +87,14 @@ describe("filterCommands", () => {
 
 describe("postCommands", () => {
   const posts = [
-    { id: "2026-08-10-easter-eggs", data: { title: "Easter Eggs", tags: ["astro", "fun"] } },
-    { id: "2026-08-05-ergonomic-clis", data: { title: "Ergonomic CLIs", tags: [] } },
+    {
+      id: "2026-08-10-easter-eggs",
+      data: { title: "Easter Eggs", tags: ["astro", "fun"] },
+    },
+    {
+      id: "2026-08-05-ergonomic-clis",
+      data: { title: "Ergonomic CLIs", tags: [] },
+    },
   ];
 
   it("links each post to its page", () => {
@@ -113,8 +129,18 @@ describe("postCommands", () => {
 
 describe("projectCommands", () => {
   const built = projectCommands([
-    { name: "ccgarden", description: "Grows a tree.", url: "https://github.com/x/ccgarden", tech: ["SVG", "Python"] },
-    { name: "gtd", description: "Getting Things Done.", url: "https://github.com/x/gtd", tech: ["Python"] },
+    {
+      name: "ccgarden",
+      description: "Grows a tree.",
+      url: "https://github.com/x/ccgarden",
+      tech: ["SVG", "Python"],
+    },
+    {
+      name: "gtd",
+      description: "Getting Things Done.",
+      url: "https://github.com/x/gtd",
+      tech: ["Python"],
+    },
   ]);
 
   it("opens the project's url externally", () => {
@@ -122,7 +148,11 @@ describe("projectCommands", () => {
       title: "ccgarden",
       kind: "external",
       hint: "project",
-      action: { type: "href", href: "https://github.com/x/ccgarden", external: true },
+      action: {
+        type: "href",
+        href: "https://github.com/x/ccgarden",
+        external: true,
+      },
     });
   });
 
@@ -146,10 +176,14 @@ describe("secretTitles", () => {
   });
 
   it("lists secret titles and skips the visible ones", () => {
-    expect(secretTitles([home, secret("pwd", "pwd"), writing, secret("who", "whoami")])).toEqual([
-      "pwd",
-      "whoami",
-    ]);
+    expect(
+      secretTitles([
+        home,
+        secret("pwd", "pwd"),
+        writing,
+        secret("who", "whoami"),
+      ]),
+    ).toEqual(["pwd", "whoami"]);
   });
 
   it("sorts alphabetically regardless of declaration order", () => {

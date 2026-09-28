@@ -1,5 +1,5 @@
-import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
+import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
 
 export async function GET(context: APIContext) {
@@ -9,10 +9,11 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: "Danny Brown",
-    description: "Notes on whatever I care to write about. While I use LLM tooling in my work as a software engineer, the writing on this part of the site is 100% artisan and handcrafted by me.",
+    description:
+      "Notes on whatever I care to write about. While I use LLM tooling in my work as a software engineer, the writing on this part of the site is 100% artisan and handcrafted by me.",
     // Set from `site` in astro.config.mjs; the non-null assertion is safe
     // because a build without it fails long before this route runs.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by `site` in astro.config
+    // biome-ignore lint/style/noNonNullAssertion: guaranteed by `site` in astro.config
     site: context.site!,
     items: posts.map((post) => ({
       title: post.data.title,
