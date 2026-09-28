@@ -1,43 +1,63 @@
-# Astro Starter Kit: Minimal
+# dannybrown.dev
+
+Personal portfolio + blog. Astro (static), Tailwind v4, TypeScript, Vitest, Biome.
+Deployed to GitHub Pages on push to `main`.
+
+## Setup
+
+Node ≥ 22.12.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+pre-commit install   # or: prek install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-## 🚀 Project Structure
+| Command                           | What                                              |
+| :-------------------------------- | :------------------------------------------------ |
+| `npm run dev`                     | Dev server at `localhost:4321`                    |
+| `npm run build`                   | Build to `dist/` (also validates post frontmatter) |
+| `npm run preview`                 | Serve the built `dist/`                           |
+| `npm test`                        | Vitest                                            |
+| `npm run blog -- "Title"`         | Scaffold a post; opens in VS Code or `$EDITOR`   |
+| `npm run ccgarden:sync`           | Regenerate the homepage garden SVG (see below)    |
+| `npx biome check --write .`       | Lint + format                                     |
+| `npx tsc --noEmit`                | Type check                                        |
 
-Inside of your Astro project, you'll see the following folders and files:
+## Layout
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+  pages/            routes (index, projects, blog/, og/, rss.xml.ts, 404)
+  layouts/          Layout.astro — shared chrome
+  components/       .astro components
+  content/blog/     posts (markdown)
+  content.config.ts post frontmatter schema
+  lib/              pure logic + *.test.ts beside each file
+  styles/           global.css (Tailwind)
+public/             static assets, CNAME, ccgarden SVGs
+scripts/            new-post, sync-ccgarden
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Writing a post
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+`npm run blog -- "My Title"` creates `src/content/blog/<slug>.md`. Frontmatter:
+`title`, `description`, `pubDate` required; `updatedDate`, `tags` optional.
+Bad frontmatter fails `npm run build`, not `npm test`.
 
-Any static assets, like images, can be placed in the `public/` directory.
+New post not showing in dev? Restart the dev server — it caches the content glob.
 
-## 🧞 Commands
+## Gotchas
 
-All commands are run from the root of the project, from a terminal:
+- **Dates:** always use `formatDate` (`src/lib/format-date.ts`). It pins UTC; local-timezone
+  formatting renders date-only frontmatter a day off.
+- **Logic goes in `src/lib/`**, not inline in `.astro`, so it's testable.
+- **ccgarden:** `public/ccgarden-plot.svg` is generated from `~/.claude` on my machine only
+  (CI can't). The pre-commit hook refreshes it at most once a day; `ccgarden:sync` forces it.
+- **Pre-commit** also runs gitleaks, a private-terms blocker, biome, vitest, tsc, and zizmor.
+  This repo is public — don't commit secrets or personal info.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Deploy
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+`.github/workflows/deploy.yml`: test → build → deploy to Pages. PRs run test + build only.
