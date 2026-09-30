@@ -16,7 +16,7 @@ For the last several weeks I've been working on [deluge.quest](https://deluge.qu
 
 This turned into what is almost certainly the most complex frontend I've ever designed, including a semi-functional copy of the Deluge itself, animations, audio, a step sequencer using the user's own samples (or synth-generated 808 samples by default), recordings of dozens of songs I've made on the Deluge with effects one can apply via on-screen knows, and much more.
 
-Truth be told, I've never liked React, as state management is just verbose and hard to grasp. I did a lot of jQuery back in the day, then during the battle for dominance between React, Angular, and Vue, I started shifting to backend and have just gone deeper in that direction. But as I've been doing more frotend work lately, I've been impressed with newer tools like Astro and Svelte. They work for deluge.quest in particular because there's minimal shared state between views -- it's a collection of individual tools not necessarily dependent on each other. That said, state management works just fine for caching user files and maintining audio across pages.
+Truth be told, I've never liked React, as state management is just verbose and hard to grasp. I did a lot of jQuery back in the day, then during the battle for dominance between React, Angular, and Vue, I started shifting to backend and have just gone deeper in that direction. But as I've been doing more frontend work lately, I've been impressed with newer tools like Astro and Svelte. They work for deluge.quest in particular because there's minimal shared state between views -- it's a collection of individual tools not necessarily dependent on each other. That said, state management works just fine for caching user files and maintining audio across pages.
 
 How far can one go in today's frontend world without using React? I'm going to find out. (Not really, React is core to my day job's core product so I'll still be using it.)
 
@@ -27,7 +27,7 @@ Opus 5, as the verbosity and jargon were out of control. I was still using Opus 
 task planning and orchestration, but delegating mechanical work down to Sonnet or sometimes Haiku for
 token-saving reasons.
 
-Since Opus 5.5 came out, I've been using it exclusively with mix of low/medium effort, and I'm having
+Since Opus 5.5 came out, I've been using it exclusively with a mix of low/medium effort, and I'm having
 an extremely hard time hitting any 5-hour windows. I'm pretty strictly using AI via a human-in-the-loop
 approach, so this is in part a factor of how much time I'm putting in, but still -- if I had been using
 Opus 4.6 at this level this week, I would have hit *many* five-hour-window lockouts. (I am aware that
