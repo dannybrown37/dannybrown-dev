@@ -101,6 +101,18 @@ const visible: PaletteCommand[] = [
 // `ls` is assembled from these below, so it can't be one of them.
 const secrets: PaletteCommand[] = [
   {
+    id: "books",
+    title: "books",
+    keywords: ["books", "reading", "library", "bookshelf", "goodreads"],
+    kind: "external",
+    action: {
+      type: "href",
+      href: "https://books.dannybrown.dev",
+      external: true,
+    },
+    secret: true,
+  },
+  {
     id: "git blame",
     title: "git blame",
     keywords: ["git", "blame", "who"],
