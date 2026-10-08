@@ -21,7 +21,7 @@ I've read/listened to nearly 300 books in the last couple years, and I figured a
 
 ## Genre and Rating Backfill
 
-I keep by books list in Notion. I've had some API integrations for years now to support iOS and CLI shortcuts, so I onboarded Claude Opus 5.5 to my existing tools, then put it to work on collecting genres for each book.
+I keep my books list in Notion. I've had some API integrations for years now to support iOS and CLI shortcuts, so I onboarded Claude Opus 5.5 to my existing tools, then put it to work on collecting genres for each book.
 
 While it worked, I ranked all the books I've ever read. I defaulted to 3 stars for most books, especially the ones where my memory of details is fuzzy. If I remember being bored or confused, that was generally a 2-star rating. If I hated it or didn't finish it, that was (mostly) a 1-star rating, unless there was something redeemable to salvage a second star. On the positive end, books that I remember really loving got 4 stars, and it's hard to forget all-time favorites, which got 5 stars (reserved for less than 5% of ranked books).
 
