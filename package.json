@@ -17,16 +17,16 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.6",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.14",
+    "@biomejs/biome": "2.5.15",
     "@tailwindcss/typography": "^0.5.20",
-    "astro-og-canvas": "^0.13.0",
-    "canvaskit-wasm": "^0.41.1",
+    "astro-og-canvas": "^0.13.2",
+    "canvaskit-wasm": "^0.42.0",
     "typescript": "7.0.2",
     "vitest": "^4.1.10"
   }
