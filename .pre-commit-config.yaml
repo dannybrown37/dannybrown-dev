@@ -6,7 +6,7 @@ repos:
   # gitleaks finds credentials. This finds the strings that are only
   # sensitive because of who typed them, from a file outside the tree.
   - repo: https://github.com/dannybrown37/git-a-grip
-    rev: v0.15.1
+    rev: v0.16.1
     hooks:
       - id: block-private-terms
       # The script owns the whole file and stages it; regen-file runs it
@@ -40,7 +40,7 @@ repos:
         files: \.(ts|astro)$
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
