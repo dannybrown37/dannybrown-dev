@@ -103,7 +103,7 @@ const secrets: PaletteCommand[] = [
   {
     id: "books",
     title: "books",
-    keywords: ["books", "reading", "library", "bookshelf", "goodreads"],
+    keywords: ["books", "reading", "library", "bookshelf", "goodreads", "shelf-life"],
     kind: "external",
     action: {
       type: "href",
@@ -120,6 +120,18 @@ const secrets: PaletteCommand[] = [
     action: {
       type: "say",
       lines: ["f8675309", "(Danny Brown 2026-08-11)", "it was me"],
+    },
+    secret: true,
+  },
+  {
+    id: "idiom",
+    title: "idiom",
+    keywords: ["idiom", "styles", "components", "ui"],
+    kind: "external",
+    action: {
+      type: "href",
+      href: "https://idiom.dannybrown.dev",
+      external: true,
     },
     secret: true,
   },
