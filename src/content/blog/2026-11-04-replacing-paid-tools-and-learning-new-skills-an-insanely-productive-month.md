@@ -34,7 +34,7 @@ I'm a lapsed *Magic: The Gathering* player, particularly the Cube format. I used
 
 I didn't care to search and type in every card I own, so I set out to create an OCR scanner I could use on my phone. This worked really nicely and I was able to get my collection catalogued over a single weekend, with a really nice web display as well:
 
-![MTG collection grid filtered by color, showing white creatures with prices](./../../../public/images/2026-11-04-mtg-collection.png)
+![MTG collection grid filtered by color, showing white creatures with prices](./../../../public/images/2026-11-04-mtg-collection.webp)
 
 This plugs into the Scryfall API and pulls card metadata, images, and prices, plus allows me to toggle for proxies and foils.
 
