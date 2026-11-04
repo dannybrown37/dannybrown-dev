@@ -59,6 +59,16 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    name: "music shader",
+    description:
+      "A browser music visualizer that hears kicks, snares, and hi-hats separately, follows timbre, melody, key, and section changes, and drives GLSL scenes with all of it. Drop in a song, then export frame-exact MP4s.",
+    url: "https://shader.dannybrown.dev",
+    blurb:
+      "Drop in a song; GLSL scenes react to its drums, melody, and timbre.",
+    tech: ["WebGL2", "GLSL", "Web Audio", "Vite", "TypeScript"],
+    live: true,
+  },
+  {
     name: "git-a-grip",
     description:
       "A curated collection of pre-commit hooks plus a CLI for global pre-commit management.",
