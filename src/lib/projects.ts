@@ -17,6 +17,24 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    name: "Tarn",
+    description:
+      "A local-first notes app and GTD system in one. Plain Markdown files in a folder you own, a SQLite index beside them, and the best-loved features of Tana, Heptabase, Obsidian, Notion, and Airtable, each labelled with its source. Self-hosted, with Gmail, Apple Health, Plaid, and habit-tracking integrations.",
+    url: "https://tarn.dannybrown.dev/#/today",
+    blurb:
+      "Local-first notes + GTD: the best of Tana, Obsidian, Notion, and Airtable, no subscription.",
+    tech: [
+      "React",
+      "Node",
+      "SQLite",
+      "Oracle Cloud",
+      "Cloudflare",
+      "TypeScript",
+    ],
+    live: true,
+    featured: true,
+  },
+  {
     name: "gtd",
     description:
       "A TUI, CLI, API, and self-hosted PWA for personal productivity built around Getting Things Done. Capture to an inbox, triage into projects with contexts and next actions, auto-reschedule recurring items, and run reviews grouped by Area of Focus.",
@@ -33,7 +51,6 @@ export const projects: Project[] = [
       "Getting Things Done as a TUI, CLI, API, and self-hosted PWA: capture, triage, review.",
     install: "uv tool install gtd-tui",
     license: "MIT",
-    featured: true,
   },
   {
     name: "hamilhamilhamil",
@@ -66,6 +83,23 @@ export const projects: Project[] = [
     blurb:
       "Drop in a song; GLSL scenes react to its drums, melody, and timbre.",
     tech: ["WebGL2", "GLSL", "Web Audio", "Vite", "TypeScript"],
+    live: true,
+  },
+  {
+    name: "cube-vision",
+    description:
+      "My first OCR app: scan a Magic: The Gathering cube from a phone camera by card name or set code + collector number, match each card to its Scryfall printing, and browse it as a priced gallery sorted by section, with proxies and foils tracked separately.",
+    url: "https://www.dannybrown.dev/blog/2026-11-04-replacing-paid-tools-and-learning-new-skills-an-insanely-productive-month#my-first-ocr-app",
+    blurb: "Phone-camera OCR that catalogs an MTG cube via Scryfall.",
+    tech: ["Tesseract.js", "React", "Node", "Scryfall API", "TypeScript"],
+  },
+  {
+    name: "Master Kit",
+    description:
+      "A keyboard-first browser app for learning audio mastering on your own finished songs. Live spectrum, draggable EQ, multiband compression, auto-master with explanations, ear-training drills, and on-screen explainers for every control.",
+    url: "https://master.dannybrown.dev",
+    blurb: "Learn to master your own songs, keyboard-first, with explainers.",
+    tech: ["Web Audio", "Vite", "TypeScript"],
     live: true,
   },
   {
