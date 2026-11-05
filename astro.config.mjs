@@ -28,6 +28,22 @@ export default defineConfig({
         {
           target: "_blank",
           rel: ["noopener", "noreferrer"],
+          content: [
+            // Word joiner: keeps the icon from wrapping alone onto the next line.
+            { type: "text", value: "⁠" },
+            {
+              type: "element",
+              tagName: "span",
+              properties: { className: ["external-icon"], ariaHidden: "true" },
+              children: [{ type: "text", value: "↗" }],
+            },
+            {
+              type: "element",
+              tagName: "span",
+              properties: { className: ["sr-only"] },
+              children: [{ type: "text", value: " (opens in new tab)" }],
+            },
+          ],
           test: (/** @type {import("hast").Element} */ el) =>
             typeof el.properties.href === "string" &&
             opensInNewTab(el.properties.href),
