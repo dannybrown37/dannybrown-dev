@@ -4,6 +4,8 @@ import sitemap from "@astrojs/sitemap";
 
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
+import rehypeExternalLinks from "rehype-external-links";
+import { opensInNewTab } from "./src/lib/external-link.ts";
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,6 +22,34 @@ export default defineConfig({
     "/about": "/#about-heading",
   },
   markdown: {
+    rehypePlugins: [
+      [
+        rehypeExternalLinks,
+        {
+          target: "_blank",
+          rel: ["noopener", "noreferrer"],
+          content: [
+            // Word joiner: keeps the icon from wrapping alone onto the next line.
+            { type: "text", value: "⁠" },
+            {
+              type: "element",
+              tagName: "span",
+              properties: { className: ["external-icon"], ariaHidden: "true" },
+              children: [{ type: "text", value: "↗" }],
+            },
+            {
+              type: "element",
+              tagName: "span",
+              properties: { className: ["sr-only"] },
+              children: [{ type: "text", value: " (opens in new tab)" }],
+            },
+          ],
+          test: (/** @type {import("hast").Element} */ el) =>
+            typeof el.properties.href === "string" &&
+            opensInNewTab(el.properties.href),
+        },
+      ],
+    ],
     shikiConfig: {
       // Dual themes: light colors land inline, dark ones in --shiki-dark-*
       // custom properties that global.css swaps in under the .dark class.

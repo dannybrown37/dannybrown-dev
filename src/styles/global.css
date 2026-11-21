@@ -117,6 +117,12 @@ html:not([data-theme]) .theme-icon-system {
   margin-inline-end: 0.2em;
 }
 
+.prose .external-icon {
+  margin-inline-start: 0.125em;
+  font-size: 0.75em;
+  vertical-align: 0.15em;
+}
+
 /* Blockquotes are used as asides/notes, not quotations — drop the typography
    plugin's decorative quote marks and italics. */
 .prose blockquote {
