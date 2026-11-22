@@ -30,6 +30,9 @@
     "astro-og-canvas": "^0.13.3",
     "canvaskit-wasm": "^0.42.0",
     "typescript": "7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "postcss-selector-parser": "6.1.6"
   }
 }
