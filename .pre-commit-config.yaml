@@ -1,14 +1,16 @@
 # public/ccgarden*.svg are generated, ~700KB+, and single-line -- no fixer,
 # linter, or size check should have an opinion about it.
 exclude: ^public/ccgarden(-plot)?\.svg$
+default_install_hook_types: [pre-commit, pre-push]
 
 repos:
   # gitleaks finds credentials. This finds the strings that are only
   # sensitive because of who typed them, from a file outside the tree.
   - repo: https://github.com/dannybrown37/git-a-grip
-    rev: v0.16.1
+    rev: v0.16.2
     hooks:
       - id: block-private-terms
+      - id: protect-branch
       # The script owns the whole file and stages it; regen-file runs it
       # without a shell and re-stages only when the bytes actually moved.
       - id: regen-file
